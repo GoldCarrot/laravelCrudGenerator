@@ -3,33 +3,32 @@
  * This is the template for generating the service class of a specified table.
  */
 
-/* @var $serviceGenerator->generatorForm \Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm */
 /* @var $serviceGenerator \Chatway\LaravelCrudGenerator\Core\Generators\ServiceGenerator */
 /* @var $serviceGenerator->generatorForm->properties array list of properties (property => [type, name. comment]) */
 
 echo "<?php\n";
 ?>
 
-namespace {{ $serviceGenerator->generatorForm->getServiceNs() }};
+namespace {{ class_namespace($serviceGenerator->generatorForm->serviceName) }};
 
 
-use {{ $serviceGenerator->getBaseClassWithNs() }};
-use {{ $serviceGenerator->generatorForm->getModelFullName() }};
-@if ($serviceGenerator->getBaseInterfaceWithNs())
-use {{ $serviceGenerator->getBaseInterfaceWithNs() }};
+use {{ $serviceGenerator->baseClass }};
+use {{ $serviceGenerator->generatorForm->modelName }};
+@if ($serviceGenerator->baseInterface)
+use {{ $serviceGenerator->baseInterface }};
 @endif
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
 /**
  * This is the service class for table "{{ $serviceGenerator->generatorForm->resourceTable }}".
- * Class {{ $serviceGenerator->generatorForm->getServiceName() }}
+ * Class {{ $serviceGenerator->generatorForm->serviceName }}
  *
- * @package {{ $serviceGenerator->generatorForm->getServiceNs() }}
-<?= ' * @method ' . $serviceGenerator->generatorForm->getModelName() ?>|null findActive(array $params = [])
+ * @package {{ class_namespace($serviceGenerator->generatorForm->serviceName) }}
+<?= ' * @method ' . $serviceGenerator->generatorForm->modelName ?>|null findActive(array $params = [])
 */
 
-class {{ $serviceGenerator->generatorForm->getServiceName() }} extends {{ $serviceGenerator->baseClass }} {{ $serviceGenerator->getBaseInterfaceWithNs() ? 'implements ' . $serviceGenerator->baseInterface : '' }}
+class {{ basename($serviceGenerator->generatorForm->serviceName) }} extends {{ basename($serviceGenerator->baseClass) }} {{ $serviceGenerator->baseInterface ? 'implements ' . basename($serviceGenerator->baseInterface) : '' }}
 {
     public function create(array $data): {{ $serviceGenerator->generatorForm->resourceName }}
     {

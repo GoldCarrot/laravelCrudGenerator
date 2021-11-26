@@ -58,25 +58,6 @@ class GeneratorCommand extends Command
                 $this->error('Test mode: ' . $generatorForm->baseNs);
             }
 
-            if (! function_exists('class_namespace')) {
-                /**
-                 * Get the class "namespace" of the given object / class.
-                 *
-                 * @param  string|object  $class
-                 * @return string
-                 */
-                //function class_namespace($class)
-                //{
-                //    echo 'asd';
-                //    $class = is_object($class) ? get_class($class) : $class;
-                //
-                //    return join("\\", array_slice(explode("\\", $class), 0, -1));
-                //}
-                class_namespace('asd\asd');
-                //dd(function_exists('class_namespace'));
-            }
-            class_namespace('asd\asd');
-            dd(function_exists('class_namespace'));
             $result = (new ModelGenerator($generatorForm))->generate();
             if ($result->success !== false) {
                 $this->info('Model generated! Path in app: ' . $result->filePath);

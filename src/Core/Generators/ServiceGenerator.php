@@ -10,10 +10,8 @@ use View;
 
 class ServiceGenerator implements GeneratorInterface
 {
-    public $baseClassNs = 'App\Base\Services\\';
-    public $baseClass   = 'AbstractService';
-    public $baseInterfaceNs = 'App\Base\Interfaces';
-    public $baseInterface   = 'CrudServiceInterface';
+    public $baseClass = 'App\Base\Services\BaseService';
+    public $baseInterface = 'App\Base\Interfaces\ManageServiceInterface';
 
     public function __construct(public GeneratorForm $generatorForm)
     {
