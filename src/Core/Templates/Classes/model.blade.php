@@ -9,16 +9,15 @@
 
 echo "<?php\n";
 ?>
-
 namespace {{ $modelGenerator->generatorForm->getNsByClassName($modelGenerator->generatorForm->modelName) }};
 
 
-use {{ $modelGenerator->getBaseClassWithNs() }};
+use {{ $modelGenerator->baseClass }};
 use Eloquent;
 <?php /** Начало прикрепления классов для внутренних ключей **/ ?>
 <?php $addedClasses = [] ?>
 @foreach($modelGenerator->generatorForm->internalForeignKeys as $internalForeignKey)
-@if ($internalForeignKey['className'] != $modelGenerator->getFullName() && !in_array($internalForeignKey['className'], $addedClasses))
+@if ($internalForeignKey['className'] != $modelGenerator->generatorForm->modelName && !in_array($internalForeignKey['className'], $addedClasses))
 @php($addedClasses[] = $internalForeignKey['className'])
 use {{ $internalForeignKey['className'] }};
 @endif
@@ -26,7 +25,7 @@ use {{ $internalForeignKey['className'] }};
 <?php /** Конец прикрепления классов для внутренних ключей **/ ?>
 <?php /** Начало прикрепления классов для внешних ключей **/ ?>
 @foreach($modelGenerator->generatorForm->extrernalForeignKeys as $externalForeignKey)
-@if ($externalForeignKey['className'] != $modelGenerator->getFullName() && !in_array($externalForeignKey['className'], $addedClasses))
+@if ($externalForeignKey['className'] != $modelGenerator->generatorForm->modelName && !in_array($externalForeignKey['className'], $addedClasses))
 @php($addedClasses[] = $externalForeignKey['className'])
 use {{ $externalForeignKey['className'] }};
 @endif
@@ -38,7 +37,7 @@ use {{ $externalForeignKey['className'] }};
  * This is the model class for table "{{ $modelGenerator->generatorForm->resourceTable }}".
  * Class {{ $modelGenerator->generatorForm->resourceName }}
  *
- * @package {{ $modelGenerator->getFullName() }}
+ * @package {{ $modelGenerator->generatorForm->modelName }}
  * @mixin Eloquent
 @foreach($modelGenerator->generatorForm->properties as $property)
  * @property {{ $modelGenerator->generatorForm->getFormattedProperty($property->type, $property->name) }}
@@ -53,7 +52,7 @@ use {{ $externalForeignKey['className'] }};
 @endforeach
 */
 
-class {{ $modelGenerator->generatorForm->resourceName }} extends {{ $modelGenerator->generatorForm->baseClass }}
+class {{ $modelGenerator->generatorForm->resourceName }} extends {{ basename($modelGenerator->baseClass) }}
 {
     protected $table = '{{ $modelGenerator->generatorForm->resourceTable }}';
     {!!  count($modelGenerator->generatorForm->dateProperties) > 0 ? "\n    protected \$dates = ['" . implode("', '", $modelGenerator->generatorForm->dateProperties) . "'];" : "" !!}

@@ -5,14 +5,13 @@ namespace Chatway\LaravelCrudGenerator\Core\Generators;
 use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\DTO\ResultGeneratorDTO;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
+use Chatway\LaravelCrudGenerator\GeneratorCommand;
 use File;
 use View;
 
 class ModelGenerator implements GeneratorInterface
 {
-    const FOLDER_NAME = 'Entities';
-    public $baseClassNs = 'App\Base\Models\\';
-    public $baseClass   = 'AbstractModel';
+    public $baseClass = 'App\Base\Models\BaseModel';
 
     public function __construct(public GeneratorForm $generatorForm)
     {
@@ -20,13 +19,15 @@ class ModelGenerator implements GeneratorInterface
 
     public function generate(): ResultGeneratorDTO
     {
-        $namespace = $this->getModelNs();
-        View::addLocation(app('path') . '/Console/Generator/Templates/Classes');
-        View::addNamespace('model', app('path') . '/Console/Generator/Templates/Classes');
+        $namespace = $this->generatorForm->getNsByClassName($this->generatorForm->modelName);
+        $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Classes';
+        View::addLocation($path);
+        View::addNamespace('model', $path);
         $renderedModel = View::make('model')->with(
             [
                 'modelGenerator' => $this,
             ]);
+        //dd($this->baseClass,$renderedModel->render(), $this->generatorForm->baseClass);
         $filename = "{$this->generatorForm->resourceName}.php";
         $path = base_path(lcfirst($namespace));
         if (!File::isDirectory($path)) {
@@ -40,20 +41,5 @@ class ModelGenerator implements GeneratorInterface
                 'filePath' => lcfirst($namespace) . '\\' . $filename,
                 'modelNs'  => $namespace,
             ]);
-    }
-
-    public function getFullName()
-    {
-        return $this->generatorForm->baseNs . $this::FOLDER_NAME . '\\' . $this->generatorForm->resourceName;
-    }
-
-    public function getModelNs()
-    {
-        return $this->generatorForm->baseNs . $this::FOLDER_NAME;
-    }
-
-    public function getBaseClassWithNs()
-    {
-        return $this->baseClassNs . $this->baseClass;
     }
 }

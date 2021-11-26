@@ -5,6 +5,4 @@ namespace Chatway\LaravelCrudGenerator\Core\Base\Interfaces;
 interface GeneratorInterface
 {
     public function generate();
-
-    public function getBaseClassWithNs();
 }

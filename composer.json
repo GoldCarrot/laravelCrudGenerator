@@ -3,6 +3,9 @@
     "description": "Laravel crud generator",
     "type": "library",
     "autoload": {
+        "files": [
+          "helpers.php"
+        ],
         "psr-4": {
             "Chatway\\LaravelCrudGenerator\\": "src/"
         }

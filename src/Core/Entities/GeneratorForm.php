@@ -26,72 +26,6 @@ class GeneratorForm
     const ENUM_STATUS_SUFFIX     = 'Status';
     const VIEW_FILE_SUFFIX       = '.blade.php';
 
-    public function getModelNs()
-    {
-        return $this->baseNs . $this::MODEL_FOLDER_NAME;
-    }
-
-    public function getModelName()
-    {
-        return $this->resourceName;
-    }
-
-    public function getModelFullName()
-    {
-        return $this->getModelNs() . '\\' . $this->getModelName();
-    }
-
-    public function getRepositoryNs()
-    {
-        return $this->baseNs . $this::REPOSITORY_FOLDER_NAME;
-    }
-
-    public function getRepositoryName()
-    {
-        return $this->resourceName . self::REPOSITORY_SUFFIX;
-    }
-
-    public function getRepositoryFullName()
-    {
-        return $this->getRepositoryNs() . '\\' . $this->getRepositoryName();
-    }
-
-    public function getServiceNs()
-    {
-        return $this->baseNs . $this::SERVICE_FOLDER_NAME;
-    }
-
-    public function getServiceName()
-    {
-        return $this->resourceName . self::SERVICE_SUFFIX;
-    }
-
-    public function getServiceFullName()
-    {
-        return $this->getServiceNs() . '\\' . $this->getServiceName();
-    }
-
-    public function getEnumNs()
-    {
-        return $this->baseNs . $this::ENUM_FOLDER_NAME;
-    }
-
-    public function getEnumName()
-    {
-        return $this->resourceName . self::ENUM_STATUS_SUFFIX;
-    }
-
-    public function getEnumFullName()
-    {
-        return $this->getEnumNs() . '\\' . $this->getEnumName();
-    }
-
-    public function getResourceName($plural = false, $lowFirstSymbol = false)
-    {
-        $resourceName = $lowFirstSymbol ? lcfirst($this->resourceName) : $this->resourceName;
-        return $plural ? Str::pluralStudly($resourceName) : $resourceName;
-    }
-
     public $resourceTable;
 
     public $resourceName;
@@ -103,7 +37,7 @@ class GeneratorForm
     public $enumStatusName;
 
     public $baseClassNs = 'App\Base\Models\\';
-    public $baseClass   = 'AbstractModel';
+    public $baseClass   = 'Abstract1Model';
 
     public $baseNs = 'App\Domain';
     public $httpNs = 'App\Http\Admin\Controllers';
@@ -153,7 +87,7 @@ class GeneratorForm
 
     public function getNsByClassName($className): string
     {
-        return str_replace('\\' . class_basename($className), '', $className);
+        return join("\\", array_slice(explode("\\", $className), 0, -1));
     }
 
     public function getBaseClassWithNs()
@@ -270,9 +204,6 @@ class GeneratorForm
                         $type = 'notFoundedType:' . $column->Type;
                     }
             }
-            if ($column->Null != 'NO') {
-                //$type .= '|null';
-            }
             $data = [
                 'type'     => $type,
                 'name'     => $column->Field,
@@ -315,5 +246,71 @@ class GeneratorForm
     public function getFormattedProperty($type, $name)
     {
         return $type . str_repeat(' ', $this->spaceForProperties - strlen($type)) . ' $' . $name;
+    }
+
+    public function getModelNs()
+    {
+        return $this->baseNs . $this::MODEL_FOLDER_NAME;
+    }
+
+    public function getModelName()
+    {
+        return $this->resourceName;
+    }
+
+    public function getModelFullName()
+    {
+        return $this->getModelNs() . '\\' . $this->getModelName();
+    }
+
+    public function getRepositoryNs()
+    {
+        return $this->baseNs . $this::REPOSITORY_FOLDER_NAME;
+    }
+
+    public function getRepositoryName()
+    {
+        return $this->resourceName . self::REPOSITORY_SUFFIX;
+    }
+
+    public function getRepositoryFullName()
+    {
+        return $this->getRepositoryNs() . '\\' . $this->getRepositoryName();
+    }
+
+    public function getServiceNs()
+    {
+        return $this->baseNs . $this::SERVICE_FOLDER_NAME;
+    }
+
+    public function getServiceName()
+    {
+        return $this->resourceName . self::SERVICE_SUFFIX;
+    }
+
+    public function getServiceFullName()
+    {
+        return $this->getServiceNs() . '\\' . $this->getServiceName();
+    }
+
+    public function getEnumNs()
+    {
+        return $this->baseNs . $this::ENUM_FOLDER_NAME;
+    }
+
+    public function getEnumName()
+    {
+        return $this->resourceName . self::ENUM_STATUS_SUFFIX;
+    }
+
+    public function getEnumFullName()
+    {
+        return $this->getEnumNs() . '\\' . $this->getEnumName();
+    }
+
+    public function getResourceName($plural = false, $lowFirstSymbol = false)
+    {
+        $resourceName = $lowFirstSymbol ? lcfirst($this->resourceName) : $this->resourceName;
+        return $plural ? Str::pluralStudly($resourceName) : $resourceName;
     }
 }

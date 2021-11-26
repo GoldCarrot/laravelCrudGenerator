@@ -39,13 +39,15 @@ class {{ $serviceGenerator->generatorForm->getServiceName() }} extends {{ $servi
 
     public function update({{ $serviceGenerator->generatorForm->resourceName }}|Model $model, array $data): {{ $serviceGenerator->generatorForm->resourceName }}
     {
-        @foreach($serviceGenerator->generatorForm->properties as $property)
+@foreach($serviceGenerator->generatorForm->properties as $property)
+@if(!$property->inlet)
 {!! $serviceGenerator->getFormattedProperty($property) !!}
+@endif
         @endforeach
 
         $model->saveOrFail();
 
-        @foreach($serviceGenerator->generatorForm->extrernalForeignKeys as $externalForeignKey)
+@foreach($serviceGenerator->generatorForm->extrernalForeignKeys as $externalForeignKey)
 if (isset($data['{!! Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) !!}List'])) {
             $model->{!! Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) !!}()->detach($model->{!! Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) !!});
             $model->{!! Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) !!}()->attach($data['{!! Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) !!}List']);

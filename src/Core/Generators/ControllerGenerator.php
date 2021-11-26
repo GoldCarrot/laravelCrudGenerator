@@ -13,8 +13,7 @@ use View;
 
 class ControllerGenerator implements GeneratorInterface
 {
-    public $baseClassNs = 'App\Http\Admin\Controllers\\';
-    public $baseClass   = 'ResourceController';
+    public $baseClass = 'App\Http\Admin\Controllers\ResourceController';
 
     public function __construct(public GeneratorForm $generatorForm)
     {
@@ -22,7 +21,7 @@ class ControllerGenerator implements GeneratorInterface
 
     public function generate()
     {
-        $namespace = $this->getNs();
+        $namespace = $this->generatorForm->getNsByClassName($this->generatorForm->controllerName);
         View::addLocation(app('path') . '/Console/Generator/Templates/Classes');
         View::addNamespace('controller', app('path') . '/Console/Generator/Templates/Classes');
         $renderedModel = View::make('controller')->with(
@@ -44,30 +43,6 @@ class ControllerGenerator implements GeneratorInterface
             ]);
     }
 
-    public function getFullName()
-    {
-        return $this->generatorForm->httpNs . $this->getControllerName();
-    }
-
-    public function getControllerName()
-    {
-        return $this->generatorForm->resourceName . 'Controller';
-    }
-
-    public function getNs()
-    {
-        return $this->generatorForm->httpNs;
-    }
-
-    public function getBaseClassWithNs()
-    {
-        return $this->baseClassNs . $this->baseClass;
-    }
-
-    public function getModelFullName()
-    {
-        return $this->generatorForm->baseNs . ModelGenerator::FOLDER_NAME . '\\' . $this->generatorForm->resourceName;
-    }
 
     public function getFormattedRule(PropertyDTO $property)
     {

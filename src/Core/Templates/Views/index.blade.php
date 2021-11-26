@@ -19,7 +19,7 @@ $modelName = $viewGenerator->generatorForm->modelName;
 <?= "@section('content')" ?>
     <div class="row">
         <div class="col">
-<?= "@gridView([
+<?= "\$ridView=[
                 'dataProvider' => \$dataProvider,
                 'rowsFormAction' => route('admin.$routeName.create'),
                 'title' => __('admin.menu.$variableName'),
@@ -47,7 +47,7 @@ $modelName = $viewGenerator->generatorForm->modelName;
                         ]
                     ]
                 ]
-            ])"?>
+            ];\n@gridView(\$gridView)"?>
         </div>
     </div>
 <?= "@endsection"?>

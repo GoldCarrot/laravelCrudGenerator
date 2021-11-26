@@ -12,13 +12,13 @@ echo "<?php\n";
 
 namespace {{ $controllerGenerator->generatorForm->getNsByClassName($controllerGenerator->generatorForm->controllerName) }};
 
-use {{ $controllerGenerator->getBaseClassWithNs() }};
-use {{ $controllerGenerator->getModelFullName() }};
+use {{ $controllerGenerator->generatorForm->getNsByClassName($controllerGenerator->baseClass) }};
+use {{ $controllerGenerator->generatorForm->modelName }};
 /**
  * This is the controller class for table "{{ $controllerGenerator->generatorForm->resourceTable }}".
- * Class {{ $controllerGenerator->getControllerName() }}
+ * Class {{ \class_namespace($controllerGenerator->generatorForm->controllerName) }}
  *
- * @package {{ $controllerGenerator->getFullName() }}
+ * @package {{ $controllerGenerator->generatorForm->controllerName }}
 */
 
 class {{ $controllerGenerator->getControllerName() }} extends {{ $controllerGenerator->baseClass }}

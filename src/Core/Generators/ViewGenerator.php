@@ -6,6 +6,7 @@ use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
 use Chatway\LaravelCrudGenerator\Core\DTO\ResultGeneratorDTO;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
+use Chatway\LaravelCrudGenerator\GeneratorCommand;
 use File;
 use Str;
 use View;
@@ -27,8 +28,9 @@ class ViewGenerator implements GeneratorInterface
     public function generate(): ResultGeneratorDTO
     {
         $namespace = $this->generatorForm->getEnumNs();
-        View::addLocation(app('path') . '/Console/Generator/Templates/Views');
-        View::addNamespace($this->viewName, app('path') . '/Console/Generator/Templates/Views');
+        $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Views';
+        View::addLocation($path);
+        View::addNamespace($this->viewName, $path);
         $renderedModel = View::make($this->viewName)->with(
             [
                 'viewGenerator' => $this,
@@ -60,8 +62,9 @@ class ViewGenerator implements GeneratorInterface
 
     public function renderedPropertyFormExist(PropertyDTO $propertyDTO)
     {
-        view()->addLocation(app('path') . '/Console/Generator/Templates/Views/Form');
-        view()->addNamespace($propertyDTO->name, app('path') . '/Console/Generator/Templates/Views/Form');
+        $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Views/Form';
+        view()->addLocation($path);
+        view()->addNamespace($propertyDTO->name, $path);
         if ($propertyDTO->type == 'Carbon' || $propertyDTO->class) {
             return true;
         }
@@ -70,10 +73,11 @@ class ViewGenerator implements GeneratorInterface
 
     public function getRenderedPropertyForm(PropertyDTO $propertyDTO)
     {
-        view()->addLocation(app('path') . '/Console/Generator/Templates/Views/Form');
+        $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Views/Form';
+        view()->addLocation($path);
 
         if ($propertyDTO->type == 'Carbon') {
-            view()->addNamespace('dateFormat', app('path') . '/Console/Generator/Templates/Views/Form');
+            view()->addNamespace('dateFormat', $path);
             return view()->make('dateFormat')->with(
                 [
                     'propertyDTO'   => $propertyDTO,
@@ -103,14 +107,14 @@ class ViewGenerator implements GeneratorInterface
                 ]);
         }
         if (!view()->exists($propertyDTO->name) && $propertyDTO->type == 'string') {
-            view()->addNamespace('string', app('path') . '/Console/Generator/Templates/Views/Form');
+            view()->addNamespace('string', $path);
             return view()->make('string')->with(
                 [
                     'propertyDTO'   => $propertyDTO,
                     'viewGenerator' => $this,
                 ]);
         }
-        view()->addNamespace($propertyDTO->name, app('path') . '/Console/Generator/Templates/Views/Form');
+        view()->addNamespace($propertyDTO->name, $path);
         return view()->make($propertyDTO->name)->with(
             [
                 'propertyDTO'   => $propertyDTO,
@@ -120,8 +124,9 @@ class ViewGenerator implements GeneratorInterface
 
     public function renderedPropertyShowExist(PropertyDTO $propertyDTO)
     {
-        view()->addLocation(app('path') . '/Console/Generator/Templates/Views/Show');
-        view()->addNamespace($propertyDTO->name, app('path') . '/Console/Generator/Templates/Views/Show');
+        $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Views/Show';
+        view()->addLocation($path);
+        view()->addNamespace($propertyDTO->name, $path);
         //if ($propertyDTO->type == 'Carbon'/* || $propertyDTO->class*/) {
         //    return true;
         //}
@@ -130,10 +135,11 @@ class ViewGenerator implements GeneratorInterface
 
     public function getRenderedPropertyShow(PropertyDTO $propertyDTO)
     {
-        view()->addLocation(app('path') . '/Console/Generator/Templates/Views/Show');
+        $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Views/Show';
+        view()->addLocation($path);
 
         if ($propertyDTO->type == 'Carbon') {
-            view()->addNamespace('dateFormat', app('path') . '/Console/Generator/Templates/Views/Show');
+            view()->addNamespace('dateFormat', $path);
             return view()->make('dateFormat')->with(
                 [
                     'propertyDTO'   => $propertyDTO,
@@ -163,14 +169,14 @@ class ViewGenerator implements GeneratorInterface
                 ]);
         }*/
         if (!view()->exists($propertyDTO->name) && $propertyDTO->type == 'string') {
-            view()->addNamespace('string', app('path') . '/Console/Generator/Templates/Views/Show');
+            view()->addNamespace('string', $path);
             return view()->make('string')->with(
                 [
                     'propertyDTO'   => $propertyDTO,
                     'viewGenerator' => $this,
                 ]);
         }
-        view()->addNamespace($propertyDTO->name, app('path') . '/Console/Generator/Templates/Views/Form');
+        view()->addNamespace($propertyDTO->name, $path);
         return view()->make($propertyDTO->name)->with(
             [
                 'propertyDTO'   => $propertyDTO,
