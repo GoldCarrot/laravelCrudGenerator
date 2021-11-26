@@ -1,6 +1,6 @@
 <?php
 
-namespace Chatway\CrudGenerator;
+namespace Chatway\LaravelCrudGenerator;
 
 class TestClass
 {

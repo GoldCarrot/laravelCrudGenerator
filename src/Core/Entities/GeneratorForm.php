@@ -1,6 +1,6 @@
 <?php
 
-namespace Chatway\CrudGenerator\Core\Entities;
+namespace Chatway\LaravelCrudGenerator\Core\Entities;
 
 use App\Console\Generator\DTO\PropertyDTO;
 use App\Console\Generator\Helpers\DB\ColumnService;
