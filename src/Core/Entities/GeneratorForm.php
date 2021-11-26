@@ -2,10 +2,10 @@
 
 namespace Chatway\LaravelCrudGenerator\Core\Entities;
 
-use App\Console\Generator\DTO\PropertyDTO;
-use App\Console\Generator\Helpers\DB\ColumnService;
-use App\Console\Generator\Helpers\DB\ForeignKeyService;
-use App\Console\Generator\Helpers\ClassHelper;
+use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
+use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ColumnService;
+use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ForeignKeyService;
+use Chatway\LaravelCrudGenerator\Core\Helpers\ClassHelper;
 use ReflectionException;
 use Str;
 
@@ -25,6 +25,72 @@ class GeneratorForm
     const SERVICE_SUFFIX         = 'Service';
     const ENUM_STATUS_SUFFIX     = 'Status';
     const VIEW_FILE_SUFFIX       = '.blade.php';
+
+    public function getModelNs()
+    {
+        return $this->baseNs . $this::MODEL_FOLDER_NAME;
+    }
+
+    public function getModelName()
+    {
+        return $this->resourceName;
+    }
+
+    public function getModelFullName()
+    {
+        return $this->getModelNs() . '\\' . $this->getModelName();
+    }
+
+    public function getRepositoryNs()
+    {
+        return $this->baseNs . $this::REPOSITORY_FOLDER_NAME;
+    }
+
+    public function getRepositoryName()
+    {
+        return $this->resourceName . self::REPOSITORY_SUFFIX;
+    }
+
+    public function getRepositoryFullName()
+    {
+        return $this->getRepositoryNs() . '\\' . $this->getRepositoryName();
+    }
+
+    public function getServiceNs()
+    {
+        return $this->baseNs . $this::SERVICE_FOLDER_NAME;
+    }
+
+    public function getServiceName()
+    {
+        return $this->resourceName . self::SERVICE_SUFFIX;
+    }
+
+    public function getServiceFullName()
+    {
+        return $this->getServiceNs() . '\\' . $this->getServiceName();
+    }
+
+    public function getEnumNs()
+    {
+        return $this->baseNs . $this::ENUM_FOLDER_NAME;
+    }
+
+    public function getEnumName()
+    {
+        return $this->resourceName . self::ENUM_STATUS_SUFFIX;
+    }
+
+    public function getEnumFullName()
+    {
+        return $this->getEnumNs() . '\\' . $this->getEnumName();
+    }
+
+    public function getResourceName($plural = false, $lowFirstSymbol = false)
+    {
+        $resourceName = $lowFirstSymbol ? lcfirst($this->resourceName) : $this->resourceName;
+        return $plural ? Str::pluralStudly($resourceName) : $resourceName;
+    }
 
     public $resourceTable;
 
@@ -227,13 +293,13 @@ class GeneratorForm
             }
         }
         foreach ($this->internalForeignKeys as $property) {
-            if ($this->spaceForProperties < strlen(basename($property['className']))) {
-                $this->spaceForProperties = strlen(basename($property['className']));
+            if ($this->spaceForProperties < strlen(class_basename($property['className']))) {
+                $this->spaceForProperties = strlen(class_basename($property['className']));
             }
         }
         foreach ($this->extrernalForeignKeys as $property) {
-            if ($this->spaceForProperties < strlen(basename($property['className']) . ' []')) {
-                $this->spaceForProperties = strlen(basename($property['className']) . ' []');
+            if ($this->spaceForProperties < strlen(class_basename($property['className']) . ' []')) {
+                $this->spaceForProperties = strlen(class_basename($property['className']) . ' []');
             }
         }
     }
@@ -249,71 +315,5 @@ class GeneratorForm
     public function getFormattedProperty($type, $name)
     {
         return $type . str_repeat(' ', $this->spaceForProperties - strlen($type)) . ' $' . $name;
-    }
-
-    public function getModelNs()
-    {
-        return $this->baseNs . $this::MODEL_FOLDER_NAME;
-    }
-
-    public function getModelName()
-    {
-        return $this->resourceName;
-    }
-
-    public function getModelFullName()
-    {
-        return $this->getModelNs() . '\\' . $this->getModelName();
-    }
-
-    public function getRepositoryNs()
-    {
-        return $this->baseNs . $this::REPOSITORY_FOLDER_NAME;
-    }
-
-    public function getRepositoryName()
-    {
-        return $this->resourceName . self::REPOSITORY_SUFFIX;
-    }
-
-    public function getRepositoryFullName()
-    {
-        return $this->getRepositoryNs() . '\\' . $this->getRepositoryName();
-    }
-
-    public function getServiceNs()
-    {
-        return $this->baseNs . $this::SERVICE_FOLDER_NAME;
-    }
-
-    public function getServiceName()
-    {
-        return $this->resourceName . self::SERVICE_SUFFIX;
-    }
-
-    public function getServiceFullName()
-    {
-        return $this->getServiceNs() . '\\' . $this->getServiceName();
-    }
-
-    public function getEnumNs()
-    {
-        return $this->baseNs . $this::ENUM_FOLDER_NAME;
-    }
-
-    public function getEnumName()
-    {
-        return $this->resourceName . self::ENUM_STATUS_SUFFIX;
-    }
-
-    public function getEnumFullName()
-    {
-        return $this->getEnumNs() . '\\' . $this->getEnumName();
-    }
-
-    public function getResourceName($plural = false, $lowFirstSymbol = false)
-    {
-        $resourceName = $lowFirstSymbol ? lcfirst($this->resourceName) : $this->resourceName;
-        return $plural ? Str::pluralStudly($resourceName) : $resourceName;
     }
 }
