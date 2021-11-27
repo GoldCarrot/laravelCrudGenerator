@@ -10,8 +10,10 @@ namespace Chatway\LaravelCrudGenerator;
 //    return join("\\", array_slice(explode("\\", $class), 0, -1));
 //}
 use Chatway\LaravelCrudGenerator\Core\DTO\EnumParams;
+use Chatway\LaravelCrudGenerator\Core\DTO\MainParams;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
 use Chatway\LaravelCrudGenerator\Core\Entities\ModelForm;
+use Chatway\LaravelCrudGenerator\Core\GeneratorHandler;
 use Chatway\LaravelCrudGenerator\Core\Generators\ControllerGenerator;
 use Chatway\LaravelCrudGenerator\Core\Generators\EnumGenerator;
 use Chatway\LaravelCrudGenerator\Core\Generators\ModelGenerator;
@@ -31,8 +33,11 @@ use View;
 class GeneratorCommand extends Command
 {
     public static $MAIN_PATH = '';
-    public $tableName;
-    protected     $signature = 'gen:all 
+    public        $tableName;
+    public        $defaultStatusGenerate;
+    public        $enumParams;
+
+    protected $signature = 'gen:all 
     {table : Таблица в БД} 
     {baseNs? : Базовый namespace (entities, repositories, services...)} 
     {httpNs? : Namespace для контроллера}
@@ -51,79 +56,26 @@ class GeneratorCommand extends Command
         $resourceTable = $this->argument('table');
         $tables = \Arr::pluck(DB::select('SHOW TABLES'), "Tables_in_" . config('database.connections.mysql.database'));
         if (in_array($resourceTable, $tables)) {
-            $this->tableName = ucfirst(\Str::camel($resourceTable));
+            $this->defaultStatusGenerate = !$this->option('def-status-off');
+            $this->enumParams = $this->option('enum');
             $baseNs = $this->argument('baseNs');
             $httpNs = $this->argument('httpNs');
+
+            $this->tableName = ucfirst(\Str::camel($resourceTable));
             $data =
-                ['resourceTable' => $resourceTable, 'resourceName' => $this->tableName, 'baseNs' => $baseNs, 'httpNs' => $httpNs, 'enums' => $this->getEnums()];
-            $generatorForm = new GeneratorForm($data, new ForeignKeyService());
-            if ($generatorForm::TEST_MODE) {
-                $this->error('Test mode: ' . $generatorForm->baseNs);
-            }
-
-            $result = (new ModelGenerator($generatorForm))->generate();
-            if ($result->success !== false) {
-                $this->info('Model generated! Path in app: ' . $result->filePath);
-            }
-            $result = (new ControllerGenerator($generatorForm))->generate();
-            if ($result->success !== false) {
-                $this->info('Controller generated! Path in app: ' . $result->filePath);
-            }
-            $result = (new RepositoryGenerator($generatorForm))->generate();
-            if ($result->success !== false) {
-                $this->info('Repository generated! Path in app: ' . $result->filePath);
-            }
-            $result = (new ServiceGenerator($generatorForm))->generate();
-            if ($result->success !== false) {
-                $this->info('Service generated! Path in app: ' . $result->filePath);
-            }
-            foreach ($generatorForm->enums as $enum) {
-                $enum->enumName = $generatorForm->baseNs . $generatorForm::ENUM_FOLDER_NAME . '\\' . $generatorForm->resourceName
-                        . ucfirst($enum->name);
-                $result = (new EnumGenerator($generatorForm, $enum))->generate();
-                if ($result->success !== false) {
-                    $this->info('Enum generated! Path in app: ' . $result->filePath);
-                }
-            }
-
-            $viewList = ['create', 'form', 'index', 'show', 'update'];
-            foreach ($viewList as $item) {
-                $result = (new ViewGenerator($generatorForm, ['viewName' => $item]))->generate();
-                if ($result->success !== false) {
-                    $this->info("View $item generated! Path in app: " . $result->filePath);
-                }
-            }
+                [
+                    'resourceTable'         => $resourceTable,
+                    'resourceName'          => $this->tableName,
+                    'baseNs'                => $baseNs,
+                    'httpNs'                => $httpNs,
+                    'defaultStatusGenerate' => $this->defaultStatusGenerate,
+                    'enumParams'            => $this->enumParams,
+                ];
+            $mainParams = new MainParams($data);
+            (new GeneratorHandler())->start($mainParams);
         } else {
             $this->error("\nТаблицы $resourceTable не существует\n");
         }
         return 0;
-    }
-
-    /**
-     * @return EnumParams []
-     */
-    private function getEnums(): array
-    {
-        $defaultValues = env('GENERATOR_DEFAULT_ENUM_VALUES', ['active', 'inactive', 'deleted']);
-        $defaultStatusGenerate = !$this->option('def-status-off');
-        $enumParams = $this->option('enum');
-        $enums = [];
-        if ($enumParams) {
-            $enumParams = explode(';', $enumParams);
-            foreach ($enumParams as $enumParam) {
-                $enumParam = new EnumParams($enumParam, $defaultValues);
-                if ($enumParam->name) {
-                    $enums[$enumParam->name] = $enumParam;
-                }
-            }
-        }
-        if (!isset($enums['status']) && $defaultStatusGenerate) {
-            $columns = ColumnService::getColumnsByTableName($this->tableName);
-            $columns = array_column($columns, 'Field');
-            if (in_array('status', $columns)) {
-                $enums['status'] = new EnumParams('status-', $defaultValues);
-            }
-        }
-        return $enums;
     }
 }

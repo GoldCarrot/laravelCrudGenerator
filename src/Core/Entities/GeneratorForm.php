@@ -3,6 +3,7 @@
 namespace Chatway\LaravelCrudGenerator\Core\Entities;
 
 use Chatway\LaravelCrudGenerator\Core\DTO\EnumParams;
+use Chatway\LaravelCrudGenerator\Core\DTO\MainParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
 use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ColumnService;
 use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ForeignKeyService;
@@ -66,14 +67,14 @@ class GeneratorForm
 
     const TEST_MODE = false;
 
-    public function __construct($data, ForeignKeyService $foreignKeyService)
+    public function __construct(MainParams $mainParams, ForeignKeyService $foreignKeyService)
     {
-        $this->enums = $data['enums'] ?? [];
+        $this->enums = $mainParams->enums;
         $this->foreignKeyService = $foreignKeyService;
-        $this->setResourceTable(\Arr::get($data, 'resourceTable'));
-        $this->resourceName = \Arr::get($data, 'resourceName');
-        $this->baseNs = $data['baseNs'] ?? $this->baseNs . '\\' . (self::TEST_MODE ? 'Test' : $this->resourceName) . '\\';
-        $this->httpNs = $data['httpNs'] ?? $this->httpNs . '\\' . (self::TEST_MODE ? 'Test' : $this->resourceName) . '\\';
+        $this->setResourceTable($mainParams->resourceTable);
+        $this->resourceName = $mainParams->resourceName;
+        $this->baseNs = $mainParams->baseNs ?? $this->baseNs . '\\' . (self::TEST_MODE ? 'Test' : $this->resourceName) . '\\';
+        $this->httpNs = $mainParams->httpNs ?? $this->httpNs . '\\' . (self::TEST_MODE ? 'Test' : $this->resourceName) . '\\';
 
         if (substr($this->httpNs, -1, 1) != '\\') {
             $this->httpNs .= '\\';
