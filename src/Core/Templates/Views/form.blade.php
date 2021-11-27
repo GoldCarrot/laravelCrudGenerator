@@ -30,6 +30,9 @@ echo "<?php\n";
                         {!!  $viewGenerator->getRenderedPropertyForm($property)  !!}
 @endif
 @endforeach
+@foreach($viewGenerator->generatorForm->properties as $property)
+
+@endforeach
                     </div>
                     <div class="col-md-12 text-right">
                         <?= "{{ BsForm::submit(__('admin.actions.submit')) }}" . PHP_EOL ?>

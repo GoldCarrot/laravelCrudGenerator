@@ -3,30 +3,37 @@
 namespace Chatway\LaravelCrudGenerator\Core\Generators;
 
 use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
+use Chatway\LaravelCrudGenerator\Core\DTO\EnumParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\ResultGeneratorDTO;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
+use Chatway\LaravelCrudGenerator\GeneratorCommand;
 use File;
+use Illuminate\Validation\Rules\Enum;
 use View;
 
+/**
+ * @property EnumParams $enum
+ */
 class EnumGenerator implements GeneratorInterface
 {
-    public $baseClassNs = 'App\Base\Enums';
-    public $baseClass   = 'StatusEnum';
+    public string $baseClass = 'App\Base\Enums\StatusEnum';
 
-    public function __construct(public GeneratorForm $generatorForm)
+    public function __construct(public GeneratorForm $generatorForm, public EnumParams $enum)
     {
     }
 
     public function generate()
     {
-        $namespace = $this->generatorForm->getEnumNs();
-        View::addLocation(app('path') . '/Console/Generator/Templates/Classes');
-        View::addNamespace('enum', app('path') . '/Console/Generator/Templates/Classes');
+        $this->generatorForm->enumName = $this->enum->enumName;
+        $namespace = class_namespace($this->generatorForm->enumName);
+        $pathTemplate = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Classes';
+        View::addLocation($pathTemplate);
+        View::addNamespace('enum', $pathTemplate);
         $renderedModel = View::make('enum')->with(
             [
                 'enumGenerator' => $this,
             ]);
-        $filename = $this->generatorForm->resourceName . $this->generatorForm::ENUM_STATUS_SUFFIX . ".php";
+        $filename = $this->generatorForm->resourceName . ucfirst($this->enum->name) . ".php";
         $path = base_path(lcfirst($namespace));
         if (!File::isDirectory($path)) {
             File::makeDirectory($path, 0777, true, true);

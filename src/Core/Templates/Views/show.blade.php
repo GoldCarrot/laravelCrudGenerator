@@ -15,25 +15,29 @@ echo "<?php\n";
  * @var \{{ $viewGenerator->generatorForm->modelName }} ${{ $viewGenerator->generatorForm->getResourceName(false, true) }}
  *
  */
+
 ?>
 <?= "@extends('admin.layouts.app', ['title' => __('admin.menu.$variableName')])" ?>
 
-<?= "@push('breadcrumbs')"?>
+<?= "@push('breadcrumbs')" . PHP_EOL?>
     <?= "<li class=\"breadcrumb-item\"><a href=\"{{ route('admin.$routeName.index') }}\">{{ __('admin.menu.$variableName') }}</a></li>"?>
+
     <?= "<li class=\"breadcrumb-item active\">{{ \${$variableName}->title }}</li>"?>
+
 <?= "@endpush"?>
 
 <?= "@section('content')"?>
+
     <div class="row justify-content-center">
         <div class="col-lg-8 card-wrapper">
             <div class="card">
                 <div class="card-body">
                     <div class="pt-4">
-                        @foreach($viewGenerator->generatorForm->properties as $property)
-                            @if (!$property->inlet && $viewGenerator->renderedPropertyShowExist($property))
-                                {!!  $viewGenerator->getRenderedPropertyShow($property)  !!}
-                            @endif
-                        @endforeach
+@foreach($viewGenerator->generatorForm->properties as $property)
+@if (!$property->inlet && $viewGenerator->renderedPropertyShowExist($property))
+                        {!!  $viewGenerator->getRenderedPropertyShow($property)  !!}
+@endif
+@endforeach
                     </div>
                     <div class="pt-6 text-right">
                         <?= "{{ Html::link(route('admin.$routeName.edit', ['$variableName' => $$variableName]), __('admin.actions.update'), ['class' => 'btn btn-primary']) }}". PHP_EOL ?>

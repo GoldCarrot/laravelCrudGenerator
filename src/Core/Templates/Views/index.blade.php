@@ -12,14 +12,15 @@ $modelName = $viewGenerator->generatorForm->modelName;
 ?>
 <?= "@extends('admin.layouts.app', ['title' => __('admin.menu.$variableName')])" ?>
 
-<?= "@push('breadcrumbs')" ?>
-    <?= "<li class=\"breadcrumb-item active\">{{ __('admin.menu.$variableName') }}</li>" ?>
-<?= "@endpush" ?>
+<?= "@push('breadcrumbs')" . PHP_EOL ?>
+    <?= "<li class=\"breadcrumb-item active\">{{ __('admin.menu.$variableName') }}</li>" . PHP_EOL ?>
+<?= "@endpush" . PHP_EOL . PHP_EOL ?>
 
-<?= "@section('content')" ?>
+<?= "@section('content')" . PHP_EOL ?>
     <div class="row">
         <div class="col">
-<?= "\$ridView=[
+            <?= "@php". PHP_EOL ?>
+            <?= "\$gridView = [
                 'dataProvider' => \$dataProvider,
                 'rowsFormAction' => route('admin.$routeName.create'),
                 'title' => __('admin.menu.$variableName'),
@@ -29,7 +30,7 @@ $modelName = $viewGenerator->generatorForm->modelName;
                         'label' => __('admin.columns.title'),
                         'attribute' => 'title',
                         'value' => function (\\$modelName \$$variableName) {
-                            return mb_substr(\$$variableName"."->title, 0, 20);
+                            return mb_substr(\$$variableName"."->title, 0, 200);
                         },
                     ],
                     [
@@ -47,8 +48,10 @@ $modelName = $viewGenerator->generatorForm->modelName;
                         ]
                     ]
                 ]
-            ];\n@gridView(\$gridView)"?>
+            ];" . PHP_EOL?>
+            <?= "@endphp" . PHP_EOL ?>
+            <?= "@gridView(\$gridView)" . PHP_EOL ?>
         </div>
     </div>
-<?= "@endsection"?>
+<?= "@endsection" ?>
 

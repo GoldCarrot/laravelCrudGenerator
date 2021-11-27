@@ -5,11 +5,13 @@ namespace Chatway\LaravelCrudGenerator\Core\DTO;
 use Arr;
 
 /**
- * @property bool $inlet    Внутренний параметр: id, created_at, updated_at, deleted_at
- * @property string $name     Название
- * @property string $type     Тип
- * @property bool $nullable Может быть Null
- * @property string $class    Может быть Null
+ * @property bool       $inlet     Внутренний параметр: id, created_at, updated_at, deleted_at
+ * @property string     $name      Название
+ * @property string     $type      Тип
+ * @property bool       $nullable  Может быть Null
+ * @property string     $class     Может быть Null
+ * @property bool       $isEnum    Может быть Null
+ * @property EnumParams $enum      Может быть Null
  */
 class PropertyDTO
 {
@@ -19,6 +21,8 @@ class PropertyDTO
     public $nullable;
     public $class;
     public $classTable;
+    public $isEnum;
+    public $enum;
 
     const INLET_PROPERTIES = [
         'id',
@@ -26,6 +30,7 @@ class PropertyDTO
         'updated_at',
         'deleted_at',
     ];
+
 
     public function __construct($data)
     {
@@ -35,6 +40,7 @@ class PropertyDTO
         $this->nullable = Arr::get($data, 'nullable');
         $this->class = Arr::get($data, 'class');
         $this->classTable = Arr::get($data, 'classTable');
+        $this->isEnum = Arr::get($data, 'isEnum', false);
     }
 
     public function getNameForSelect()

@@ -12,8 +12,9 @@ echo "<?php\n";
 
 namespace {{ $controllerGenerator->generatorForm->getNsByClassName($controllerGenerator->generatorForm->controllerName) }};
 
-use {{ $controllerGenerator->generatorForm->getNsByClassName($controllerGenerator->baseClass) }};
+use {{ $controllerGenerator->baseClass }};
 use {{ $controllerGenerator->generatorForm->modelName }};
+
 /**
  * This is the controller class for table "{{ $controllerGenerator->generatorForm->resourceTable }}".
  * Class {{ \class_namespace($controllerGenerator->generatorForm->controllerName) }}
@@ -21,7 +22,7 @@ use {{ $controllerGenerator->generatorForm->modelName }};
  * @package {{ $controllerGenerator->generatorForm->controllerName }}
 */
 
-class {{ $controllerGenerator->generatorForm->controllerName }} extends {{ $controllerGenerator->baseClass }}
+class {{ basename($controllerGenerator->generatorForm->controllerName) }} extends {{ basename($controllerGenerator->baseClass) }}
 {
     public function __construct(\{{$controllerGenerator->generatorForm->repositoryName}} $repository, \{{$controllerGenerator->generatorForm->serviceName}} $service)
     {

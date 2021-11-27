@@ -11,8 +11,9 @@ use View;
 class RepositoryGenerator implements GeneratorInterface
 {
     const FOLDER_NAME = 'Repositories';
-    public $baseClassNs = 'App\Base\Repositories\\';
-    public $baseClass   = 'BaseEloquentRepository';
+    public $baseClass     = 'App\Base\Repositories\BaseEloquentRepository';
+    public $baseInterface = 'App\Base\Interfaces\DataProviderInterface';
+    public $traits = ['App\Base\Traits\DataProviderTrait'];
 
     public function __construct(public GeneratorForm $generatorForm)
     {

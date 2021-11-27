@@ -2,6 +2,7 @@
 
 namespace Chatway\LaravelCrudGenerator\Core\Entities;
 
+use Chatway\LaravelCrudGenerator\Core\DTO\EnumParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
 use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ColumnService;
 use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ForeignKeyService;
@@ -10,9 +11,10 @@ use ReflectionException;
 use Str;
 
 /**
- * @property string $baseNs
- * @property string $resourceName
+ * @property string         $baseNs
+ * @property string         $resourceName
  * @property PropertyDTO [] $properties
+ * @property EnumParams []  $enums
  */
 class GeneratorForm
 {
@@ -34,7 +36,7 @@ class GeneratorForm
     public $controllerName;
     public $repositoryName;
     public $serviceName;
-    public $enumStatusName;
+    public $enumName;
 
     public $baseClassNs = 'App\Base\Models\\';
     public $baseClass   = 'Abstract1Model';
@@ -54,9 +56,8 @@ class GeneratorForm
     /** Свойства и ключи модели конец */
 
     /** Параметры Enum начало */
-    public $enumPostfix = 'Status';
 
-    public $enumList = [];
+    public $enums = [];
     /** Параметры Enum конец */
     /**
      * @var ForeignKeyService
@@ -67,11 +68,13 @@ class GeneratorForm
 
     public function __construct($data, ForeignKeyService $foreignKeyService)
     {
+        $this->enums = $data['enums'] ?? [];
         $this->foreignKeyService = $foreignKeyService;
         $this->setResourceTable(\Arr::get($data, 'resourceTable'));
         $this->resourceName = \Arr::get($data, 'resourceName');
         $this->baseNs = $data['baseNs'] ?? $this->baseNs . '\\' . (self::TEST_MODE ? 'Test' : $this->resourceName) . '\\';
         $this->httpNs = $data['httpNs'] ?? $this->httpNs . '\\' . (self::TEST_MODE ? 'Test' : $this->resourceName) . '\\';
+
         if (substr($this->httpNs, -1, 1) != '\\') {
             $this->httpNs .= '\\';
         }
@@ -82,7 +85,6 @@ class GeneratorForm
         $this->controllerName = $this->httpNs . $this->resourceName . self::CONTROLLER_SUFFIX;
         $this->repositoryName = $this->baseNs . self::REPOSITORY_FOLDER_NAME . '\\' . $this->resourceName . self::REPOSITORY_SUFFIX;
         $this->serviceName = $this->baseNs . self::SERVICE_FOLDER_NAME . '\\' . $this->resourceName . self::SERVICE_SUFFIX;
-        $this->enumStatusName = $this->baseNs . self::ENUM_FOLDER_NAME . '\\' . $this->resourceName . 'Status';
     }
 
     public function getNsByClassName($className): string
@@ -159,7 +161,7 @@ class GeneratorForm
         $this->properties = [];
         $this->columns = [];
         $this->carbonIsset = false;
-        $columns = \DB::select('show columns from ' . $tableName);
+        $columns = ColumnService::getColumnsByTableName($tableName);
 
 
         foreach ($columns as $column) {
@@ -208,9 +210,12 @@ class GeneratorForm
                 'type'     => $type,
                 'name'     => $column->Field,
                 'nullable' => $column->Null != 'NO',
+                'isEnum'   => in_array($column->Field, array_keys($this->enums)),
             ];
-            //$this->properties[$column->Field] = $data;
             $this->properties[$column->Field] = new PropertyDTO($data);
+            if ($this->properties[$column->Field]->isEnum) {
+                $this->properties[$column->Field]->enum = $this->enums[$column->Field];
+            }
             $this->columns[] = $column->Field;
         }
     }

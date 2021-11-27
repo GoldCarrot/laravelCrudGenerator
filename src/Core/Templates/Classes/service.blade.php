@@ -25,9 +25,8 @@ use Illuminate\Support\Arr;
  * Class {{ $serviceGenerator->generatorForm->serviceName }}
  *
  * @package {{ class_namespace($serviceGenerator->generatorForm->serviceName) }}
-<?= ' * @method ' . $serviceGenerator->generatorForm->modelName ?>|null findActive(array $params = [])
-*/
-
+<?= ' * @method ' . basename($serviceGenerator->generatorForm->modelName) ?>|null findActive(array $params = [])
+ */
 class {{ basename($serviceGenerator->generatorForm->serviceName) }} extends {{ basename($serviceGenerator->baseClass) }} {{ $serviceGenerator->baseInterface ? 'implements ' . basename($serviceGenerator->baseInterface) : '' }}
 {
     public function create(array $data): {{ $serviceGenerator->generatorForm->resourceName }}

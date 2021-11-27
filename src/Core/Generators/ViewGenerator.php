@@ -75,6 +75,17 @@ class ViewGenerator implements GeneratorInterface
     {
         $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Views/Form';
         view()->addLocation($path);
+        if ($propertyDTO->name == 'status'){
+            //dd($propertyDTO);
+        }
+        if ($propertyDTO->isEnum) {
+            view()->addNamespace('selectEnum', $path);
+            return view()->make('selectEnum')->with(
+                [
+                    'propertyDTO'   => $propertyDTO,
+                    'viewGenerator' => $this,
+                ]);
+        }
 
         if ($propertyDTO->type == 'Carbon') {
             view()->addNamespace('dateFormat', $path);

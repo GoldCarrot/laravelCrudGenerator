@@ -32,18 +32,9 @@ class ColumnService
     public $name;
     public $type;
     public $nulable;
-    public function __construct($column)
-    {
-        $this->name = $this->getName($column);
-    }
 
-    private function getName($column)
+    public static function getColumnsByTableName($tableName)
     {
-        return $column['Field'];
-    }
-
-    private function getType($column)
-    {
-        return $column['Field'];
+        return \DB::select('show columns from ' . $tableName);
     }
 }

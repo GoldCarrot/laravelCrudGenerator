@@ -10,23 +10,32 @@
 echo "<?php\n";
 ?>
 
-namespace {{ $enumGenerator->generatorForm->getEnumNs() }};
+namespace {{ class_namespace($enumGenerator->generatorForm->enumName) }};
 
 
-use {{ $enumGenerator->getBaseClassWithNs() }};
+use {{ $enumGenerator->baseClass }};
 
 /**
  * This is the enum class for table "{{ $enumGenerator->generatorForm->resourceTable }}".
- * Class {{ $enumGenerator->generatorForm->getEnumName() }}
+ * Class {{ basename(($enumGenerator->generatorForm->enumName)) }}
  *
- * @package {{ $enumGenerator->generatorForm->getEnumNs() }}
+ * @package {{ class_namespace($enumGenerator->generatorForm->enumName) }}
 */
 
-class {{ $enumGenerator->generatorForm->getEnumName() }} extends {{ $enumGenerator->baseClass }}
+class {{ basename($enumGenerator->generatorForm->enumName) }} extends {{ basename($enumGenerator->baseClass) }}
 {
+@foreach($enumGenerator->enum->types as $type)
+    public const {{strtoupper($type)}} = '{{$type}}';
+@endforeach
+@if(count($enumGenerator->enum->types) > 0)
+
     public static function keys(): array
     {
         return [
+@foreach($enumGenerator->enum->types as $type)
+            self::{{strtoupper($type)}},
+@endforeach
         ];
     }
+@endif
 }
