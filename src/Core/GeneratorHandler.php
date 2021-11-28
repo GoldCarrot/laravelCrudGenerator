@@ -12,31 +12,15 @@ use Chatway\LaravelCrudGenerator\Core\Generators\ServiceGenerator;
 use Chatway\LaravelCrudGenerator\Core\Generators\ViewGenerator;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
 use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ForeignKeyService;
-use Illuminate\Console\Command;
-use Illuminate\Console\Concerns\InteractsWithIO;
 
 class GeneratorHandler
 {
-    //use InteractsWithIO;
-
-    //public function __construct()
-    //{
-    //    parent::__construct();
-    //}
-
-    private function info($string)
-    {
-        $style = 'error';
-        //echo "<$style>$string</$style>";
-        ConsoleHelper::log($string, 'blue', true, 'black');
-    }
-
     public function start(MainParams $mainParams)
     {
         ConsoleHelper::primary('------------Generator start!------------');
         $generatorForm = new GeneratorForm($mainParams, new ForeignKeyService());
         if ($generatorForm::TEST_MODE) {
-            $this->error('Test mode: ' . $generatorForm->baseNs);
+            ConsoleHelper::error('Test mode: ' . $generatorForm->baseNs);
         }
 
         $result = (new ModelGenerator($generatorForm))->generate();
@@ -61,7 +45,7 @@ class GeneratorHandler
             $result = (new EnumGenerator($generatorForm, $enum))->generate();
             if ($result->success !== false) {
                 ConsoleHelper::info('Enum ' . $generatorForm->resourceName . ucfirst($enum->name) . ' generated! Path in app: '
-                            . $result->filePath);
+                                    . $result->filePath);
             }
         }
 

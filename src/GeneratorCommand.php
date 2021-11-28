@@ -33,16 +33,14 @@ use View;
 class GeneratorCommand extends Command
 {
     public static $MAIN_PATH = '';
-    public        $tableName;
-    public        $defaultStatusGenerate;
-    public        $enumParams;
 
     protected $signature = 'gen:all 
     {table : Таблица в БД} 
     {baseNs? : Базовый namespace (entities, repositories, services...)} 
     {httpNs? : Namespace для контроллера}
     {--def-status-off : Генерация Enum Status со стандартными текстовыми статусами active, inactive, deleted }
-    {--enum : ="type-sport,home,work;status-active,inactive,deleted"}
+    {--enum : Генерация Enum файлов, пример: ="type-sport,home,work;status-active,inactive,deleted"}
+    {--force : Удаляет файлы, и записывает новые, иначе пропускаются файлы}
     ';
 
     public function __construct()
@@ -53,28 +51,20 @@ class GeneratorCommand extends Command
 
     public function handle(): int
     {
-        $resourceTable = $this->argument('table');
+        $tableName = $this->argument('table');
         $tables = \Arr::pluck(DB::select('SHOW TABLES'), "Tables_in_" . config('database.connections.mysql.database'));
-        if (in_array($resourceTable, $tables)) {
-            $this->defaultStatusGenerate = !$this->option('def-status-off');
-            $this->enumParams = $this->option('enum');
-            $baseNs = $this->argument('baseNs');
-            $httpNs = $this->argument('httpNs');
-
-            $this->tableName = ucfirst(\Str::camel($resourceTable));
+        if (in_array($tableName, $tables)) {
             $data =
                 [
-                    'resourceTable'         => $resourceTable,
-                    'resourceName'          => $this->tableName,
-                    'baseNs'                => $baseNs,
-                    'httpNs'                => $httpNs,
-                    'defaultStatusGenerate' => $this->defaultStatusGenerate,
-                    'enumParams'            => $this->enumParams,
+                    'resourceTable'         => $tableName,
+                    'baseNs'                => $this->argument('baseNs'),
+                    'httpNs'                => $this->argument('httpNs'),
+                    'defaultStatusGenerate' => !$this->option('def-status-off'),
+                    'enumParams'            => $this->option('enum'),
                 ];
-            $mainParams = new MainParams($data);
-            (new GeneratorHandler())->start($mainParams);
+            (new GeneratorHandler())->start(new MainParams($data));
         } else {
-            $this->error("\nТаблицы $resourceTable не существует\n");
+            $this->error("\nТаблицы $tableName не существует\n");
         }
         return 0;
     }

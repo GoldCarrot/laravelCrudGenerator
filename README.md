@@ -4,3 +4,16 @@
 создаются файлы: Model, Repository, Service, Controller, view на основе указанной таблицы
 
 Примеры кода будут выложены позже
+
+Базовое использование:
+php artisan gen:all tableName
+
+Artisan::call('email:send', [
+'table' => 'event',
+'--enum' => 'type-sport,home,work;status-active,inactive,deleted'
+]);
+
+
+Общие настройки конфигурации по желанию в файле .env
+GENERATOR_BASE_NS - базовый namespace, где хранятся Entities, Enum, Repository, Service
+GENERATOR_HTTP_NS - базовый namespace, где хранятся Controller

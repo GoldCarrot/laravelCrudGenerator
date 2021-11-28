@@ -39,9 +39,6 @@ class GeneratorForm
     public $serviceName;
     public $enumName;
 
-    public $baseClassNs = 'App\Base\Models\\';
-    public $baseClass   = 'Abstract1Model';
-
     public $baseNs = 'App\Domain';
     public $httpNs = 'App\Http\Admin\Controllers';
 
@@ -73,8 +70,10 @@ class GeneratorForm
         $this->foreignKeyService = $foreignKeyService;
         $this->setResourceTable($mainParams->resourceTable);
         $this->resourceName = $mainParams->resourceName;
-        $this->baseNs = $mainParams->baseNs ?? $this->baseNs . '\\' . (self::TEST_MODE ? 'Test' : $this->resourceName) . '\\';
-        $this->httpNs = $mainParams->httpNs ?? $this->httpNs . '\\' . (self::TEST_MODE ? 'Test' : $this->resourceName) . '\\';
+        $this->baseNs = $mainParams->baseNs ??
+                        env('GENERATOR_BASE_NS', $this->baseNs . '\\' . (self::TEST_MODE ? 'Test' : $this->resourceName) . '\\');
+        $this->httpNs = $mainParams->httpNs ??
+                        env('GENERATOR_BASE_NS', $this->httpNs . '\\' . (self::TEST_MODE ? 'Test' : $this->resourceName) . '\\');
 
         if (substr($this->httpNs, -1, 1) != '\\') {
             $this->httpNs .= '\\';
