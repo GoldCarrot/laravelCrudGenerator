@@ -1,6 +1,6 @@
 <?php
 
-namespace Chatway\LaravelCrudGenerator;
+namespace Chatway\LaravelCrudGenerator\Commands;
 
 //function class_namespace($class)
 //{

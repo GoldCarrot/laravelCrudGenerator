@@ -1,6 +1,6 @@
 <?php
 
-namespace Chatway\LaravelCrudGenerator;
+namespace Chatway\LaravelCrudGenerator\Commands;
 
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
 use Chatway\LaravelCrudGenerator\Core\Generators\ControllerGenerator;

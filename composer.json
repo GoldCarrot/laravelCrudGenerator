@@ -10,6 +10,13 @@
             "Chatway\\LaravelCrudGenerator\\": "src/"
         }
     },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Chatway\\LaravelCrudGenerator\\GeneratorServiceProvider"
+      ]
+    }
+  },
     "authors": [
         {
             "name": "Denis Yunusbaev",
