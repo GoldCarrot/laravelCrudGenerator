@@ -2,6 +2,7 @@
 
 namespace Chatway\LaravelCrudGenerator\Core\DTO;
 
+use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
 use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ColumnService;
 
 /**
@@ -20,6 +21,7 @@ class MainParams
     public $enums;
     public $previewPaths;
     public $force;
+    public $mainPath;
 
     public function __construct($data)
     {
@@ -30,6 +32,11 @@ class MainParams
         $this->enums = $this->getEnums(\Arr::get($data, 'baseNs'), \Arr::get($data, 'defaultStatusGenerate', false));
         $this->previewPaths = \Arr::get($data, 'previewPaths', false);
         $this->force = \Arr::get($data, 'force', false);
+        $this->mainPath = \Arr::get($data, 'mainPath', null);
+        if (!$this->mainPath) {
+            ConsoleHelper::error('Main path is not null');
+            die;
+        }
     }
 
     /**

@@ -66,6 +66,7 @@ class GeneratorForm
 
     /** Общие параметры начало */
     public $force;
+    public $mainPath;
     public $testMode = false;
     /** Общие параметры конец */
     /**
@@ -122,6 +123,7 @@ class GeneratorForm
             ConsoleHelper::info($this->viewsPath);
         }
         $this->force = $mainParams->force;
+        $this->mainPath = $mainParams->mainPath;
     }
 
     private static function getSafeEnv($parameterName)

@@ -4,12 +4,9 @@ namespace Chatway\LaravelCrudGenerator\Core\Generators;
 
 use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\DTO\EnumParams;
-use Chatway\LaravelCrudGenerator\Core\DTO\ResultGeneratorDTO;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
-use Chatway\LaravelCrudGenerator\GeneratorCommand;
 use File;
-use Illuminate\Validation\Rules\Enum;
 use View;
 
 /**
@@ -27,7 +24,7 @@ class EnumGenerator implements GeneratorInterface
     {
         $this->generatorForm->enumName = $this->enum->enumName;
         $namespace = class_namespace($this->generatorForm->enumName);
-        $pathTemplate = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Classes';
+        $pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Classes';
         View::addLocation($pathTemplate);
         View::addNamespace('enum', $pathTemplate);
         $renderedModel = View::make('enum')->with(

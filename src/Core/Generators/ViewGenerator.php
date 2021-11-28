@@ -7,7 +7,6 @@ use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
 use Chatway\LaravelCrudGenerator\Core\DTO\ResultGeneratorDTO;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
-use Chatway\LaravelCrudGenerator\GeneratorCommand;
 use File;
 use Str;
 use View;
@@ -29,7 +28,7 @@ class ViewGenerator implements GeneratorInterface
     public function generate()
     {
         $namespace = $this->generatorForm->getEnumNs();
-        $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Views';
+        $path = $this->generatorForm->mainPath . '/Core/Templates/Views';
         View::addLocation($path);
         View::addNamespace($this->viewName, $path);
         $renderedModel = View::make($this->viewName)->with(

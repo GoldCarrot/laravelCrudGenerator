@@ -4,10 +4,8 @@ namespace Chatway\LaravelCrudGenerator\Core\Generators;
 
 use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
-use Chatway\LaravelCrudGenerator\Core\DTO\ResultGeneratorDTO;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
-use Chatway\LaravelCrudGenerator\GeneratorCommand;
 use DB;
 use File;
 use Str;
@@ -24,7 +22,7 @@ class ControllerGenerator implements GeneratorInterface
     public function generate()
     {
         $namespace = $this->generatorForm->getNsByClassName($this->generatorForm->controllerName);
-        $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Classes';
+        $path = $this->generatorForm->mainPath . '/Core/Templates/Classes';
         View::addLocation($path);
         View::addNamespace('controller', $path);
         $renderedModel = View::make('controller')->with(

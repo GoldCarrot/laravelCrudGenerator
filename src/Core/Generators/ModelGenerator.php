@@ -3,10 +3,8 @@
 namespace Chatway\LaravelCrudGenerator\Core\Generators;
 
 use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
-use Chatway\LaravelCrudGenerator\Core\DTO\ResultGeneratorDTO;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
-use Chatway\LaravelCrudGenerator\GeneratorCommand;
 use File;
 use View;
 
@@ -21,7 +19,7 @@ class ModelGenerator implements GeneratorInterface
     public function generate()
     {
         $namespace = $this->generatorForm->getNsByClassName($this->generatorForm->modelName);
-        $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Classes';
+        $path = $this->generatorForm->mainPath . '/Core/Templates/Classes';
         View::addLocation($path);
         View::addNamespace('model', $path);
         $renderedModel = View::make('model')->with(
