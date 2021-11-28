@@ -125,7 +125,7 @@ class ConsoleHelper
 
     public static function primary($text)
     {
-        self::log($text, 'yellow', true, 'black');
+        self::log($text, 'light_blue', true, 'black');
     }
 
     public static function info($text)
@@ -133,9 +133,13 @@ class ConsoleHelper
         self::log($text, 'light_green', true, 'black');
     }
 
-
     public static function error($text)
     {
         self::log($text, 'light_red', true, 'black');
+    }
+
+    public static function yellow($text)
+    {
+        self::log($text, 'yellow', true, 'black');
     }
 }

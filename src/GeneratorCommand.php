@@ -41,6 +41,7 @@ class GeneratorCommand extends Command
     {--def-status-off : Генерация Enum Status со стандартными текстовыми статусами active, inactive, deleted }
     {--enum : Генерация Enum файлов, пример: ="type-sport,home,work;status-active,inactive,deleted"}
     {--force : Удаляет файлы, и записывает новые, иначе пропускаются файлы}
+    {--previewPaths : Показывает все пути }
     ';
 
     public function __construct()
@@ -61,6 +62,8 @@ class GeneratorCommand extends Command
                     'httpNs'                => $this->argument('httpNs'),
                     'defaultStatusGenerate' => !$this->option('def-status-off'),
                     'enumParams'            => $this->option('enum'),
+                    'previewPaths'          => (bool)$this->option('previewPaths'),
+                    'force'                 => (bool)$this->option('force'),
                 ];
             (new GeneratorHandler())->start(new MainParams($data));
         } else {

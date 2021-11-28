@@ -5,6 +5,7 @@ namespace Chatway\LaravelCrudGenerator\Core\Generators;
 use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\DTO\ResultGeneratorDTO;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
+use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
 use Chatway\LaravelCrudGenerator\GeneratorCommand;
 use File;
 use View;
@@ -17,7 +18,7 @@ class ModelGenerator implements GeneratorInterface
     {
     }
 
-    public function generate(): ResultGeneratorDTO
+    public function generate()
     {
         $namespace = $this->generatorForm->getNsByClassName($this->generatorForm->modelName);
         $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Classes';
@@ -33,13 +34,15 @@ class ModelGenerator implements GeneratorInterface
         if (!File::isDirectory($path)) {
             File::makeDirectory($path, 0777, true, true);
         }
-        File::delete($path . '\\' . $filename);
-        return new ResultGeneratorDTO(
-            [
-                'success'  => File::put($path . '\\' . $filename, $renderedModel),
-                'fileName' => $path . $filename,
-                'filePath' => lcfirst($namespace) . '\\' . $filename,
-                'modelNs'  => $namespace,
-            ]);
+        if (!File::exists($path . '\\' . $filename) || $this->generatorForm->force) {
+            File::delete($path . '\\' . $filename);
+            if (File::put($path . '\\' . $filename, $renderedModel) !== false) {
+                ConsoleHelper::info('Model generated! Path in app: ' . lcfirst($namespace) . '\\' . $filename);
+            } else {
+                ConsoleHelper::error('Model generate error!');
+            }
+        } else {
+            ConsoleHelper::info('Model is exists! Add --force option to overwrite Model!');
+        }
     }
 }

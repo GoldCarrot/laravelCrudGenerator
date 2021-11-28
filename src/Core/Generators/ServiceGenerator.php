@@ -5,6 +5,8 @@ namespace Chatway\LaravelCrudGenerator\Core\Generators;
 use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\DTO\ResultGeneratorDTO;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
+use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
+use Chatway\LaravelCrudGenerator\GeneratorCommand;
 use File;
 use View;
 
@@ -20,8 +22,9 @@ class ServiceGenerator implements GeneratorInterface
     public function generate()
     {
         $namespace = $this->generatorForm->getServiceNs();
-        View::addLocation(app('path') . '/Console/Generator/Templates/Classes');
-        View::addNamespace('service', app('path') . '/Console/Generator/Templates/Classes');
+        $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Classes';
+        View::addLocation($path);
+        View::addNamespace('service', $path);
         $renderedModel = View::make('service')->with(
             [
                 'serviceGenerator' => $this,
@@ -31,14 +34,17 @@ class ServiceGenerator implements GeneratorInterface
         if (!File::isDirectory($path)) {
             File::makeDirectory($path, 0777, true, true);
         }
-        File::delete($path . '\\' . $filename);
-        return new ResultGeneratorDTO(
-            [
-                'success'  => File::put($path . '\\' . $filename, $renderedModel),
-                'fileName' => $path . $filename,
-                'filePath' => lcfirst($namespace) . '\\' . $filename,
-                'modelNs'  => $namespace,
-            ]);
+
+        if (!File::exists($path . '\\' . $filename) || $this->generatorForm->force) {
+            File::delete($path . '\\' . $filename);
+            if (File::put($path . '\\' . $filename, $renderedModel) !== false) {
+                ConsoleHelper::info('Service generated! Path in app: ' . lcfirst($namespace) . '\\' . $filename);
+            } else {
+                ConsoleHelper::error('Service generate error!');
+            }
+        } else {
+            ConsoleHelper::info('Service is exists! Add --force option to overwrite Service!');
+        }
     }
 
     public function getBaseClassWithNs()

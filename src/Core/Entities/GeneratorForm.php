@@ -5,6 +5,8 @@ namespace Chatway\LaravelCrudGenerator\Core\Entities;
 use Chatway\LaravelCrudGenerator\Core\DTO\EnumParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\MainParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
+use Chatway\LaravelCrudGenerator\Core\Generators\EnumGenerator;
+use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
 use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ColumnService;
 use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ForeignKeyService;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ClassHelper;
@@ -57,23 +59,33 @@ class GeneratorForm
 
     public $enums = [];
     /** Параметры Enum конец */
+
+    /** Параметры View начало */
+    public $viewsPath;
+    /** Параметры View конец */
+
+    /** Общие параметры начало */
+    public $force;
+    public $testMode = false;
+    /** Общие параметры конец */
     /**
      * @var ForeignKeyService
      */
     protected $foreignKeyService;
 
-    const TEST_MODE = false;
-
     public function __construct(MainParams $mainParams, ForeignKeyService $foreignKeyService)
     {
+        $this->testMode = self::getSafeEnv('GENERATOR_TEST_MODE') ?? false;
         $this->enums = $mainParams->enums;
         $this->foreignKeyService = $foreignKeyService;
         $this->setResourceTable($mainParams->resourceTable);
         $this->resourceName = $mainParams->resourceName;
-        $this->baseNs = $mainParams->baseNs ??
-                        env('GENERATOR_BASE_NS', $this->baseNs . '\\' . (self::TEST_MODE ? 'Test' : $this->resourceName) . '\\');
-        $this->httpNs = $mainParams->httpNs ??
-                        env('GENERATOR_BASE_NS', $this->httpNs . '\\' . (self::TEST_MODE ? 'Test' : $this->resourceName) . '\\');
+
+        $this->baseNs = self::getSafeEnv('GENERATOR_BASE_NS') ??
+                        ($mainParams->baseNs ?? $this->baseNs . '\\' . ($this->testMode ? 'Test' : $this->resourceName) . '\\');
+
+        $this->httpNs = self::getSafeEnv('GENERATOR_HTTP_NS') ??
+                        ($mainParams->httpNs ?? $this->httpNs . '\\' . ($this->testMode ? 'Test' : $this->resourceName) . '\\');
 
         if (substr($this->httpNs, -1, 1) != '\\') {
             $this->httpNs .= '\\';
@@ -81,10 +93,40 @@ class GeneratorForm
         if (substr($this->baseNs, -1, 1) != "\\") {
             $this->baseNs .= '\\';
         }
-        $this->modelName = $this->baseNs . self::MODEL_FOLDER_NAME . '\\' . $this->resourceName;
-        $this->controllerName = $this->httpNs . $this->resourceName . self::CONTROLLER_SUFFIX;
-        $this->repositoryName = $this->baseNs . self::REPOSITORY_FOLDER_NAME . '\\' . $this->resourceName . self::REPOSITORY_SUFFIX;
-        $this->serviceName = $this->baseNs . self::SERVICE_FOLDER_NAME . '\\' . $this->resourceName . self::SERVICE_SUFFIX;
+
+        $this->modelName =
+            $this->baseNs . (self::getSafeEnv('GENERATOR_MODEL_FOLDER_NAME') ?? self::MODEL_FOLDER_NAME) . '\\' . $this->resourceName;
+        $this->controllerName =
+            $this->httpNs . $this->resourceName . (self::getSafeEnv('GENERATOR_CONTROLLER_SUFFIX') ?? self::CONTROLLER_SUFFIX);
+        $this->repositoryName =
+            $this->baseNs . (self::getSafeEnv('GENERATOR_REPOSITORY_FOLDER_NAME') ?? self::REPOSITORY_FOLDER_NAME) . '\\'
+            . $this->resourceName . (self::getSafeEnv('GENERATOR_REPOSITORY_SUFFIX') ?? self::REPOSITORY_SUFFIX);
+        $this->serviceName = $this->baseNs . (self::getSafeEnv('GENERATOR_SERVICE_FOLDER_NAME') ?? self::SERVICE_FOLDER_NAME) . '\\'
+                             . $this->resourceName . (self::getSafeEnv('GENERATOR_SERVICE_SUFFIX') ?? self::SERVICE_SUFFIX);
+        $this->viewsPath = self::getSafeEnv('GENERATOR_VIEWS_PATH') ??
+                           'views\admin\\' . Str::pluralStudly(lcfirst(class_basename($this->resourceName)));
+
+        foreach ($this->enums as $enum) {
+            $enum->enumName = $this->baseNs . self::ENUM_FOLDER_NAME . '\\' . $this->resourceName
+                              . ucfirst($enum->name);
+        }
+
+        if ($mainParams->previewPaths) {
+            ConsoleHelper::info($this->modelName);
+            ConsoleHelper::info($this->controllerName);
+            ConsoleHelper::info($this->repositoryName);
+            ConsoleHelper::info($this->serviceName);
+            foreach ($this->enums as $enum) {
+                ConsoleHelper::info($enum->enumName);
+            }
+            ConsoleHelper::info($this->viewsPath);
+        }
+        $this->force = $mainParams->force;
+    }
+
+    private static function getSafeEnv($parameterName)
+    {
+        return env($parameterName) ? env($parameterName) : null;
     }
 
     public function getNsByClassName($className): string

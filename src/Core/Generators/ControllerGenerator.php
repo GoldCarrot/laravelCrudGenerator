@@ -6,6 +6,8 @@ use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
 use Chatway\LaravelCrudGenerator\Core\DTO\ResultGeneratorDTO;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
+use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
+use Chatway\LaravelCrudGenerator\GeneratorCommand;
 use DB;
 use File;
 use Str;
@@ -22,8 +24,9 @@ class ControllerGenerator implements GeneratorInterface
     public function generate()
     {
         $namespace = $this->generatorForm->getNsByClassName($this->generatorForm->controllerName);
-        View::addLocation(app('path') . '/Console/Generator/Templates/Classes');
-        View::addNamespace('controller', app('path') . '/Console/Generator/Templates/Classes');
+        $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Classes';
+        View::addLocation($path);
+        View::addNamespace('controller', $path);
         $renderedModel = View::make('controller')->with(
             [
                 'controllerGenerator' => $this,
@@ -33,14 +36,17 @@ class ControllerGenerator implements GeneratorInterface
         if (!File::isDirectory($path)) {
             File::makeDirectory($path, 0777, true, true);
         }
-        File::delete($path . '\\' . $filename);
-        return new ResultGeneratorDTO(
-            [
-                'success'  => File::put($path . '\\' . $filename, $renderedModel),
-                'fileName' => $path . $filename,
-                'filePath' => lcfirst($namespace) . '\\' . $filename,
-                'modelNs'  => $namespace,
-            ]);
+
+        if (!File::exists($path . '\\' . $filename) || $this->generatorForm->force) {
+            File::delete($path . '\\' . $filename);
+            if (File::put($path . '\\' . $filename, $renderedModel) !== false) {
+                ConsoleHelper::info('Controller generated! Path in app: ' . lcfirst($namespace) . '\\' . $filename);
+            } else {
+                ConsoleHelper::error('Controller generate error!');
+            }
+        } else {
+            ConsoleHelper::info('Controller is exists! Add --force option to overwrite Controller!');
+        }
     }
 
 

@@ -17,46 +17,36 @@ class GeneratorHandler
 {
     public function start(MainParams $mainParams)
     {
-        ConsoleHelper::primary('------------Generator start!------------');
+        if ($mainParams->previewPaths) {
+            ConsoleHelper::primary('------------Generator previewPaths start!------------');
+        } else {
+            ConsoleHelper::primary('------------Generator start!------------');
+        }
         $generatorForm = new GeneratorForm($mainParams, new ForeignKeyService());
-        if ($generatorForm::TEST_MODE) {
-            ConsoleHelper::error('Test mode: ' . $generatorForm->baseNs);
+        if ($generatorForm->testMode) {
+            ConsoleHelper::error('Test mode: ' . $generatorForm->baseNs . '. Files generate to Test folder. Example selected namespace\\Test\\');
         }
+        if (!$mainParams->previewPaths) {
+            (new ModelGenerator($generatorForm))->generate();
+            (new ControllerGenerator($generatorForm))->generate();
+            (new RepositoryGenerator($generatorForm))->generate();
+            (new ServiceGenerator($generatorForm))->generate();
 
-        $result = (new ModelGenerator($generatorForm))->generate();
-        if ($result->success !== false) {
-            ConsoleHelper::info('Model generated! Path in app: ' . $result->filePath);
-        }
-        $result = (new ControllerGenerator($generatorForm))->generate();
-        if ($result->success !== false) {
-            ConsoleHelper::info('Controller generated! Path in app: ' . $result->filePath);
-        }
-        $result = (new RepositoryGenerator($generatorForm))->generate();
-        if ($result->success !== false) {
-            ConsoleHelper::info('Repository generated! Path in app: ' . $result->filePath);
-        }
-        $result = (new ServiceGenerator($generatorForm))->generate();
-        if ($result->success !== false) {
-            ConsoleHelper::info('Service generated! Path in app: ' . $result->filePath);
-        }
-        foreach ($generatorForm->enums as $enum) {
-            $enum->enumName = $generatorForm->baseNs . $generatorForm::ENUM_FOLDER_NAME . '\\' . $generatorForm->resourceName
-                              . ucfirst($enum->name);
-            $result = (new EnumGenerator($generatorForm, $enum))->generate();
-            if ($result->success !== false) {
-                ConsoleHelper::info('Enum ' . $generatorForm->resourceName . ucfirst($enum->name) . ' generated! Path in app: '
-                                    . $result->filePath);
+            foreach ($generatorForm->enums as $enum) {
+                (new EnumGenerator($generatorForm, $enum))->generate();
+            }
+
+            $viewList = ['create', 'form', 'index', 'show', 'update'];
+            foreach ($viewList as $item) {
+                (new ViewGenerator($generatorForm, ['viewName' => $item]))->generate();
             }
         }
 
-        $viewList = ['create', 'form', 'index', 'show', 'update'];
-        foreach ($viewList as $item) {
-            $result = (new ViewGenerator($generatorForm, ['viewName' => $item]))->generate();
-            if ($result->success !== false) {
-                ConsoleHelper::info("View $item generated! Path in app: " . $result->filePath);
-            }
+        if ($mainParams->previewPaths) {
+            ConsoleHelper::primary('------------Generator previewPaths finish!------------');
+        } else {
+            ConsoleHelper::primary('------------Generator finish!------------');
         }
-        ConsoleHelper::primary('------------Generator finish!------------');
         ConsoleHelper::bell();
     }
 }

@@ -6,6 +6,7 @@ use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
 use Chatway\LaravelCrudGenerator\Core\DTO\ResultGeneratorDTO;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
+use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
 use Chatway\LaravelCrudGenerator\GeneratorCommand;
 use File;
 use Str;
@@ -25,7 +26,7 @@ class ViewGenerator implements GeneratorInterface
         $this->viewName = \Arr::get($config, 'viewName');
     }
 
-    public function generate(): ResultGeneratorDTO
+    public function generate()
     {
         $namespace = $this->generatorForm->getEnumNs();
         $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Views';
@@ -36,18 +37,20 @@ class ViewGenerator implements GeneratorInterface
                 'viewGenerator' => $this,
             ]);
         $filename = $this->viewName . $this->generatorForm::VIEW_FILE_SUFFIX;
-        $path = resource_path('views\admin\\' . Str::pluralStudly(lcfirst(class_basename($this->generatorForm->resourceName))));
+        $path = resource_path($this->generatorForm->viewsPath);
         if (!File::isDirectory($path)) {
             File::makeDirectory($path, 0777, true, true);
         }
-        File::delete($path . '\\' . $filename);
-        return new ResultGeneratorDTO(
-            [
-                'success'  => File::put($path . '\\' . $filename, $renderedModel),
-                'fileName' => $path . $filename,
-                'filePath' => lcfirst($namespace) . '\\' . $filename,
-                'modelNs'  => $namespace,
-            ]);
+        if (!File::exists($path . '\\' . $filename) || $this->generatorForm->force) {
+            File::delete($path . '\\' . $filename);
+            if (File::put($path . '\\' . $filename, $renderedModel) !== false) {
+                ConsoleHelper::info('View generated! Path in app: ' . lcfirst($namespace) . '\\' . $filename);
+            } else {
+                ConsoleHelper::error('View generate error!');
+            }
+        } else {
+            ConsoleHelper::info('View is exists! Add --force option to overwrite View!');
+        }
     }
 
     public function getBaseClassWithNs()

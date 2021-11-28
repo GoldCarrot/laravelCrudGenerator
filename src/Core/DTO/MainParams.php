@@ -18,6 +18,8 @@ class MainParams
     public $baseNs;
     public $httpNs;
     public $enums;
+    public $previewPaths;
+    public $force;
 
     public function __construct($data)
     {
@@ -26,6 +28,8 @@ class MainParams
         $this->baseNs = \Arr::get($data, 'baseNs');
         $this->httpNs = \Arr::get($data, 'httpNs');
         $this->enums = $this->getEnums(\Arr::get($data, 'baseNs'), \Arr::get($data, 'defaultStatusGenerate', false));
+        $this->previewPaths = \Arr::get($data, 'previewPaths', false);
+        $this->force = \Arr::get($data, 'force', false);
     }
 
     /**

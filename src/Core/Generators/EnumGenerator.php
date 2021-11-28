@@ -6,6 +6,7 @@ use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\DTO\EnumParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\ResultGeneratorDTO;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
+use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
 use Chatway\LaravelCrudGenerator\GeneratorCommand;
 use File;
 use Illuminate\Validation\Rules\Enum;
@@ -38,14 +39,17 @@ class EnumGenerator implements GeneratorInterface
         if (!File::isDirectory($path)) {
             File::makeDirectory($path, 0777, true, true);
         }
-        File::delete($path . '\\' . $filename);
-        return new ResultGeneratorDTO(
-            [
-                'success'  => File::put($path . '\\' . $filename, $renderedModel),
-                'fileName' => $path . $filename,
-                'filePath' => lcfirst($namespace) . '\\' . $filename,
-                'modelNs'  => $namespace,
-            ]);
+
+        if (!File::exists($path . '\\' . $filename) || $this->generatorForm->force) {
+            File::delete($path . '\\' . $filename);
+            if (File::put($path . '\\' . $filename, $renderedModel) !== false) {
+                ConsoleHelper::info('Enum generated! Path in app: ' . lcfirst($namespace) . '\\' . $filename);
+            } else {
+                ConsoleHelper::error('Enum generate error!');
+            }
+        } else {
+            ConsoleHelper::info('Enum is exists! Add --force option to overwrite Enum!');
+        }
     }
 
     public function getBaseClassWithNs()

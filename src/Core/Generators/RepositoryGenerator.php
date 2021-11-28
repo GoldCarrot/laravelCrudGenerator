@@ -5,6 +5,8 @@ namespace Chatway\LaravelCrudGenerator\Core\Generators;
 use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\DTO\ResultGeneratorDTO;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
+use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
+use Chatway\LaravelCrudGenerator\GeneratorCommand;
 use File;
 use View;
 
@@ -22,8 +24,9 @@ class RepositoryGenerator implements GeneratorInterface
     public function generate()
     {
         $namespace = $this->generatorForm->getRepositoryNs();
-        View::addLocation(app('path') . '/Console/Generator/Templates/Classes');
-        View::addNamespace('repository', app('path') . '/Console/Generator/Templates/Classes');
+        $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Classes';
+        View::addLocation($path);
+        View::addNamespace('repository', $path);
         $renderedModel = View::make('repository')->with(
             [
                 'repositoryGenerator' => $this,
@@ -33,14 +36,17 @@ class RepositoryGenerator implements GeneratorInterface
         if (!File::isDirectory($path)) {
             File::makeDirectory($path, 0777, true, true);
         }
-        File::delete($path . '\\' . $filename);
-        return new ResultGeneratorDTO(
-            [
-                'success'  => File::put($path . '\\' . $filename, $renderedModel),
-                'fileName' => $path . $filename,
-                'filePath' => lcfirst($namespace) . '\\' . $filename,
-                'modelNs'  => $namespace,
-            ]);
+
+        if (!File::exists($path . '\\' . $filename) || $this->generatorForm->force) {
+            File::delete($path . '\\' . $filename);
+            if (File::put($path . '\\' . $filename, $renderedModel) !== false) {
+                ConsoleHelper::info('Repository generated! Path in app: ' . lcfirst($namespace) . '\\' . $filename);
+            } else {
+                ConsoleHelper::error('Repository generate error!');
+            }
+        } else {
+            ConsoleHelper::info('Repository is exists! Add --force option to overwrite Repository!');
+        }
     }
 
     public function getFullName()
