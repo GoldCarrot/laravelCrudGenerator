@@ -6,22 +6,18 @@ use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
 use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ColumnService;
 
 /**
- * @property array|\ArrayAccess|mixed $resourceTable
- * @property string                   $resourceName
- * @property array|\ArrayAccess|mixed $baseNs
- * @property array|\ArrayAccess|mixed $httpNs
- * @property EnumParams[]             $enums
+ * @property EnumParams[] $enums
  */
 class MainParams
 {
-    public $resourceTable;
-    public $resourceName;
-    public $baseNs;
-    public $httpNs;
-    public $enums;
-    public $previewPaths;
-    public $force;
-    public $mainPath;
+    public       $resourceTable;
+    public       $resourceName;
+    public       $baseNs;
+    public       $httpNs;
+    public array $enums;
+    public       $previewPaths;
+    public       $force;
+    public       $mainPath;
 
     public function __construct($data)
     {

@@ -7,8 +7,6 @@ namespace Chatway\LaravelCrudGenerator\Core\DTO;
  * Class Event
  *
  * @package  Chatway\LaravelCrudGenerator\Core\DTO\EnumParams
- * @property string $name
- * @property array  $types
  */
 class EnumParams
 {

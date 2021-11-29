@@ -3,7 +3,6 @@
  * This is the template for generating the enum class of a specified table.
  */
 
-/* @var $enumGenerator->generatorForm \Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm */
 /* @var $enumGenerator \Chatway\LaravelCrudGenerator\Core\Generators\RepositoryGenerator */
 /* @var $enumGenerator->generatorForm->properties array list of properties (property => [type, name. comment]) */
 

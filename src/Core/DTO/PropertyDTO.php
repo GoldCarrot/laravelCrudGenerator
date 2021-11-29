@@ -4,25 +4,16 @@ namespace Chatway\LaravelCrudGenerator\Core\DTO;
 
 use Arr;
 
-/**
- * @property bool       $inlet     Внутренний параметр: id, created_at, updated_at, deleted_at
- * @property string     $name      Название
- * @property string     $type      Тип
- * @property bool       $nullable  Может быть Null
- * @property string     $class     Может быть Null
- * @property bool       $isEnum    Может быть Null
- * @property EnumParams $enum      Может быть Null
- */
 class PropertyDTO
 {
-    public $inlet = false;
-    public $name;
-    public $type;
-    public $nullable;
-    public $class;
-    public $classTable;
-    public $isEnum;
-    public $enum;
+    public bool $inlet = false; //Внутренний параметр: id, created_at, updated_at, deleted_at
+    public string $name; //Название
+    public string $type; //Тип
+    public bool $nullable;
+    public string $class;
+    public string $classTable;
+    public bool $isEnum;
+    public EnumParams $enum;
 
     const INLET_PROPERTIES = [
         'id',

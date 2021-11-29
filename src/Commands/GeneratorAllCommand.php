@@ -7,7 +7,7 @@ use Chatway\LaravelCrudGenerator\Core\GeneratorHandler;
 use DB;
 use Illuminate\Console\Command;
 
-class GeneratorCommand extends Command
+class GeneratorAllCommand extends Command
 {
     protected $signature = 'gen:all 
     {table : Таблица в БД} 

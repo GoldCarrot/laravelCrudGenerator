@@ -2,7 +2,7 @@
 
 namespace Chatway\LaravelCrudGenerator;
 
-use Chatway\LaravelCrudGenerator\Commands\GeneratorCommand;
+use Chatway\LaravelCrudGenerator\Commands\GeneratorAllCommand;
 use Illuminate\Support\ServiceProvider;
 
 class GeneratorServiceProvider extends ServiceProvider
@@ -25,7 +25,7 @@ class GeneratorServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                GeneratorCommand::class,
+                GeneratorAllCommand::class,
             ]);
         }
     }

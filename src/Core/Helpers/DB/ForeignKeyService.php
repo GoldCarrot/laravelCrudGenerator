@@ -43,12 +43,5 @@ class ForeignKeyService
             ->whereNotNull('REFERENCED_TABLE_NAME')
             ->get();
 
-        //$query = "SELECT * ";
-        //$query .= "FROM information_schema.KEY_COLUMN_USAGE ";
-        //$query .= " WHERE ";
-        //$query .= "(TABLE_NAME = '$tableName')";
-        //$query .= " AND ";
-        //$query .= "TABLE_SCHEMA = '{$this->getDBName()}' AND CONSTRAINT_NAME <>'PRIMARY' AND REFERENCED_TABLE_NAME is not null;";
-        //return DB::select($query);
     }
 }

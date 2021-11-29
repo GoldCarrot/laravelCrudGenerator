@@ -3,7 +3,6 @@
  * This is the template for generating the repository class of a specified table.
  */
 
-/* @var $repositoryGenerator->generatorForm \Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm */
 /* @var $repositoryGenerator \Chatway\LaravelCrudGenerator\Core\Generators\RepositoryGenerator */
 /* @var $repositoryGenerator->generatorForm->properties array list of properties (property => [type, name. comment]) */
 

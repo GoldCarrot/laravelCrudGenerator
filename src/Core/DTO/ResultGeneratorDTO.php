@@ -2,18 +2,12 @@
 
 namespace Chatway\LaravelCrudGenerator\Core\DTO;
 
-/**
- * string $success
- * string $fileName
- * string $filePath
- * string $modelNs
- */
 class ResultGeneratorDTO
 {
-    public $success;
-    public $fileName;
-    public $filePath;
-    public $modelNs;
+    public string $success;
+    public string $fileName;
+    public string $filePath;
+    public string $modelNs;
 
     public function __construct($data)
     {

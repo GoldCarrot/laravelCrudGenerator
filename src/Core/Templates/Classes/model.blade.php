@@ -3,7 +3,6 @@
  * This is the template for generating the model class of a specified table.
  */
 
-/* @var $modelGenerator->generatorForm \Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm */
 /* @var $modelGenerator \Chatway\LaravelCrudGenerator\Core\Generators\ModelGenerator */
 /* @var $modelGenerator->generatorForm->properties array list of properties (property => [type, name. comment]) */
 

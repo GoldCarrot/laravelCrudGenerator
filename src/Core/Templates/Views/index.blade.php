@@ -3,7 +3,6 @@
  * This is the template for generating the controller class of a specified table.
  */
 
-/* @var $viewGenerator- >generatorForm \Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm */
 /* @var $viewGenerator \Chatway\LaravelCrudGenerator\Core\Generators\ViewGenerator */
 /* @var $viewGenerator- >generatorForm->properties array list of properties (property => [type, name. comment]) */
 $variableName = $viewGenerator->generatorForm->getResourceName(false, true);

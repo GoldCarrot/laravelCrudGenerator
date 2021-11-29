@@ -3,7 +3,6 @@
  * This is the template for generating the view create
  */
 
-/* @var $viewGenerator- >generatorForm \Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm */
 /* @var $viewGenerator \Chatway\LaravelCrudGenerator\Core\Generators\ViewGenerator */
 
 ?>
