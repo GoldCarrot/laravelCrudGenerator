@@ -26,7 +26,6 @@ class ModelGenerator implements GeneratorInterface
             [
                 'modelGenerator' => $this,
             ]);
-        //dd($this->baseClass,$renderedModel->render(), $this->generatorForm->baseClass);
         $filename = "{$this->generatorForm->resourceName}.php";
         $path = base_path(lcfirst($namespace));
         if (!File::isDirectory($path)) {

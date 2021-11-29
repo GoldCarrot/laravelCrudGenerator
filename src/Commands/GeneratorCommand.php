@@ -38,9 +38,13 @@ class GeneratorCommand extends Command
                     'enumParams'            => $this->option('enum'),
                     'previewPaths'          => (bool)$this->option('previewPaths'),
                     'force'                 => (bool)$this->option('force'),
-                    'mainPath'                 => __DIR__,
+                    'mainPath'                 => dirname(__DIR__),
                 ];
-            (new GeneratorHandler())->start(new MainParams($data));
+            try {
+                (new GeneratorHandler())->start(new MainParams($data));
+            } catch (\Throwable $e) {
+                dd($e->getMessage(), $e->getTraceAsString());
+            }
         } else {
             $this->error("\nТаблицы $tableName не существует\n");
         }
