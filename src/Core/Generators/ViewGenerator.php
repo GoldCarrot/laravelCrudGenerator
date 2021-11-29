@@ -4,11 +4,9 @@ namespace Chatway\LaravelCrudGenerator\Core\Generators;
 
 use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
-use Chatway\LaravelCrudGenerator\Core\DTO\ResultGeneratorDTO;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
 use File;
-use Str;
 use View;
 
 /**
@@ -64,7 +62,7 @@ class ViewGenerator implements GeneratorInterface
 
     public function renderedPropertyFormExist(PropertyDTO $propertyDTO)
     {
-        $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Views/Form';
+        $path = $this->generatorForm->mainPath . '/Core/Templates/Views/Form';
         view()->addLocation($path);
         view()->addNamespace($propertyDTO->name, $path);
         if ($propertyDTO->type == 'Carbon' || $propertyDTO->class) {
@@ -75,7 +73,7 @@ class ViewGenerator implements GeneratorInterface
 
     public function getRenderedPropertyForm(PropertyDTO $propertyDTO)
     {
-        $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Views/Form';
+        $path = $this->generatorForm->mainPath . '/Core/Templates/Views/Form';
         view()->addLocation($path);
         if ($propertyDTO->name == 'status'){
             //dd($propertyDTO);
@@ -137,7 +135,7 @@ class ViewGenerator implements GeneratorInterface
 
     public function renderedPropertyShowExist(PropertyDTO $propertyDTO)
     {
-        $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Views/Show';
+        $path = $this->generatorForm->mainPath . '/Core/Templates/Views/Show';
         view()->addLocation($path);
         view()->addNamespace($propertyDTO->name, $path);
         //if ($propertyDTO->type == 'Carbon'/* || $propertyDTO->class*/) {
@@ -148,7 +146,7 @@ class ViewGenerator implements GeneratorInterface
 
     public function getRenderedPropertyShow(PropertyDTO $propertyDTO)
     {
-        $path = GeneratorCommand::$MAIN_PATH . '/Core/Templates/Views/Show';
+        $path = $this->generatorForm->mainPath . '/Core/Templates/Views/Show';
         view()->addLocation($path);
 
         if ($propertyDTO->type == 'Carbon') {
