@@ -14,8 +14,6 @@ use View;
  */
 class ViewGenerator implements GeneratorInterface
 {
-    //public $baseClassNs = 'App\Base\Enums';
-    //public $baseClass   = 'StatusEnum';
     public mixed $viewName;
 
     public function __construct(public GeneratorForm $generatorForm, $config = [])
