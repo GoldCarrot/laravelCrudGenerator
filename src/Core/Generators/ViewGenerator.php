@@ -39,12 +39,12 @@ class ViewGenerator implements GeneratorInterface
         if (!File::exists($path . '\\' . $filename) || $this->generatorForm->force) {
             File::delete($path . '\\' . $filename);
             if (File::put($path . '\\' . $filename, $renderedModel) !== false) {
-                ConsoleHelper::info('View generated! Path in app: ' . lcfirst($namespace) . '\\' . $filename);
+                ConsoleHelper::info("View $this->viewName generated! Path in app: " . lcfirst($namespace) . '\\' . $filename);
             } else {
-                ConsoleHelper::error('View generate error!');
+                ConsoleHelper::error("View $this->viewName generate error!");
             }
         } else {
-            ConsoleHelper::info('View is exists! Add --force option to overwrite View!');
+            ConsoleHelper::info("View $this->viewName is exists! Add --force option to overwrite View!");
         }
     }
 

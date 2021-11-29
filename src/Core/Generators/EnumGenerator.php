@@ -40,12 +40,12 @@ class EnumGenerator implements GeneratorInterface
         if (!File::exists($path . '\\' . $filename) || $this->generatorForm->force) {
             File::delete($path . '\\' . $filename);
             if (File::put($path . '\\' . $filename, $renderedModel) !== false) {
-                ConsoleHelper::info('Enum generated! Path in app: ' . lcfirst($namespace) . '\\' . $filename);
+                ConsoleHelper::info("Enum {$this->enum->name} generated! Path in app: " . lcfirst($namespace) . '\\' . $filename);
             } else {
-                ConsoleHelper::error('Enum generate error!');
+                ConsoleHelper::error("Enum {$this->enum->name} generate error!");
             }
         } else {
-            ConsoleHelper::info('Enum is exists! Add --force option to overwrite Enum!');
+            ConsoleHelper::info("Enum {$this->enum->name} is exists! Add --force option to overwrite Enum!");
         }
     }
 
