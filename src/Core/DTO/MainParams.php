@@ -24,7 +24,7 @@ class MainParams
         $this->resourceTable = \Arr::get($data, 'resourceTable');
         $this->resourceName = ucfirst(\Str::camel(\Str::singular($this->resourceTable)));
         $this->folderNs = \Arr::get($data, 'folderNs');
-        $this->enums = $this->getEnums(\Arr::get($data, 'folderNs'), \Arr::get($data, 'defaultStatusGenerate', false));
+        $this->enums = $this->getEnums(\Arr::get($data, 'enumParams'), \Arr::get($data, 'defaultStatusGenerate', false));
         $this->previewPaths = \Arr::get($data, 'previewPaths', false);
         $this->force = \Arr::get($data, 'force', false);
         $this->mainPath = \Arr::get($data, 'mainPath', null);
