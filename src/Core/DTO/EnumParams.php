@@ -16,6 +16,6 @@ class EnumParams
         $data = explode('-', $data);
         $this->name = \Arr::get($data, 0);
         $this->types = isset($data[1]) && $data[1] && strlen($data[1]) > 0 ? explode(',', $data[1]) : [];
-        $this->types = array_diff($this->types, $defaultValues);
+        $this->types = count($this->types) > 0 ? $this->types : $defaultValues;
     }
 }

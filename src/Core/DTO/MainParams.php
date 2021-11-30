@@ -39,7 +39,6 @@ class MainParams
     private function getEnums($enumParams, $defaultStatusGenerate): array
     {
         $defaultValues = env('GENERATOR_DEFAULT_ENUM_VALUES', ['active', 'inactive', 'deleted']);
-
         $enums = [];
         if ($enumParams) {
             $enumParams = explode(';', $enumParams);

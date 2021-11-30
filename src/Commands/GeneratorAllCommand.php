@@ -25,6 +25,8 @@ class GeneratorAllCommand extends Command
 
     public function handle(): int
     {
+        //$arguments = $this->arguments();//todo
+        //dd($arguments);
         $tableName = $this->argument('table');
         $tables = \Arr::pluck(DB::select('SHOW TABLES'), "Tables_in_" . config('database.connections.mysql.database'));
         if (in_array($tableName, $tables)) {
