@@ -8,7 +8,7 @@ class GeneratorRouteTemplates
         'admin' => [
             'template' => "<?php
 Route::resources([
-    '{{resourceTable}}' => '{{folderNs}}\{{resourceName}}Controller',
+    '{{resourceNamePlural}}' => '{{folderNs}}\{{resourceName}}Controller',
 ]);",
             'path'     => 'admin',
             'filename' => 'resource{{resourceName}}',
