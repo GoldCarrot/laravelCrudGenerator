@@ -24,7 +24,7 @@ class ModelGenerator implements GeneratorInterface
         View::addNamespace('model', $path);
         $renderedModel = View::make('model')->with(
             [
-                'modelGenerator' => $this,
+                'generator' => $this,
             ]);
         $filename = "{$this->generatorForm->resourceName}.php";
         $path = base_path(lcfirst($namespace));

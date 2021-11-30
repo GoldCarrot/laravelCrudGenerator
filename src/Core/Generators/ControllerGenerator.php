@@ -28,7 +28,7 @@ class ControllerGenerator implements GeneratorInterface
         View::addNamespace($this->controllerParams->templateName, $path);
         $renderedModel = View::make($this->controllerParams->templateName)->with(
             [
-                'controllerGenerator' => $this,
+                'generator' => $this,
             ]);
         $filename = $this->generatorForm->resourceName . ($this->generatorForm::$CONTROLLER_SUFFIX) . ".php";
         $path = base_path(lcfirst($namespace));

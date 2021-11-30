@@ -26,7 +26,7 @@ class RepositoryGenerator implements GeneratorInterface
         View::addNamespace('repository', $path);
         $renderedModel = View::make('repository')->with(
             [
-                'repositoryGenerator' => $this,
+                'generator' => $this,
             ]);
         $filename = "{$this->generatorForm->resourceName}Repository.php";
         $path = base_path(lcfirst($namespace));

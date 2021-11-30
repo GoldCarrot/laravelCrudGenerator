@@ -28,7 +28,7 @@ class ViewGenerator implements GeneratorInterface
         View::addNamespace($this->viewName, $path);
         $renderedModel = View::make($this->viewName)->with(
             [
-                'viewGenerator' => $this,
+                'generator' => $this,
             ]);
         $filename = $this->viewName . $this->generatorForm::$VIEW_FILE_SUFFIX;
         $path = resource_path($this->generatorForm->viewsPath);
@@ -67,7 +67,7 @@ class ViewGenerator implements GeneratorInterface
             return view()->make('selectEnum')->with(
                 [
                     'propertyDTO'   => $propertyDTO,
-                    'viewGenerator' => $this,
+                    'generator' => $this,
                 ]);
         }
 
@@ -76,7 +76,7 @@ class ViewGenerator implements GeneratorInterface
             return view()->make('dateFormat')->with(
                 [
                     'propertyDTO'   => $propertyDTO,
-                    'viewGenerator' => $this,
+                    'generator' => $this,
                 ]);
         }
 
@@ -85,14 +85,14 @@ class ViewGenerator implements GeneratorInterface
                 return view()->make('image')->with(
                     [
                         'propertyDTO'   => $propertyDTO,
-                        'viewGenerator' => $this,
+                        'generator' => $this,
                     ]);
             }
             if (class_basename($propertyDTO->class) == 'File') {
                 return view()->make('file')->with(
                     [
                         'propertyDTO'   => $propertyDTO,
-                        'viewGenerator' => $this,
+                        'generator' => $this,
                     ]);
             }
             /**
@@ -101,7 +101,7 @@ class ViewGenerator implements GeneratorInterface
             return view()->make('select')->with(
                 [
                     'propertyDTO'   => $propertyDTO,
-                    'viewGenerator' => $this,
+                    'generator' => $this,
                 ]);
         }
         if (!view()->exists($propertyDTO->name) && $propertyDTO->type == 'string') {
@@ -109,14 +109,14 @@ class ViewGenerator implements GeneratorInterface
             return view()->make('string')->with(
                 [
                     'propertyDTO'   => $propertyDTO,
-                    'viewGenerator' => $this,
+                    'generator' => $this,
                 ]);
         }
         view()->addNamespace($propertyDTO->name, $path);
         return view()->make($propertyDTO->name)->with(
             [
                 'propertyDTO'   => $propertyDTO,
-                'viewGenerator' => $this,
+                'generator' => $this,
             ]);
     }
 
@@ -138,47 +138,46 @@ class ViewGenerator implements GeneratorInterface
 
         if ($propertyDTO->type == 'Carbon') {
             view()->addNamespace('dateFormat', $path);
-            return view()->make('dateFormat')->with(
+            return view()->make('dateFormatShow')->with(
                 [
                     'propertyDTO'   => $propertyDTO,
-                    'viewGenerator' => $this,
+                    'generator' => $this,
                 ]);
         }
 
-        /*if ($propertyDTO->class) {
+        if ($propertyDTO->class) {
             if (class_basename($propertyDTO->class) == 'Image') {
-                return view()->make('image')->with(
+                return view()->make('imageShow')->with(
                     [
                         'propertyDTO'   => $propertyDTO,
-                        'viewGenerator' => $this,
+                        'generator' => $this,
                     ]);
-            }
+            }/*
             if (class_basename($propertyDTO->class) == 'File') {
                 return view()->make('file')->with(
                     [
                         'propertyDTO'   => $propertyDTO,
-                        'viewGenerator' => $this,
+                        'generator' => $this,
                     ]);
             }
             return view()->make('select')->with(
                 [
                     'propertyDTO'   => $propertyDTO,
-                    'viewGenerator' => $this,
-                ]);
-        }*/
-        if (!view()->exists($propertyDTO->name) && $propertyDTO->type == 'string') {
-            view()->addNamespace('string', $path);
-            return view()->make('string')->with(
+                    'generator' => $this,
+                ]);*/
+        }
+        if (!view()->exists($propertyDTO->name . 'Show') && $propertyDTO->type == 'string') {
+            return view()->make('stringShow')->with(
                 [
                     'propertyDTO'   => $propertyDTO,
-                    'viewGenerator' => $this,
+                    'generator' => $this,
                 ]);
         }
-        view()->addNamespace($propertyDTO->name, $path);
-        return view()->make($propertyDTO->name)->with(
+        view()->addNamespace($propertyDTO->name . 'Show', $path);
+        return view()->make($propertyDTO->name . 'Show')->with(
             [
                 'propertyDTO'   => $propertyDTO,
-                'viewGenerator' => $this,
+                'generator' => $this,
             ]);
     }
 }

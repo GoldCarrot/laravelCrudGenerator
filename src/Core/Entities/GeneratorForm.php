@@ -6,7 +6,6 @@ use Chatway\LaravelCrudGenerator\Core\DTO\ControllerParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\EnumParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\MainParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
-use Chatway\LaravelCrudGenerator\Core\Generators\EnumGenerator;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
 use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ColumnService;
 use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ForeignKeyService;
@@ -39,7 +38,6 @@ class GeneratorForm
 
     public string $modelName;
     public array  $controllers = [];
-    //public $apiControllerName;
     public string $repositoryName;
     public string $serviceName;
     public string $enumName;
@@ -63,22 +61,19 @@ class GeneratorForm
 
     /** Параметры Enum начало */
 
-    public $enums = [];
+    public array $enums = [];
     /** Параметры Enum конец */
 
     /** Параметры View начало */
-    public $viewsPath;
+    public string $viewsPath;
     /** Параметры View конец */
 
     /** Общие параметры начало */
-    public $force;
-    public $mainPath;
-    public $testMode = false;
+    public bool $force;
+    public string $mainPath;
+    public bool $testMode = false;
     /** Общие параметры конец */
-    /**
-     * @var ForeignKeyService
-     */
-    protected $foreignKeyService;
+    protected ForeignKeyService $foreignKeyService;
 
     public function __construct(MainParams $mainParams, ForeignKeyService $foreignKeyService)
     {
@@ -179,13 +174,21 @@ class GeneratorForm
     {
         $this->resourceTable = $resourceTable;
         $this->generateProperties($resourceTable);
-        $this->generateInternalForeignKeys($resourceTable);
-        $this->generateExternalForeignKeys($resourceTable);
+        try {
+            $this->generateInternalForeignKeys($resourceTable);
+        } catch (ReflectionException $e) {
+            dd($e->getMessage(), $e->getTraceAsString());
+        }
+        try {
+            $this->generateExternalForeignKeys($resourceTable);
+        } catch (ReflectionException $e) {
+            dd($e->getMessage(), $e->getTraceAsString());
+        }
         $this->solveTextSpaceForProperties();
     }
 
     /**
-     * Description Извлекаем все внешние ключи //todo написать лучше две функции: ключи внутри таблицы, и ключи которые ссылаются на
+     * Description Извлекаем все внешние ключи
      * эту таблицу
      *
      * @param $tableName
@@ -210,7 +213,7 @@ class GeneratorForm
     }
 
     /**
-     * Description Извлекаем все внешние ключи //todo написать лучше две функции: ключи внутри таблицы, и ключи которые ссылаются на
+     * Description Извлекаем все внешние ключи
      * эту таблицу
      *
      * @param $tableName
@@ -276,9 +279,9 @@ class GeneratorForm
                     }
                     break;
                 default:
-                    if (strpos($column->Type, 'char') !== false) {
+                    if (str_contains($column->Type, 'char')) {
                         $type = 'string';
-                    } elseif (strpos($column->Type, 'mediumtext') !== false) {
+                    } elseif (str_contains($column->Type, 'mediumtext')) {
                         $type = 'string';
                     } else {
                         $type = 'notFoundedType:' . $column->Type;
@@ -326,12 +329,12 @@ class GeneratorForm
      *
      * @return string
      */
-    public function getFormattedProperty($type, $name)
+    public function getFormattedProperty($type, $name): string
     {
         return $type . str_repeat(' ', $this->spaceForProperties - strlen($type)) . ' $' . $name;
     }
 
-    public function getResourceName($plural = false, $lowFirstSymbol = false)
+    public function getResourceName($plural = false, $lowFirstSymbol = false): string
     {
         $resourceName = $lowFirstSymbol ? lcfirst($this->resourceName) : $this->resourceName;
         return $plural ? Str::pluralStudly($resourceName) : $resourceName;

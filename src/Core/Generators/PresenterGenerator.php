@@ -3,11 +3,9 @@
 namespace Chatway\LaravelCrudGenerator\Core\Generators;
 
 use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
-use Chatway\LaravelCrudGenerator\Core\DTO\ControllerParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
-use DB;
 use File;
 use Str;
 use View;
@@ -51,7 +49,7 @@ class PresenterGenerator implements GeneratorInterface
 
     public function getFormattedRule(PropertyDTO $property)
     {
-        $field = str_replace('_id', '', $property->name);
+        $field = \Str::camel(str_replace('_id', '', $property->name));
         return "'{$field}' => {$this->getRule($property)},";
     }
 

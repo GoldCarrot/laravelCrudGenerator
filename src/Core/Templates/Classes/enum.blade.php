@@ -3,35 +3,35 @@
  * This is the template for generating the enum class of a specified table.
  */
 
-/* @var $enumGenerator \Chatway\LaravelCrudGenerator\Core\Generators\RepositoryGenerator */
-/* @var $enumGenerator->generatorForm->properties array list of properties (property => [type, name. comment]) */
+/* @var $generator \Chatway\LaravelCrudGenerator\Core\Generators\RepositoryGenerator */
+/* @var $generator->generatorForm->properties array list of properties (property => [type, name. comment]) */
 
 echo "<?php\n";
 ?>
 
-namespace {{ class_namespace($enumGenerator->generatorForm->enumName) }};
+namespace {{ class_namespace($generator->generatorForm->enumName) }};
 
 
-use {{ $enumGenerator->baseClass }};
+use {{ $generator->baseClass }};
 
 /**
- * This is the enum class for table "{{ $enumGenerator->generatorForm->resourceTable }}".
- * Class {{ basename(($enumGenerator->generatorForm->enumName)) }}
+ * This is the enum class for table "{{ $generator->generatorForm->resourceTable }}".
+ * Class {{ basename(($generator->generatorForm->enumName)) }}
  *
- * @package {{ class_namespace($enumGenerator->generatorForm->enumName) }}
+ * @package {{ class_namespace($generator->generatorForm->enumName) }}
 */
 
-class {{ basename($enumGenerator->generatorForm->enumName) }} extends {{ basename($enumGenerator->baseClass) }}
+class {{ basename($generator->generatorForm->enumName) }} extends {{ basename($generator->baseClass) }}
 {
-@foreach($enumGenerator->enum->types as $type)
+@foreach($generator->enum->types as $type)
     public const {{strtoupper($type)}} = '{{$type}}';
 @endforeach
-@if(count($enumGenerator->enum->types) > 0)
+@if(count($generator->enum->types) > 0)
 
     public static function keys(): array
     {
         return [
-@foreach($enumGenerator->enum->types as $type)
+@foreach($generator->enum->types as $type)
             self::{{strtoupper($type)}},
 @endforeach
         ];

@@ -3,15 +3,15 @@
  * This is the template for generating the controller class of a specified table.
  */
 
-/* @var $viewGenerator \Chatway\LaravelCrudGenerator\Core\Generators\ViewGenerator */
-/* @var $viewGenerator->generatorForm->properties array list of properties (property => [type, name. comment]) */
-$variableName = $viewGenerator->generatorForm->getResourceName(false, true);
-$routeName = $viewGenerator->generatorForm->getResourceName(true, true);
-$modelName = $viewGenerator->generatorForm->modelName;
+/* @var $generator \Chatway\LaravelCrudGenerator\Core\Generators\ViewGenerator */
+/* @var $generator->generatorForm->properties array list of properties (property => [type, name. comment]) */
+$variableName = $generator->generatorForm->getResourceName(false, true);
+$routeName = $generator->generatorForm->getResourceName(true, true);
+$modelName = $generator->generatorForm->modelName;
 echo "<?php\n";
 ?>
 /**
- * @var \{{ $viewGenerator->generatorForm->modelName }} ${{ $viewGenerator->generatorForm->getResourceName(false, true) }}
+ * @var \{{ $generator->generatorForm->modelName }} ${{ $generator->generatorForm->getResourceName(false, true) }}
  *
  */
 
@@ -32,9 +32,9 @@ echo "<?php\n";
             <div class="card">
                 <div class="card-body">
                     <div class="pt-4">
-@foreach($viewGenerator->generatorForm->properties as $property)
-@if (!$property->inlet && $viewGenerator->renderedPropertyShowExist($property))
-                        {!!  $viewGenerator->getRenderedPropertyShow($property)  !!}
+@foreach($generator->generatorForm->properties as $property)
+@if (!$property->inlet && $generator->renderedPropertyShowExist($property))
+                        {!!  $generator->getRenderedPropertyShow($property)  !!}
 @endif
 @endforeach
                     </div>
@@ -44,8 +44,10 @@ echo "<?php\n";
                         <button class="btn btn-danger" data-toggle="tooltip" data-placement="top"
                                 title="<?= "{{ __('admin.actions.destroy') }}"?>">
                                 <?= "{{ __('admin.actions.destroy') }}"?>
+
                         </button>
                             <?= "{{ BsForm::close() }}"?>
+
                     </div>
                 </div>
             </div>

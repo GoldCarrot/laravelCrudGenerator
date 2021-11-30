@@ -25,7 +25,7 @@ class ServiceGenerator implements GeneratorInterface
         View::addNamespace('service', $path);
         $renderedModel = View::make('service')->with(
             [
-                'serviceGenerator' => $this,
+                'generator' => $this,
             ]);
         $filename = $this->generatorForm->resourceName . $this->generatorForm::$SERVICE_SUFFIX . ".php";
         $path = base_path(lcfirst($namespace));

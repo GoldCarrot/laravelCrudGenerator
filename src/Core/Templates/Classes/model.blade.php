@@ -3,66 +3,66 @@
  * This is the template for generating the model class of a specified table.
  */
 
-/* @var $modelGenerator \Chatway\LaravelCrudGenerator\Core\Generators\ModelGenerator */
-/* @var $modelGenerator->generatorForm->properties array list of properties (property => [type, name. comment]) */
+/* @var $generator \Chatway\LaravelCrudGenerator\Core\Generators\ModelGenerator */
+/* @var $generator->generatorForm->properties array list of properties (property => [type, name. comment]) */
 
 echo "<?php\n";
 ?>
-namespace {{ $modelGenerator->generatorForm->getNsByClassName($modelGenerator->generatorForm->modelName) }};
+namespace {{ $generator->generatorForm->getNsByClassName($generator->generatorForm->modelName) }};
 
 
-use {{ $modelGenerator->baseClass }};
+use {{ $generator->baseClass }};
 use Eloquent;
 <?php /** Начало прикрепления классов для внутренних ключей **/ ?>
 <?php $addedClasses = [] ?>
-@foreach($modelGenerator->generatorForm->internalForeignKeys as $internalForeignKey)
-@if ($internalForeignKey['className'] != $modelGenerator->generatorForm->modelName && !in_array($internalForeignKey['className'], $addedClasses))
+@foreach($generator->generatorForm->internalForeignKeys as $internalForeignKey)
+@if ($internalForeignKey['className'] != $generator->generatorForm->modelName && !in_array($internalForeignKey['className'], $addedClasses))
 @php($addedClasses[] = $internalForeignKey['className'])
 use {{ $internalForeignKey['className'] }};
 @endif
 @endforeach
 <?php /** Конец прикрепления классов для внутренних ключей **/ ?>
 <?php /** Начало прикрепления классов для внешних ключей **/ ?>
-@foreach($modelGenerator->generatorForm->externalForeignKeys as $externalForeignKey)
-@if ($externalForeignKey['className'] != $modelGenerator->generatorForm->modelName && !in_array($externalForeignKey['className'], $addedClasses))
+@foreach($generator->generatorForm->externalForeignKeys as $externalForeignKey)
+@if ($externalForeignKey['className'] != $generator->generatorForm->modelName && !in_array($externalForeignKey['className'], $addedClasses))
 @php($addedClasses[] = $externalForeignKey['className'])
 use {{ $externalForeignKey['className'] }};
 @endif
 @endforeach
 <?php /** Конец прикрепления классов для внешних ключей **/ ?>
-<?=  $modelGenerator->generatorForm->carbonIsset ? 'use Carbon\Carbon;' . "\n" : '' ?>
+<?=  $generator->generatorForm->carbonIsset ? 'use Carbon\Carbon;' . "\n" : '' ?>
 
 /**
- * This is the model class for table "{{ $modelGenerator->generatorForm->resourceTable }}".
- * Class {{ $modelGenerator->generatorForm->resourceName }}
+ * This is the model class for table "{{ $generator->generatorForm->resourceTable }}".
+ * Class {{ $generator->generatorForm->resourceName }}
  *
- * @package {{ $modelGenerator->generatorForm->modelName }}
+ * @package {{ $generator->generatorForm->modelName }}
  * @mixin Eloquent
-@foreach($modelGenerator->generatorForm->properties as $property)
- * @property {{ $modelGenerator->generatorForm->getFormattedProperty($property->type, $property->name) }}
+@foreach($generator->generatorForm->properties as $property)
+ * @property {{ $generator->generatorForm->getFormattedProperty($property->type, $property->name) }}
 @endforeach
  *
-@foreach($modelGenerator->generatorForm->internalForeignKeys as $internalForeignKey)
- * @property {{ $modelGenerator->generatorForm->getFormattedProperty(basename($internalForeignKey['className']), Str::singular($internalForeignKey['tableName'])) }}
+@foreach($generator->generatorForm->internalForeignKeys as $internalForeignKey)
+ * @property {{ $generator->generatorForm->getFormattedProperty(basename($internalForeignKey['className']), Str::singular($internalForeignKey['tableName'])) }}
 @endforeach
  *
-@foreach($modelGenerator->generatorForm->externalForeignKeys as $externalForeignKey)
- * @property {{ $modelGenerator->generatorForm->getFormattedProperty(basename($externalForeignKey['className']) .' []', Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className'])))) }}
+@foreach($generator->generatorForm->externalForeignKeys as $externalForeignKey)
+ * @property {{ $generator->generatorForm->getFormattedProperty(basename($externalForeignKey['className']) .' []', Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className'])))) }}
 @endforeach
 */
 
-class {{ $modelGenerator->generatorForm->resourceName }} extends {{ basename($modelGenerator->baseClass) }}
+class {{ $generator->generatorForm->resourceName }} extends {{ basename($generator->baseClass) }}
 {
-    protected $table = '{{ $modelGenerator->generatorForm->resourceTable }}';
-    {!!  count($modelGenerator->generatorForm->dateProperties) > 0 ? "\n    protected \$dates = ['" . implode("', '", $modelGenerator->generatorForm->dateProperties) . "'];" : "" !!}
-@foreach($modelGenerator->generatorForm->internalForeignKeys as $internalForeignKey)
+    protected $table = '{{ $generator->generatorForm->resourceTable }}';
+    {!!  count($generator->generatorForm->dateProperties) > 0 ? "\n    protected \$dates = ['" . implode("', '", $generator->generatorForm->dateProperties) . "'];" : "" !!}
+@foreach($generator->generatorForm->internalForeignKeys as $internalForeignKey)
 
     public function {{ Str::singular(str_replace('_id', '', $internalForeignKey['tableName'])) }}()
     {
         return $this->hasOne({{ basename($internalForeignKey['className']) }}::class, 'id', '{{ $internalForeignKey['columnName'] }}');
     }
 @endforeach
-@foreach($modelGenerator->generatorForm->externalForeignKeys as $externalForeignKey)
+@foreach($generator->generatorForm->externalForeignKeys as $externalForeignKey)
 
     public function {{ Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) }}()
     {

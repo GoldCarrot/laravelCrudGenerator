@@ -2,7 +2,7 @@
 /**
  * This is the template for generating the service class of a specified table.
  */
-/* @var $viewGenerator \Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm */
+/* @var $generator \Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm */
 /* @var $propertyDTO \Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO */
 
 //в классе File должен быть объявлен метод
@@ -17,7 +17,7 @@
                                 <?= "{{ Form::file('$propertyDTO->name', [
                                         'dropzone' => true,
                                         'hidden' => true,
-                                        'data-files' => '[' . (\${$viewGenerator->generatorForm->getResourceName(false, true)}->".Str::singular(str_replace('_id', '', $propertyDTO->classTable))."->infoForDZ ?? '') . ']',
+                                        'data-files' => '[' . (\${$generator->generatorForm->getResourceName(false, true)}->".Str::singular(str_replace('_id', '', $propertyDTO->classTable))."->infoForDZ ?? '') . ']',
                                 ]) }}" . PHP_EOL ?>
                             </div>
                         </div>

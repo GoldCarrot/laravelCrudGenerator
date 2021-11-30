@@ -29,7 +29,7 @@ class EnumGenerator implements GeneratorInterface
         View::addNamespace('enum', $pathTemplate);
         $renderedModel = View::make('enum')->with(
             [
-                'enumGenerator' => $this,
+                'generator' => $this,
             ]);
         $filename = $this->generatorForm->resourceName . ucfirst($this->enum->name) . ".php";
         $path = base_path(lcfirst($namespace));

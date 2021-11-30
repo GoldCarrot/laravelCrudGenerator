@@ -3,11 +3,11 @@
  * This is the template for generating the service class of a specified table.
  */
 
-/* @var $viewGenerator \Chatway\LaravelCrudGenerator\Core\Generators\ViewGenerator */
+/* @var $generator \Chatway\LaravelCrudGenerator\Core\Generators\ViewGenerator */
 /* @var $propertyDTO \Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO */
 $repository =
-    str_replace($viewGenerator->generatorForm::MODEL_FOLDER_NAME, $viewGenerator->generatorForm::REPOSITORY_FOLDER_NAME, $propertyDTO->class);
-$repository = '(new ' . $repository . $viewGenerator->generatorForm::REPOSITORY_SUFFIX . '())';
+    str_replace($generator->generatorForm::MODEL_FOLDER_NAME, $generator->generatorForm::REPOSITORY_FOLDER_NAME, $propertyDTO->class);
+$repository = '(new ' . $repository . $generator->generatorForm::REPOSITORY_SUFFIX . '())';
 ///////////Пример функции getArrayForSelect
 ///**
 // * @return Collection

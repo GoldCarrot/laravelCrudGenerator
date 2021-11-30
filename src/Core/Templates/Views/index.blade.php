@@ -3,11 +3,11 @@
  * This is the template for generating the controller class of a specified table.
  */
 
-/* @var $viewGenerator \Chatway\LaravelCrudGenerator\Core\Generators\ViewGenerator */
-/* @var $viewGenerator- >generatorForm->properties array list of properties (property => [type, name. comment]) */
-$variableName = $viewGenerator->generatorForm->getResourceName(false, true);
-$routeName = $viewGenerator->generatorForm->getResourceName(true, true);
-$modelName = $viewGenerator->generatorForm->modelName;
+/* @var $generator \Chatway\LaravelCrudGenerator\Core\Generators\ViewGenerator */
+/* @var $generator- >generatorForm->properties array list of properties (property => [type, name. comment]) */
+$variableName = $generator->generatorForm->getResourceName(false, true);
+$routeName = $generator->generatorForm->getResourceName(true, true);
+$modelName = $generator->generatorForm->modelName;
 ?>
 <?= "@extends('admin.layouts.app', ['title' => __('admin.menu.$variableName')])" ?>
 
