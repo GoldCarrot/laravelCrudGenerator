@@ -31,12 +31,12 @@ class GeneratorAllCommand extends Command
             $data =
                 [
                     'resourceTable'         => $tableName,
-                    'folderNs'                => $this->argument('folderNs'),
+                    'folderNs'              => $this->argument('folderNs'),
                     'defaultStatusGenerate' => !$this->option('def-status-off'),
                     'enumParams'            => $this->option('enum'),
                     'previewPaths'          => (bool)$this->option('previewPaths'),
                     'force'                 => (bool)$this->option('force'),
-                    'mainPath'                 => dirname(__DIR__),
+                    'mainPath'              => dirname(__DIR__),
                 ];
             try {
                 (new GeneratorHandler())->start(new MainParams($data));

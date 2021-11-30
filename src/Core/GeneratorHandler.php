@@ -51,7 +51,7 @@ class GeneratorHandler
             foreach ($viewList as $item) {
                 (new ViewGenerator($generatorForm, ['viewName' => $item]))->generate();
             }
-            //(new ControllerGenerator($generatorForm, new ControllerParams(['controllerName' => $generatorForm->controllerName])))->generate();
+
             $routeTemplates = (new GeneratorRouteTemplates())->getRoutes();
             foreach ($routeTemplates as $routeTemplate) {
                 (new RouteGenerator($generatorForm, new RouteParams($routeTemplate)))->generate();
