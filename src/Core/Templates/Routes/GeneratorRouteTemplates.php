@@ -8,14 +8,14 @@ class GeneratorRouteTemplates
         'admin' => [
             'template' => "<?php
 Route::resources([
-    '{{resourceTable}}' => '{{resourceName}}Controller',
+    '{{resourceTable}}' => '{{folderNs}}\{{resourceName}}Controller',
 ]);",
             'path'     => 'admin',
             'filename' => 'resource{{resourceName}}',
         ],
         'api'   => [
             'template' => "<?php
-Route::group(['prefix' => '{{resourceTable}}', 'namespace' => '{{resourceName}}'], function () {
+Route::group(['prefix' => '{{resourceTable}}', 'namespace' => '{{folderNs}}'], function () {
     Route::get('show', '{{resourceName}}Controller@show');
     Route::get('index', '{{resourceName}}Controller@index');
 });",

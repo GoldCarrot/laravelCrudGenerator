@@ -20,6 +20,7 @@ class RouteGenerator implements GeneratorInterface
         $variables = [
             'resourceTable'   => $this->generatorForm->resourceTable,
             'resourceName'    => $this->generatorForm->resourceName,
+            'folderNs'    => $this->generatorForm->folderNs,
         ];
         $renderedModel = $this->routeParams->template;
         $renderedModel = $this->replaceVariables($renderedModel, $variables);
