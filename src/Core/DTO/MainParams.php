@@ -17,6 +17,7 @@ class MainParams
     public bool   $previewPaths;
     public bool   $force;
     public string $mainPath;
+    public array $generateList;
 
     public function __construct($data)
     {
@@ -27,6 +28,7 @@ class MainParams
         $this->previewPaths = \Arr::get($data, 'previewPaths', false);
         $this->force = \Arr::get($data, 'force', false);
         $this->mainPath = \Arr::get($data, 'mainPath', null);
+        $this->generateList = \Arr::get($data, 'generateList', []);
         if (!$this->mainPath) {
             ConsoleHelper::error('Main path is not null');
             die;

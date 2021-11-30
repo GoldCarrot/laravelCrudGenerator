@@ -51,12 +51,12 @@ class GeneratorForm
     /** Свойства и ключи модели начало */
     public array $properties;
     public array $columns;
-    public bool  $carbonIsset          = false;
-    public bool  $statusIsset          = false;
-    public array $internalForeignKeys  = [];
+    public bool  $carbonIsset         = false;
+    public bool  $statusIsset         = false;
+    public array $internalForeignKeys = [];
     public array $externalForeignKeys = [];
-    public int   $spaceForProperties   = 0;
-    public array $dateProperties       = [];
+    public int   $spaceForProperties  = 0;
+    public array $dateProperties      = [];
     /** Свойства и ключи модели конец */
 
     /** Параметры Enum начало */
@@ -69,15 +69,17 @@ class GeneratorForm
     /** Параметры View конец */
 
     /** Общие параметры начало */
-    public bool $force;
+    public bool   $force;
     public string $mainPath;
-    public bool $testMode = false;
+    public bool   $testMode     = false;
+    public array  $generateList = [];
     /** Общие параметры конец */
     protected ForeignKeyService $foreignKeyService;
 
     public function __construct(MainParams $mainParams, ForeignKeyService $foreignKeyService)
     {
         $this->enums = $mainParams->enums;
+        $this->generateList = $mainParams->generateList;
         $this->foreignKeyService = $foreignKeyService;
         $this->setResourceTable($mainParams->resourceTable);
         $this->resourceName = $mainParams->resourceName;
@@ -128,17 +130,31 @@ class GeneratorForm
         }
 
         if ($mainParams->previewPaths) {
-            ConsoleHelper::info($this->modelName);
-            foreach ($this->controllers as $controller) {
-                ConsoleHelper::info($controller->controllerName);
+            if (count($this->generateList) == 0 || in_array('model', $this->generateList)) {
+                ConsoleHelper::info($this->modelName);
             }
-            ConsoleHelper::info($this->presenterName);
-            ConsoleHelper::info($this->repositoryName);
-            ConsoleHelper::info($this->serviceName);
-            foreach ($this->enums as $enum) {
-                ConsoleHelper::info($enum->enumName);
+            if (count($this->generateList) == 0 || in_array('controller', $this->generateList)) {
+                foreach ($this->controllers as $controller) {
+                    ConsoleHelper::info($controller->controllerName);
+                }
             }
-            ConsoleHelper::info($this->viewsPath);
+            if (count($this->generateList) == 0) {
+                ConsoleHelper::info($this->presenterName);
+            }
+            if (count($this->generateList) == 0) {
+                ConsoleHelper::info($this->repositoryName);
+            }
+            if (count($this->generateList) == 0) {
+                ConsoleHelper::info($this->serviceName);
+            }
+            if (count($this->generateList) == 0) {
+                foreach ($this->enums as $enum) {
+                    ConsoleHelper::info($enum->enumName);
+                }
+            }
+            if (count($this->generateList) == 0) {
+                ConsoleHelper::info($this->viewsPath);
+            }
         }
         $this->force = $mainParams->force;
         $this->mainPath = $mainParams->mainPath;

@@ -34,27 +34,39 @@ class GeneratorHandler
         }
 
         if (!$mainParams->previewPaths) {
-            (new ModelGenerator($generatorForm))->generate();
-
-            foreach ($generatorForm->controllers as $controller) {
-                (new ControllerGenerator($generatorForm, $controller))->generate();
+            if (count($generatorForm->generateList) == 0 || in_array('model', $generatorForm->generateList)) {
+                (new ModelGenerator($generatorForm))->generate();
             }
-
-            (new RepositoryGenerator($generatorForm))->generate();
-            (new ServiceGenerator($generatorForm))->generate();
-            (new PresenterGenerator($generatorForm))->generate();
-            foreach ($generatorForm->enums as $enum) {
-                (new EnumGenerator($generatorForm, $enum))->generate();
+            if (count($generatorForm->generateList) == 0 || in_array('controller', $generatorForm->generateList)) {
+                foreach ($generatorForm->controllers as $controller) {
+                    (new ControllerGenerator($generatorForm, $controller))->generate();
+                }
             }
-
-            $viewList = ['create', 'form', 'index', 'show', 'update'];
-            foreach ($viewList as $item) {
-                (new ViewGenerator($generatorForm, ['viewName' => $item]))->generate();
+            if (count($generatorForm->generateList) == 0) {
+                (new RepositoryGenerator($generatorForm))->generate();
             }
-
-            $routeTemplates = (new GeneratorRouteTemplates())->getRoutes();
-            foreach ($routeTemplates as $routeTemplate) {
-                (new RouteGenerator($generatorForm, new RouteParams($routeTemplate)))->generate();
+            if (count($generatorForm->generateList) == 0) {
+                (new ServiceGenerator($generatorForm))->generate();
+            }
+            if (count($generatorForm->generateList) == 0) {
+                (new PresenterGenerator($generatorForm))->generate();
+            }
+            if (count($generatorForm->generateList) == 0) {
+                foreach ($generatorForm->enums as $enum) {
+                    (new EnumGenerator($generatorForm, $enum))->generate();
+                }
+            }
+            if (count($generatorForm->generateList) == 0) {
+                $viewList = ['create', 'form', 'index', 'show', 'update'];
+                foreach ($viewList as $item) {
+                    (new ViewGenerator($generatorForm, ['viewName' => $item]))->generate();
+                }
+            }
+            if (count($generatorForm->generateList) == 0) {
+                $routeTemplates = (new GeneratorRouteTemplates())->getRoutes();
+                foreach ($routeTemplates as $routeTemplate) {
+                    (new RouteGenerator($generatorForm, new RouteParams($routeTemplate)))->generate();
+                }
             }
         }
 
