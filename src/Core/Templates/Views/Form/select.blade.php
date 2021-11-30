@@ -6,8 +6,9 @@
 /* @var $generator \Chatway\LaravelCrudGenerator\Core\Generators\ViewGenerator */
 /* @var $propertyDTO \Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO */
 $repository =
-    str_replace($generator->generatorForm::MODEL_FOLDER_NAME, $generator->generatorForm::REPOSITORY_FOLDER_NAME, $propertyDTO->class);
-$repository = '(new ' . $repository . $generator->generatorForm::REPOSITORY_SUFFIX . '())';
+    str_replace($generator->generatorForm::$MODEL_FOLDER_NAME, $generator->generatorForm::$REPOSITORY_FOLDER_NAME, $propertyDTO->class);
+$repository = '(new ' . $repository . $generator->generatorForm::$REPOSITORY_SUFFIX . '())';
+$name = str_replace('_id', '', $propertyDTO->name);
 ///////////Пример функции getArrayForSelect
 ///**
 // * @return Collection
@@ -21,6 +22,6 @@ $repository = '(new ' . $repository . $generator->generatorForm::REPOSITORY_SUFF
 ?>
 <?= "{{ BsForm::select('$propertyDTO->name')
                                 ->value(old('$propertyDTO->name', {$repository}->getArrayForSelect()))
-                                ->placeholder(__('admin.columns.{$propertyDTO->getNameForSelect()}'))
-                                ->label(__('admin.columns.{$propertyDTO->getNameForSelect()}'))
+                                ->placeholder(__('admin.columns.$name'))
+                                ->label(__('admin.columns.$name'))
                         }}" . PHP_EOL ?>
