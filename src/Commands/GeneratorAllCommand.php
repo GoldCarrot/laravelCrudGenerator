@@ -13,7 +13,7 @@ class GeneratorAllCommand extends Command
     {table : Таблица в БД} 
     {folderNs? : Базовый namespace папки \App\Domain\{folderNs}\[Entities,repositories]} 
     {--def-status-off : Генерация Enum Status со стандартными текстовыми статусами active, inactive, deleted }
-    {--enum : Генерация Enum файлов, пример: ="type-sport,home,work;status-active,inactive,deleted"}
+    {--enum="" : Генерация Enum файлов, пример: ="type-sport,home,work;status-active,inactive,deleted"}
     {--force : Удаляет файлы, и записывает новые, иначе пропускаются файлы}
     {--previewPaths : Показывает все пути }
     ';
