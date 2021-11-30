@@ -51,14 +51,14 @@ class GeneratorForm
     public string $folderNs  = '';
 
     /** Свойства и ключи модели начало */
-    public $properties;
-    public $columns;
-    public $carbonIsset          = false;
-    public $statusIsset          = false;
-    public $internalForeignKeys  = [];
-    public $extrernalForeignKeys = [];
-    public $spaceForProperties   = 0;
-    public $dateProperties       = [];
+    public array $properties;
+    public array $columns;
+    public bool  $carbonIsset          = false;
+    public bool  $statusIsset          = false;
+    public array $internalForeignKeys  = [];
+    public array $externalForeignKeys = [];
+    public int   $spaceForProperties   = 0;
+    public array $dateProperties       = [];
     /** Свойства и ключи модели конец */
 
     /** Параметры Enum начало */
@@ -116,9 +116,12 @@ class GeneratorForm
             'baseClass'      => 'App\Http\Api\Controllers\Controller',
         ]);
         $this->controllers['controllerApi'] = $controller;
-        $this->repositoryName = $this->baseNs . $this->folderNs . '\\' . self::$REPOSITORY_FOLDER_NAME . '\\' . $this->resourceName . self::$REPOSITORY_SUFFIX;
-        $this->serviceName = $this->baseNs . $this->folderNs . '\\' . self::$SERVICE_FOLDER_NAME . '\\' . $this->resourceName . self::$SERVICE_SUFFIX;
-        $this->presenterName = $this->httpApiNs . self::$PRESENTER_FOLDER_NAME . '\\' . $this->folderNs . '\\' . $this->resourceName . self::$PRESENTER_SUFFIX;
+        $this->repositoryName = $this->baseNs . $this->folderNs . '\\' . self::$REPOSITORY_FOLDER_NAME . '\\' . $this->resourceName
+                                . self::$REPOSITORY_SUFFIX;
+        $this->serviceName =
+            $this->baseNs . $this->folderNs . '\\' . self::$SERVICE_FOLDER_NAME . '\\' . $this->resourceName . self::$SERVICE_SUFFIX;
+        $this->presenterName = $this->httpApiNs . self::$PRESENTER_FOLDER_NAME . '\\' . $this->folderNs . '\\' . $this->resourceName
+                               . self::$PRESENTER_SUFFIX;
 
 
         $this->viewsPath = self::getSafeEnv('GENERATOR_VIEWS_PATH') ??
@@ -228,7 +231,7 @@ class GeneratorForm
                 }
             }
         }
-        $this->extrernalForeignKeys = $keys;
+        $this->externalForeignKeys = $keys;
     }
 
     private function generateProperties($tableName)
@@ -308,7 +311,7 @@ class GeneratorForm
                 $this->spaceForProperties = strlen(class_basename($property['className']));
             }
         }
-        foreach ($this->extrernalForeignKeys as $property) {
+        foreach ($this->externalForeignKeys as $property) {
             if ($this->spaceForProperties < strlen(class_basename($property['className']) . ' []')) {
                 $this->spaceForProperties = strlen(class_basename($property['className']) . ' []');
             }

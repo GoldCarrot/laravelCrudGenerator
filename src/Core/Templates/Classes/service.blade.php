@@ -50,7 +50,7 @@ class {{ basename($serviceGenerator->generatorForm->serviceName) }} extends {{ b
 
         $model->saveOrFail();
 
-@foreach($serviceGenerator->generatorForm->extrernalForeignKeys as $externalForeignKey)
+@foreach($serviceGenerator->generatorForm->externalForeignKeys as $externalForeignKey)
 if (isset($data['{!! Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) !!}List'])) {
             $model->{!! Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) !!}()->detach($model->{!! Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) !!});
             $model->{!! Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) !!}()->attach($data['{!! Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) !!}List']);

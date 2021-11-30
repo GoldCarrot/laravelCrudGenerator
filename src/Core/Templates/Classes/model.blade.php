@@ -23,7 +23,7 @@ use {{ $internalForeignKey['className'] }};
 @endforeach
 <?php /** Конец прикрепления классов для внутренних ключей **/ ?>
 <?php /** Начало прикрепления классов для внешних ключей **/ ?>
-@foreach($modelGenerator->generatorForm->extrernalForeignKeys as $externalForeignKey)
+@foreach($modelGenerator->generatorForm->externalForeignKeys as $externalForeignKey)
 @if ($externalForeignKey['className'] != $modelGenerator->generatorForm->modelName && !in_array($externalForeignKey['className'], $addedClasses))
 @php($addedClasses[] = $externalForeignKey['className'])
 use {{ $externalForeignKey['className'] }};
@@ -46,7 +46,7 @@ use {{ $externalForeignKey['className'] }};
  * @property {{ $modelGenerator->generatorForm->getFormattedProperty(basename($internalForeignKey['className']), Str::singular($internalForeignKey['tableName'])) }}
 @endforeach
  *
-@foreach($modelGenerator->generatorForm->extrernalForeignKeys as $externalForeignKey)
+@foreach($modelGenerator->generatorForm->externalForeignKeys as $externalForeignKey)
  * @property {{ $modelGenerator->generatorForm->getFormattedProperty(basename($externalForeignKey['className']) .' []', Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className'])))) }}
 @endforeach
 */
@@ -62,7 +62,7 @@ class {{ $modelGenerator->generatorForm->resourceName }} extends {{ basename($mo
         return $this->hasOne({{ basename($internalForeignKey['className']) }}::class, 'id', '{{ $internalForeignKey['columnName'] }}');
     }
 @endforeach
-@foreach($modelGenerator->generatorForm->extrernalForeignKeys as $externalForeignKey)
+@foreach($modelGenerator->generatorForm->externalForeignKeys as $externalForeignKey)
 
     public function {{ Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) }}()
     {

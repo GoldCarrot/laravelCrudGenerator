@@ -14,9 +14,9 @@ class MainParams
     public string $resourceName;
     public mixed  $folderNs;
     public array  $enums;
-    public       $previewPaths;
-    public       $force;
-    public       $mainPath;
+    public bool   $previewPaths;
+    public bool   $force;
+    public string $mainPath;
 
     public function __construct($data)
     {

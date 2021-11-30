@@ -33,13 +33,4 @@ class PropertyDTO
         $this->classTable = Arr::get($data, 'classTable');
         $this->isEnum = Arr::get($data, 'isEnum', false);
     }
-
-    public function getNameForSelect()
-    {
-        return str_replace('_id', '', $this->name);
-    }
-
-    public function getForModel()
-    {
-    }
 }
