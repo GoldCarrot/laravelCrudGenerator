@@ -10,8 +10,8 @@ use View;
 
 class ServiceGenerator implements GeneratorInterface
 {
-    public $baseClass = 'App\Base\Services\BaseService';
-    public $baseInterface = 'App\Base\Interfaces\ManageServiceInterface';
+    public string $baseClass = 'App\Base\Services\BaseService';
+    public string $baseInterface = 'App\Base\Interfaces\ManageServiceInterface';
 
     public function __construct(public GeneratorForm $generatorForm)
     {
@@ -19,7 +19,7 @@ class ServiceGenerator implements GeneratorInterface
 
     public function generate()
     {
-        $namespace = $this->generatorForm->getServiceNs();
+        $namespace = class_namespace($this->generatorForm->serviceName);
         $path = $this->generatorForm->mainPath . '/Core/Templates/Classes';
         View::addLocation($path);
         View::addNamespace('service', $path);
@@ -27,7 +27,7 @@ class ServiceGenerator implements GeneratorInterface
             [
                 'serviceGenerator' => $this,
             ]);
-        $filename = $this->generatorForm->resourceName . $this->generatorForm::SERVICE_SUFFIX . ".php";
+        $filename = $this->generatorForm->resourceName . $this->generatorForm::$SERVICE_SUFFIX . ".php";
         $path = base_path(lcfirst($namespace));
         if (!File::isDirectory($path)) {
             File::makeDirectory($path, 0777, true, true);
@@ -41,22 +41,13 @@ class ServiceGenerator implements GeneratorInterface
                 ConsoleHelper::error('Service generate error!');
             }
         } else {
-            ConsoleHelper::info('Service is exists! Add --force option to overwrite Service!');
+            ConsoleHelper::warning('Service is exists! Add --force option to overwrite Service!');
         }
-    }
-
-    public function getBaseClassWithNs()
-    {
-        return $this->baseClassNs . $this->baseClass;
-    }
-
-    public function getBaseInterfaceWithNs()
-    {
-        return $this->baseInterfaceNs . '\\' . $this->baseInterface;
     }
 
     public function getFormattedProperty($property)
     {
+
         return "\$model->{$property->name} = Arr::get(\$data, '{$property->name}', \$model->{$property->name});";
     }
 }

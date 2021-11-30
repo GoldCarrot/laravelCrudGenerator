@@ -10,7 +10,7 @@ use View;
 
 class ModelGenerator implements GeneratorInterface
 {
-    public $baseClass = 'App\Base\Models\BaseModel';
+    public string $baseClass = 'App\Base\Models\BaseModel';
 
     public function __construct(public GeneratorForm $generatorForm)
     {
@@ -18,7 +18,7 @@ class ModelGenerator implements GeneratorInterface
 
     public function generate()
     {
-        $namespace = $this->generatorForm->getNsByClassName($this->generatorForm->modelName);
+        $namespace = class_namespace($this->generatorForm->modelName);
         $path = $this->generatorForm->mainPath . '/Core/Templates/Classes';
         View::addLocation($path);
         View::addNamespace('model', $path);
@@ -39,7 +39,7 @@ class ModelGenerator implements GeneratorInterface
                 ConsoleHelper::error('Model generate error!');
             }
         } else {
-            ConsoleHelper::info('Model is exists! Add --force option to overwrite Model!');
+            ConsoleHelper::warning('Model is exists! Add --force option to overwrite Model!');
         }
     }
 }

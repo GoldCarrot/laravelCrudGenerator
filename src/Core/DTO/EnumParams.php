@@ -3,9 +3,6 @@
 namespace Chatway\LaravelCrudGenerator\Core\DTO;
 
 /**
- * This is the model class for table "event".
- * Class Event
- *
  * @package  Chatway\LaravelCrudGenerator\Core\DTO\EnumParams
  */
 class EnumParams

@@ -11,8 +11,7 @@ class GeneratorAllCommand extends Command
 {
     protected $signature = 'gen:all 
     {table : Таблица в БД} 
-    {baseNs? : Базовый namespace (entities, repositories, services...)} 
-    {httpNs? : Namespace для контроллера}
+    {folderNs? : Базовый namespace папки \App\Domain\{folderNs}\[Entities,repositories]} 
     {--def-status-off : Генерация Enum Status со стандартными текстовыми статусами active, inactive, deleted }
     {--enum : Генерация Enum файлов, пример: ="type-sport,home,work;status-active,inactive,deleted"}
     {--force : Удаляет файлы, и записывает новые, иначе пропускаются файлы}
@@ -32,8 +31,7 @@ class GeneratorAllCommand extends Command
             $data =
                 [
                     'resourceTable'         => $tableName,
-                    'baseNs'                => $this->argument('baseNs'),
-                    'httpNs'                => $this->argument('httpNs'),
+                    'folderNs'                => $this->argument('folderNs'),
                     'defaultStatusGenerate' => !$this->option('def-status-off'),
                     'enumParams'            => $this->option('enum'),
                     'previewPaths'          => (bool)$this->option('previewPaths'),

@@ -38,10 +38,15 @@ class {{ basename($serviceGenerator->generatorForm->serviceName) }} extends {{ b
     public function update({{ $serviceGenerator->generatorForm->resourceName }}|Model $model, array $data): {{ $serviceGenerator->generatorForm->resourceName }}
     {
 @foreach($serviceGenerator->generatorForm->properties as $property)
-@if(!$property->inlet)
-{!! $serviceGenerator->getFormattedProperty($property) !!}
+@if(($property->name == 'alias' || $property->name == 'slug') && isset($serviceGenerator->generatorForm->properties['title']))
+        {!! "\$model->{$property->name} = Arr::get(\$data, '$property->name', \$model->$property->name) ?: \$this->slug(\$model, \$model->title, \$model->id, '$property->name');" !!}
+@continue
 @endif
-        @endforeach
+@if(!$property->inlet)
+        {!! "\$model->{$property->name} = Arr::get(\$data, '{$property->name}', \$model->{$property->name});" !!}
+@continue
+@endif
+@endforeach
 
         $model->saveOrFail();
 

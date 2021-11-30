@@ -41,4 +41,16 @@ class {{ basename($repositoryGenerator->generatorForm->repositoryName) }} extend
         return {{ $repositoryGenerator->generatorForm->resourceName }}::class;
     }
 
+    public function getLast($limit = 15)
+    {
+        return $this->active()->latest('columnName')->orderBy('columnName', 'ASC')->orderBy('id', 'DESC')->limit($limit)->get();
+    }
+@if (isset($repositoryGenerator->generatorForm->properties['alias']) || isset($repositoryGenerator->generatorForm->properties['slug']))
+<?php $field = $repositoryGenerator->generatorForm->properties['alias']->name ?? $repositoryGenerator->generatorForm->properties['slug']->name ?>
+
+    public function getBy{{ucfirst($field)}}(${{$field}})
+    {
+        return $this->active()->where('{{$field}}', '=', ${{$field}})->first();
+    }
+@endif
 }

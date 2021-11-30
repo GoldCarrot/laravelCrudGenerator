@@ -10,10 +10,9 @@ use View;
 
 class RepositoryGenerator implements GeneratorInterface
 {
-    const FOLDER_NAME = 'Repositories';
-    public $baseClass     = 'App\Base\Repositories\BaseEloquentRepository';
-    public $baseInterface = 'App\Base\Interfaces\DataProviderInterface';
-    public $traits = ['App\Base\Traits\DataProviderTrait'];
+    public string $baseClass     = 'App\Base\Repositories\BaseEloquentRepository';
+    public string $baseInterface = 'App\Base\Interfaces\DataProviderInterface';
+    public array $traits = ['App\Base\Traits\DataProviderTrait'];
 
     public function __construct(public GeneratorForm $generatorForm)
     {
@@ -21,7 +20,7 @@ class RepositoryGenerator implements GeneratorInterface
 
     public function generate()
     {
-        $namespace = $this->generatorForm->getRepositoryNs();
+        $namespace = class_namespace($this->generatorForm->repositoryName);
         $path = $this->generatorForm->mainPath . '/Core/Templates/Classes';
         View::addLocation($path);
         View::addNamespace('repository', $path);
@@ -43,22 +42,7 @@ class RepositoryGenerator implements GeneratorInterface
                 ConsoleHelper::error('Repository generate error!');
             }
         } else {
-            ConsoleHelper::info('Repository is exists! Add --force option to overwrite Repository!');
+            ConsoleHelper::warning('Repository is exists! Add --force option to overwrite Repository!');
         }
-    }
-
-    public function getFullName()
-    {
-        return $this->generatorForm->baseNs . $this::FOLDER_NAME . '\\' . $this->generatorForm->resourceName;
-    }
-
-    public function getModelNs()
-    {
-        return $this->generatorForm->baseNs . $this::FOLDER_NAME;
-    }
-
-    public function getBaseClassWithNs()
-    {
-        return $this->baseClassNs . $this->baseClass;
     }
 }

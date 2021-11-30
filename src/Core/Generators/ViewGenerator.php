@@ -23,7 +23,6 @@ class ViewGenerator implements GeneratorInterface
 
     public function generate()
     {
-        $namespace = $this->generatorForm->getEnumNs();
         $path = $this->generatorForm->mainPath . '/Core/Templates/Views';
         View::addLocation($path);
         View::addNamespace($this->viewName, $path);
@@ -31,7 +30,7 @@ class ViewGenerator implements GeneratorInterface
             [
                 'viewGenerator' => $this,
             ]);
-        $filename = $this->viewName . $this->generatorForm::VIEW_FILE_SUFFIX;
+        $filename = $this->viewName . $this->generatorForm::$VIEW_FILE_SUFFIX;
         $path = resource_path($this->generatorForm->viewsPath);
         if (!File::isDirectory($path)) {
             File::makeDirectory($path, 0777, true, true);
@@ -39,23 +38,13 @@ class ViewGenerator implements GeneratorInterface
         if (!File::exists($path . '\\' . $filename) || $this->generatorForm->force) {
             File::delete($path . '\\' . $filename);
             if (File::put($path . '\\' . $filename, $renderedModel) !== false) {
-                ConsoleHelper::info("View $this->viewName generated! Path in app: " . lcfirst($namespace) . '\\' . $filename);
+                ConsoleHelper::info("View $this->viewName generated! Path in app: " . $path . '\\' . $filename);
             } else {
                 ConsoleHelper::error("View $this->viewName generate error!");
             }
         } else {
-            ConsoleHelper::info("View $this->viewName is exists! Add --force option to overwrite View!");
+            ConsoleHelper::warning("View $this->viewName is exists! Add --force option to overwrite View!");
         }
-    }
-
-    public function getBaseClassWithNs()
-    {
-        return $this->baseClassNs . '\\' . $this->baseClass;
-    }
-
-    public function getFormattedProperty($property)
-    {
-        return "\$model->{$property['name']} = Arr::get(\$data, '{$property['name']}', \$model->{$property['name']});";
     }
 
     public function renderedPropertyFormExist(PropertyDTO $propertyDTO)
@@ -73,9 +62,6 @@ class ViewGenerator implements GeneratorInterface
     {
         $path = $this->generatorForm->mainPath . '/Core/Templates/Views/Form';
         view()->addLocation($path);
-        if ($propertyDTO->name == 'status'){
-            //dd($propertyDTO);
-        }
         if ($propertyDTO->isEnum) {
             view()->addNamespace('selectEnum', $path);
             return view()->make('selectEnum')->with(
@@ -109,6 +95,9 @@ class ViewGenerator implements GeneratorInterface
                         'viewGenerator' => $this,
                     ]);
             }
+            /**
+            Если не Image и не File, то выбор элемента один к одному
+             */
             return view()->make('select')->with(
                 [
                     'propertyDTO'   => $propertyDTO,

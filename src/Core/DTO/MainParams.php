@@ -10,11 +10,10 @@ use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ColumnService;
  */
 class MainParams
 {
-    public       $resourceTable;
-    public       $resourceName;
-    public       $baseNs;
-    public       $httpNs;
-    public array $enums;
+    public mixed  $resourceTable;
+    public string $resourceName;
+    public mixed  $folderNs;
+    public array  $enums;
     public       $previewPaths;
     public       $force;
     public       $mainPath;
@@ -23,9 +22,8 @@ class MainParams
     {
         $this->resourceTable = \Arr::get($data, 'resourceTable');
         $this->resourceName = ucfirst(\Str::camel($this->resourceTable));
-        $this->baseNs = \Arr::get($data, 'baseNs');
-        $this->httpNs = \Arr::get($data, 'httpNs');
-        $this->enums = $this->getEnums(\Arr::get($data, 'baseNs'), \Arr::get($data, 'defaultStatusGenerate', false));
+        $this->folderNs = \Arr::get($data, 'folderNs');
+        $this->enums = $this->getEnums(\Arr::get($data, 'folderNs'), \Arr::get($data, 'defaultStatusGenerate', false));
         $this->previewPaths = \Arr::get($data, 'previewPaths', false);
         $this->force = \Arr::get($data, 'force', false);
         $this->mainPath = \Arr::get($data, 'mainPath', null);

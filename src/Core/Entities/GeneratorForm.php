@@ -2,6 +2,7 @@
 
 namespace Chatway\LaravelCrudGenerator\Core\Entities;
 
+use Chatway\LaravelCrudGenerator\Core\DTO\ControllerParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\EnumParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\MainParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
@@ -21,28 +22,33 @@ use Str;
  */
 class GeneratorForm
 {
-    const MODEL_FOLDER_NAME      = 'Entities';
-    const REPOSITORY_FOLDER_NAME = 'Repositories';
-    const ENUM_FOLDER_NAME       = 'Enums';
-    const SERVICE_FOLDER_NAME    = 'Services';
-    const REPOSITORY_SUFFIX      = 'Repository';
-    const CONTROLLER_SUFFIX      = 'Controller';
-    const SERVICE_SUFFIX         = 'Service';
-    const ENUM_STATUS_SUFFIX     = 'Status';
-    const VIEW_FILE_SUFFIX       = '.blade.php';
+    public static string $MODEL_FOLDER_NAME      = 'Entities';
+    public static string $REPOSITORY_FOLDER_NAME = 'Repositories';
+    public static string $ENUM_FOLDER_NAME       = 'Enums';
+    public static string $VIEW_FILE_SUFFIX       = '.blade.php';
+    public static string $SERVICE_FOLDER_NAME    = 'Services';
+    public static string $PRESENTER_FOLDER_NAME  = 'Presenters';
 
-    public $resourceTable;
+    public static string $PRESENTER_SUFFIX  = 'Presenter';
+    public static string $SERVICE_SUFFIX    = 'Service';
+    public static string $REPOSITORY_SUFFIX = 'Repository';
+    public static string $CONTROLLER_SUFFIX = 'Controller';
 
-    public $resourceName;
+    public string $resourceTable;
+    public string $resourceName;
 
-    public $modelName;
-    public $controllerName;
-    public $repositoryName;
-    public $serviceName;
-    public $enumName;
+    public string $modelName;
+    public array  $controllers = [];
+    //public $apiControllerName;
+    public string $repositoryName;
+    public string $serviceName;
+    public string $enumName;
+    public string $presenterName;
 
-    public $baseNs = 'App\Domain';
-    public $httpNs = 'App\Http\Admin\Controllers';
+    public string $baseNs    = 'App\Domain';
+    public string $httpNs    = 'App\Http\Admin';
+    public string $httpApiNs = 'App\Http\Api';
+    public string $folderNs  = '';
 
     /** Свойства и ключи модели начало */
     public $properties;
@@ -76,45 +82,59 @@ class GeneratorForm
 
     public function __construct(MainParams $mainParams, ForeignKeyService $foreignKeyService)
     {
-        $this->testMode = self::getSafeEnv('GENERATOR_TEST_MODE') ?? false;
         $this->enums = $mainParams->enums;
         $this->foreignKeyService = $foreignKeyService;
         $this->setResourceTable($mainParams->resourceTable);
         $this->resourceName = $mainParams->resourceName;
+        $this->folderNs = $mainParams->folderNs ?? $this->resourceName;
 
-        $this->baseNs = self::getSafeEnv('GENERATOR_BASE_NS') ??
-                        ($mainParams->baseNs ?? $this->baseNs . '\\' . ($this->testMode ? 'Test' : $this->resourceName) . '\\');
-
-        $this->httpNs = self::getSafeEnv('GENERATOR_HTTP_NS') ??
-                        ($mainParams->httpNs ?? $this->httpNs . '\\' . ($this->testMode ? 'Test' : $this->resourceName) . '\\');
+        $this->initEnv();
 
         if (substr($this->httpNs, -1, 1) != '\\') {
             $this->httpNs .= '\\';
+        }
+        if (substr($this->httpApiNs, -1, 1) != '\\') {
+            $this->httpApiNs .= '\\';
         }
         if (substr($this->baseNs, -1, 1) != "\\") {
             $this->baseNs .= '\\';
         }
 
-        $this->modelName =
-            $this->baseNs . (self::getSafeEnv('GENERATOR_MODEL_FOLDER_NAME') ?? self::MODEL_FOLDER_NAME) . '\\' . $this->resourceName;
-        $this->controllerName =
-            $this->httpNs . $this->resourceName . (self::getSafeEnv('GENERATOR_CONTROLLER_SUFFIX') ?? self::CONTROLLER_SUFFIX);
-        $this->repositoryName =
-            $this->baseNs . (self::getSafeEnv('GENERATOR_REPOSITORY_FOLDER_NAME') ?? self::REPOSITORY_FOLDER_NAME) . '\\'
-            . $this->resourceName . (self::getSafeEnv('GENERATOR_REPOSITORY_SUFFIX') ?? self::REPOSITORY_SUFFIX);
-        $this->serviceName = $this->baseNs . (self::getSafeEnv('GENERATOR_SERVICE_FOLDER_NAME') ?? self::SERVICE_FOLDER_NAME) . '\\'
-                             . $this->resourceName . (self::getSafeEnv('GENERATOR_SERVICE_SUFFIX') ?? self::SERVICE_SUFFIX);
+        $this->modelName = $this->baseNs . $this->folderNs . '\\' . self::$MODEL_FOLDER_NAME . '\\' . $this->resourceName;
+        $controller = new ControllerParams([
+            'controllerName' => $this->httpNs . 'Controllers\\' . $this->folderNs . '\\' . $this->resourceName
+                                . self::$CONTROLLER_SUFFIX,
+            'templateName'   => 'controllerAdmin',
+            'baseClass'      => 'App\Http\Admin\Controllers\ResourceController',
+        ]);
+
+        $this->controllers['controllerAdmin'] = $controller;
+        $controller = new ControllerParams([
+            'controllerName' => $this->httpApiNs . 'Controllers\\' . $this->folderNs . '\\' . $this->resourceName
+                                . self::$CONTROLLER_SUFFIX,
+            'templateName'   => 'controllerApi',
+            'baseClass'      => 'App\Http\Api\Controllers\Controller',
+        ]);
+        $this->controllers['controllerApi'] = $controller;
+        $this->repositoryName = $this->baseNs . $this->folderNs . '\\' . self::$REPOSITORY_FOLDER_NAME . '\\' . $this->resourceName . self::$REPOSITORY_SUFFIX;
+        $this->serviceName = $this->baseNs . $this->folderNs . '\\' . self::$SERVICE_FOLDER_NAME . '\\' . $this->resourceName . self::$SERVICE_SUFFIX;
+        $this->presenterName = $this->httpApiNs . self::$PRESENTER_FOLDER_NAME . '\\' . $this->folderNs . '\\' . $this->resourceName . self::$PRESENTER_SUFFIX;
+
+
         $this->viewsPath = self::getSafeEnv('GENERATOR_VIEWS_PATH') ??
                            'views\admin\\' . Str::pluralStudly(lcfirst(class_basename($this->resourceName)));
 
         foreach ($this->enums as $enum) {
-            $enum->enumName = $this->baseNs . self::ENUM_FOLDER_NAME . '\\' . $this->resourceName
+            $enum->enumName = $this->baseNs . $this->folderNs . '\\' . self::$ENUM_FOLDER_NAME . '\\' . $this->resourceName
                               . ucfirst($enum->name);
         }
 
         if ($mainParams->previewPaths) {
             ConsoleHelper::info($this->modelName);
-            ConsoleHelper::info($this->controllerName);
+            foreach ($this->controllers as $controller) {
+                ConsoleHelper::info($controller->controllerName);
+            }
+            ConsoleHelper::info($this->presenterName);
             ConsoleHelper::info($this->repositoryName);
             ConsoleHelper::info($this->serviceName);
             foreach ($this->enums as $enum) {
@@ -126,7 +146,23 @@ class GeneratorForm
         $this->mainPath = $mainParams->mainPath;
     }
 
-    private static function getSafeEnv($parameterName)
+    private function initEnv()
+    {
+        $this->testMode = self::getSafeEnv('GENERATOR_TEST_MODE') ?? false;
+        self::$CONTROLLER_SUFFIX = self::getSafeEnv('GENERATOR_CONTROLLER_SUFFIX') ?? self::$CONTROLLER_SUFFIX;
+        self::$PRESENTER_SUFFIX = self::getSafeEnv('GENERATOR_PRESENTER_SUFFIX') ?? self::$PRESENTER_SUFFIX;
+        self::$PRESENTER_SUFFIX = self::getSafeEnv('GENERATOR_PRESENTER_SUFFIX') ?? self::$PRESENTER_SUFFIX;
+        self::$REPOSITORY_SUFFIX = self::getSafeEnv('GENERATOR_REPOSITORY_SUFFIX') ?? self::$REPOSITORY_SUFFIX;
+
+        self::$MODEL_FOLDER_NAME = self::getSafeEnv('GENERATOR_MODEL_FOLDER_NAME') ?? self::$MODEL_FOLDER_NAME;
+        self::$REPOSITORY_FOLDER_NAME = self::getSafeEnv('GENERATOR_REPOSITORY_FOLDER_NAME') ?? self::$REPOSITORY_FOLDER_NAME;
+
+        $this->baseNs = self::getSafeEnv('GENERATOR_BASE_NS') ?? $this->baseNs;
+        $this->httpNs = self::getSafeEnv('GENERATOR_HTTP_NS') ?? $this->httpNs;
+        $this->httpApiNs = self::getSafeEnv('GENERATOR_HTTP_API_NS') ?? $this->httpApiNs;
+    }
+
+    public static function getSafeEnv($parameterName)
     {
         return env($parameterName) ? env($parameterName) : null;
     }
@@ -134,11 +170,6 @@ class GeneratorForm
     public function getNsByClassName($className): string
     {
         return join("\\", array_slice(explode("\\", $className), 0, -1));
-    }
-
-    public function getBaseClassWithNs()
-    {
-        return $this->baseClassNs . $this->baseClass;
     }
 
     public function setResourceTable($resourceTable)
@@ -295,66 +326,6 @@ class GeneratorForm
     public function getFormattedProperty($type, $name)
     {
         return $type . str_repeat(' ', $this->spaceForProperties - strlen($type)) . ' $' . $name;
-    }
-
-    public function getModelNs()
-    {
-        return $this->baseNs . $this::MODEL_FOLDER_NAME;
-    }
-
-    public function getModelName()
-    {
-        return $this->resourceName;
-    }
-
-    public function getModelFullName()
-    {
-        return $this->getModelNs() . '\\' . $this->getModelName();
-    }
-
-    public function getRepositoryNs()
-    {
-        return $this->baseNs . $this::REPOSITORY_FOLDER_NAME;
-    }
-
-    public function getRepositoryName()
-    {
-        return $this->resourceName . self::REPOSITORY_SUFFIX;
-    }
-
-    public function getRepositoryFullName()
-    {
-        return $this->getRepositoryNs() . '\\' . $this->getRepositoryName();
-    }
-
-    public function getServiceNs()
-    {
-        return $this->baseNs . $this::SERVICE_FOLDER_NAME;
-    }
-
-    public function getServiceName()
-    {
-        return $this->resourceName . self::SERVICE_SUFFIX;
-    }
-
-    public function getServiceFullName()
-    {
-        return $this->getServiceNs() . '\\' . $this->getServiceName();
-    }
-
-    public function getEnumNs()
-    {
-        return $this->baseNs . $this::ENUM_FOLDER_NAME;
-    }
-
-    public function getEnumName()
-    {
-        return $this->resourceName . self::ENUM_STATUS_SUFFIX;
-    }
-
-    public function getEnumFullName()
-    {
-        return $this->getEnumNs() . '\\' . $this->getEnumName();
     }
 
     public function getResourceName($plural = false, $lowFirstSymbol = false)

@@ -138,7 +138,7 @@ class ConsoleHelper
         self::log($text, 'light_red', true, 'black');
     }
 
-    public static function yellow($text)
+    public static function warning($text)
     {
         self::log($text, 'yellow', true, 'black');
     }

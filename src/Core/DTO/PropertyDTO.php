@@ -10,8 +10,8 @@ class PropertyDTO
     public string $name; //Название
     public string $type; //Тип
     public bool $nullable;
-    public string $class;
-    public string $classTable;
+    public string|null $class;
+    public string|null $classTable;
     public bool $isEnum;
     public EnumParams $enum;
 

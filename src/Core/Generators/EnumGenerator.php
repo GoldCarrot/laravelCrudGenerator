@@ -45,17 +45,7 @@ class EnumGenerator implements GeneratorInterface
                 ConsoleHelper::error("Enum {$this->enum->name} generate error!");
             }
         } else {
-            ConsoleHelper::info("Enum {$this->enum->name} is exists! Add --force option to overwrite Enum!");
+            ConsoleHelper::warning("Enum {$this->enum->name} is exists! Add --force option to overwrite Enum!");
         }
-    }
-
-    public function getBaseClassWithNs()
-    {
-        return $this->baseClassNs . '\\' . $this->baseClass;
-    }
-
-    public function getFormattedProperty($property)
-    {
-        return "\$model->{$property['name']} = Arr::get(\$data, '{$property['name']}', \$model->{$property['name']});";
     }
 }
