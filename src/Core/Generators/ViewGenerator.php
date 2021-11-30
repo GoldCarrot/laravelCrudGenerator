@@ -104,7 +104,7 @@ class ViewGenerator implements GeneratorInterface
                     'generator' => $this,
                 ]);
         }
-        if (!view()->exists($propertyDTO->name) && $propertyDTO->type == 'string') {
+        if (!view()->exists($propertyDTO->name)/* && $propertyDTO->type == 'string'*/) {
             view()->addNamespace('string', $path);
             return view()->make('string')->with(
                 [
