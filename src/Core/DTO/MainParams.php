@@ -59,6 +59,7 @@ class MainParams
                 $enums['status'] = new EnumParams('status-', $defaultValues);
             }
         }
+        dd($enumParams, $enums);
         return $enums;
     }
 }
