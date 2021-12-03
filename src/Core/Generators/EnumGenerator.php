@@ -31,7 +31,7 @@ class EnumGenerator implements GeneratorInterface
             [
                 'generator' => $this,
             ]);
-        $filename = $this->generatorForm->resourceName . ucfirst($this->enum->name) . ".php";
+        $filename = basename($this->enum->enumName) . ".php";
         $path = base_path(lcfirst($namespace));
         if (!File::isDirectory($path)) {
             File::makeDirectory($path, 0777, true, true);

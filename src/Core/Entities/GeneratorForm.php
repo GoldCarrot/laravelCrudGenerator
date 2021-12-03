@@ -128,7 +128,6 @@ class GeneratorForm
             $enum->enumName = $this->baseNs . $this->folderNs . '\\' . self::$ENUM_FOLDER_NAME . '\\' . $this->resourceName
                               . ucfirst($enum->name) . 'Enum';
         }
-
         if ($mainParams->previewPaths) {
             if (count($this->generateList) == 0 || in_array('model', $this->generateList)) {
                 ConsoleHelper::info($this->modelName);
