@@ -20,8 +20,8 @@ $name = str_replace('_id', '', $propertyDTO->name);
 //    });
 //}
 ?>
-<?= "{{ BsForm::select('$propertyDTO->name')
-                                ->value(old('$propertyDTO->name', {$repository}->getArrayForSelect()))
+<?= "{{ BsForm::select('$propertyDTO->name', {$repository}->getArrayForSelect())
+                                ->value(old('$propertyDTO->name', \${$generator->generatorForm->getResourceName(false, true)}->$propertyDTO->name))
                                 ->placeholder(__('admin.columns.$name'))
                                 ->label(__('admin.columns.$name'))
                         }}" . PHP_EOL ?>
