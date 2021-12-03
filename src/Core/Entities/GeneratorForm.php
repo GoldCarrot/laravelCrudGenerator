@@ -126,7 +126,7 @@ class GeneratorForm
 
         foreach ($this->enums as $enum) {
             $enum->enumName = $this->baseNs . $this->folderNs . '\\' . self::$ENUM_FOLDER_NAME . '\\' . $this->resourceName
-                              . ucfirst($enum->name);
+                              . ucfirst($enum->name) . 'Enum';
         }
 
         if ($mainParams->previewPaths) {
