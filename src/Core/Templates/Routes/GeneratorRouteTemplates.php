@@ -7,9 +7,11 @@ class GeneratorRouteTemplates
     public $templates = [
         'admin' => [
             'template' => "<?php
-Route::resources([
-    '{{resourceNamePlural}}' => '{{folderNs}}\{{resourceName}}Controller',
-]);",
+Route::group(['middleware' => ['admin.auth']], function () {
+    Route::resources([
+        '{{resourceNamePlural}}' => '{{folderNs}}\{{resourceName}}Controller',
+    ]);
+});",
             'path'     => 'admin',
             'filename' => 'resource{{resourceName}}',
         ],
