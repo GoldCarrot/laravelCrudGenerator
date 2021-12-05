@@ -18,6 +18,7 @@ class ModelGenerator implements GeneratorInterface
 
     public function generate()
     {
+        $this->baseClass = GeneratorForm::getSafeEnv(env('GENERATOR_MODEL_EXTENDS')) ?? $this->baseClass;
         $namespace = class_namespace($this->generatorForm->modelName);
         $path = $this->generatorForm->mainPath . '/Core/Templates/Classes';
         View::addLocation($path);
