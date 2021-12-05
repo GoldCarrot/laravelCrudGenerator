@@ -19,6 +19,8 @@ class ServiceGenerator implements GeneratorInterface
 
     public function generate()
     {
+        $this->baseClass = GeneratorForm::getSafeEnv(env('GENERATOR_SERVICE_EXTENDS')) ?? $this->baseClass;
+        $this->baseInterface = GeneratorForm::getSafeEnv(env('GENERATOR_SERVICE_IMPLEMENTS')) ?? $this->baseInterface;
         $namespace = class_namespace($this->generatorForm->serviceName);
         $path = $this->generatorForm->mainPath . '/Core/Templates/Classes';
         View::addLocation($path);
