@@ -20,8 +20,8 @@ class RepositoryGenerator implements GeneratorInterface
 
     public function generate()
     {
-        $this->baseClass = GeneratorForm::getSafeEnv(env('GENERATOR_REPOSITORY_EXTENDS')) ?? $this->baseClass;
-        $this->baseInterface = GeneratorForm::getSafeEnv(env('GENERATOR_REPOSITORY_IMPLEMENTS')) ?? $this->baseInterface;
+        $this->baseClass = GeneratorForm::getSafeEnv('GENERATOR_REPOSITORY_EXTENDS') ?? $this->baseClass;
+        $this->baseInterface = GeneratorForm::getSafeEnv('GENERATOR_REPOSITORY_IMPLEMENTS') ?? $this->baseInterface;
         $namespace = class_namespace($this->generatorForm->repositoryName);
         $path = $this->generatorForm->mainPath . '/Core/Templates/Classes';
         View::addLocation($path);

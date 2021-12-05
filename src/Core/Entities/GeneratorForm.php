@@ -102,7 +102,7 @@ class GeneratorForm
             'controllerName' => $this->httpNs . 'Controllers\\' . $this->folderNs . '\\' . $this->resourceName
                                 . self::$CONTROLLER_SUFFIX,
             'templateName'   => 'controllerAdmin',
-            'baseClass'      => GeneratorForm::getSafeEnv(env('GENERATOR_ADMIN_CONTROLLER_EXTENDS')) ??
+            'baseClass'      => GeneratorForm::getSafeEnv('GENERATOR_ADMIN_CONTROLLER_EXTENDS') ??
                                 'App\Http\Admin\Controllers\ResourceController',
         ]);
 
@@ -111,8 +111,7 @@ class GeneratorForm
             'controllerName' => $this->httpApiNs . 'Controllers\\' . $this->folderNs . '\\' . $this->resourceName
                                 . self::$CONTROLLER_SUFFIX,
             'templateName'   => 'controllerApi',
-            'baseClass'      => GeneratorForm::getSafeEnv(env('GENERATOR_API_CONTROLLER_EXTENDS')) ??
-                                'App\Http\Api\Controllers\Controller',
+            'baseClass'      => GeneratorForm::getSafeEnv('GENERATOR_API_CONTROLLER_EXTENDS') ?? 'App\Http\Api\Controllers\Controller',
         ]);
         $this->controllers['controllerApi'] = $controller;
         $this->repositoryName = $this->baseNs . $this->folderNs . '\\' . self::$REPOSITORY_FOLDER_NAME . '\\' . $this->resourceName
