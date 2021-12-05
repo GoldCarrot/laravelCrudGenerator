@@ -35,6 +35,6 @@ class ColumnService
 
     public static function getColumnsByTableName($tableName)
     {
-        return \DB::select('show columns from ' . env('DB_DATABASE') . '.' . $tableName);
+        return \DB::select('show columns from \'' . env('DB_DATABASE') . '.' . $tableName . '\'');
     }
 }
