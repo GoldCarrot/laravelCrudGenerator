@@ -16,6 +16,7 @@ class GeneratorAllCommand extends Command
     {--enum= : Генерация Enum файлов, пример: ="type-sport,home,work;status-active,inactive,deleted"}
     {--force : Удаляет файлы, и записывает новые, иначе пропускаются файлы}
     {--previewPaths : Показывает все пути }
+    {--generateList= : список файлов для генерации, если пустое, то генерится все подряд }
     ';
 
     public function __construct()
@@ -36,6 +37,7 @@ class GeneratorAllCommand extends Command
                     'folderNs'              => $this->argument('folderNs'),
                     'defaultStatusGenerate' => !$this->option('def-status-off'),
                     'enumParams'            => $this->option('enum'),
+                    'generateList'          => $this->option('generateList') ? explode(',', $this->option('generateList')) : [],
                     'previewPaths'          => (bool)$this->option('previewPaths'),
                     'force'                 => (bool)$this->option('force'),
                     'mainPath'              => dirname(__DIR__),
