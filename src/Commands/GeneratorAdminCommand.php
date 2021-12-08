@@ -9,7 +9,7 @@ use Illuminate\Console\Command;
 
 class GeneratorAdminCommand extends Command
 {
-    protected $signature = 'gen:all 
+    protected $signature = 'gen:admin
     {table : Таблица в БД} 
     {folderNs? : Базовый namespace папки \App\Domain\{folderNs}\[Entities,repositories]} 
     {--def-status-off : Генерация Enum Status со стандартными текстовыми статусами active, inactive, deleted }
