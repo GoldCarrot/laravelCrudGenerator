@@ -138,22 +138,22 @@ class GeneratorForm
                     ConsoleHelper::info($controller->controllerName);
                 }
             }
-            if (count($this->generateList) == 0) {
-                ConsoleHelper::info($this->presenterName);
+            if (count($this->generateList) == 0 || in_array('presenter', $this->generateList)) {
+                    ConsoleHelper::info($this->presenterName);
             }
-            if (count($this->generateList) == 0) {
-                ConsoleHelper::info($this->repositoryName);
+            if (count($this->generateList) == 0 || in_array('repository', $this->generateList)) {
+                    ConsoleHelper::info($this->repositoryName);
             }
-            if (count($this->generateList) == 0) {
-                ConsoleHelper::info($this->serviceName);
+            if (count($this->generateList) == 0 || in_array('service', $this->generateList)) {
+                    ConsoleHelper::info($this->serviceName);
             }
-            if (count($this->generateList) == 0) {
-                foreach ($this->enums as $enum) {
-                    ConsoleHelper::info($enum->enumName);
-                }
+            if (count($this->generateList) == 0 || in_array('enum', $this->generateList)) {
+                    foreach ($this->enums as $enum) {
+                        ConsoleHelper::info($enum->enumName);
+                    }
             }
-            if (count($this->generateList) == 0) {
-                ConsoleHelper::info($this->viewsPath);
+            if (count($this->generateList) == 0 || in_array('view', $this->generateList)) {
+                    ConsoleHelper::info($this->viewsPath);
             }
         }
         $this->force = $mainParams->force;
