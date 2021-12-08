@@ -31,7 +31,7 @@ $modelName = $generator->generatorForm->modelName;
                         'value' => function (\\$modelName \$$variableName) {
                             return mb_substr(\$$variableName"."->title, 0, 200);
                         },
-                    ],
+                    ]" . $generator->getIndexColumns() . ",
                     [
                         'class' => \Itstructure\GridView\Columns\ActionColumn::class,
                         'actionTypes' => [
