@@ -4,8 +4,9 @@
  */
 /* @var $generator \Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm */
 /* @var $propertyDTO \Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO */
+$type = $propertyDTO->type == 'int' ? 'number' : 'text';
 ?>
-<?= "{{ BsForm::text('$propertyDTO->name')
+<?= "{{ BsForm::$type('$propertyDTO->name')
                                 ->value(old('$propertyDTO->name', \${$generator->generatorForm->getResourceName(false, true)}->$propertyDTO->name))
                                 ->placeholder(__('admin.columns.$propertyDTO->name'))
                                 ->label(__('admin.columns.$propertyDTO->name'))

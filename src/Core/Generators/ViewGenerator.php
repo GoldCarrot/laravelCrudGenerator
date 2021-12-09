@@ -56,7 +56,7 @@ class ViewGenerator implements GeneratorInterface
         if ($propertyDTO->type == 'Carbon' || $propertyDTO->class) {
             return true;
         }
-        return view()->exists($propertyDTO->name) || (!view()->exists($propertyDTO->name) && $propertyDTO->type == 'string');
+        return view()->exists($propertyDTO->name) || (!view()->exists($propertyDTO->name));
     }
 
     public function getRenderedPropertyForm(PropertyDTO $propertyDTO)
@@ -105,7 +105,7 @@ class ViewGenerator implements GeneratorInterface
                     'generator'   => $this,
                 ]);
         }
-        if (!view()->exists($propertyDTO->name)/* && $propertyDTO->type == 'string'*/) {
+        if (!view()->exists($propertyDTO->name)) {
             view()->addNamespace('string', $path);
             return view()->make('string')->with(
                 [
@@ -129,7 +129,7 @@ class ViewGenerator implements GeneratorInterface
         //if ($propertyDTO->type == 'Carbon'/* || $propertyDTO->class*/) {
         //    return true;
         //}
-        return view()->exists($propertyDTO->name) || (!view()->exists($propertyDTO->name) && $propertyDTO->type == 'string');
+        return view()->exists($propertyDTO->name) || (!view()->exists($propertyDTO->name));
     }
 
     public function getRenderedPropertyShow(PropertyDTO $propertyDTO)
@@ -167,7 +167,8 @@ class ViewGenerator implements GeneratorInterface
                     'generator' => $this,
                 ]);*/
         }
-        if (!view()->exists($propertyDTO->name . 'Show') && $propertyDTO->type == 'string') {
+        /** Если нет предустановленных шаблонов, то генерируем обычный <span></span>**/
+        if (!view()->exists($propertyDTO->name . 'Show')) {
             return view()->make('stringShow')->with(
                 [
                     'propertyDTO' => $propertyDTO,
@@ -182,7 +183,13 @@ class ViewGenerator implements GeneratorInterface
             ]);
     }
 
-    public function getIndexColumns()
+    /**
+     * Description генерирует столбцы на странице Index
+     * Шаблоны распространненых столбцов внутри функции
+     * Пока нет возможности извне взять шаблоны
+     * @return string
+     */
+    public function getIndexColumns(): string
     {
         $enumStatus = collect($this->generatorForm->enums)->first(function (EnumParams $enumParams) {
             return $enumParams->name == 'status';
