@@ -199,11 +199,12 @@ class ViewGenerator implements GeneratorInterface
             'resourceTable'      => $this->generatorForm->resourceTable,
             'resourceName'       => $this->generatorForm->resourceName,
             'modelName'          => $this->generatorForm->modelName,
-            'statusName'         => $enumStatus->enumName,
             'resourceNamePlural' => $this->generatorForm->getResourceName(true, true),
             'folderNs'           => $this->generatorForm->folderNs,
         ];
-
+        if ($enumStatus) {
+            $variables['statusName'] = $enumStatus->enumName;
+        }
         $result = "";
         $statusTemplate = ",
                     [
