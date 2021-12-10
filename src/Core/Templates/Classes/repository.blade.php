@@ -34,6 +34,10 @@ use {{ $trait }};
  * Class {{ basename($generator->generatorForm->repositoryName) }}
  *
  * @package {{ class_namespace($generator->generatorForm->repositoryName) }}
+<?= ' * @method ' . basename($generator->generatorForm->modelName) ?> []|Collection search(array $parameters = [], int $limit = null)
+<?= ' * @method ' . basename($generator->generatorForm->modelName) ?> []|Collection searchActive(array $parameters = [], int $limit = null)
+<?= ' * @method ' . basename($generator->generatorForm->modelName) ?>|null oneActive(array $params = [])
+<?= ' * @method ' . basename($generator->generatorForm->modelName) ?>|null find(array $params = [])
 <?= ' * @method ' . basename($generator->generatorForm->modelName) ?>|null findActive(array $params = [])
  */
 class {{ basename($generator->generatorForm->repositoryName) }} extends {{ basename($generator->baseClass) }} {{ $generator->baseInterface ? 'implements ' . basename($generator->baseInterface) : '' }}
