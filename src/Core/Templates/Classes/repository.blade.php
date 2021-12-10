@@ -6,6 +6,8 @@
 /* @var $generator \Chatway\LaravelCrudGenerator\Core\Generators\RepositoryGenerator */
 /* @var $generator->generatorForm->properties array list of properties (property => [type, name. comment]) */
 
+$index = array_search('status', array_keys($generator->generatorForm->enums));
+
 echo "<?php\n";
 ?>
 
@@ -16,6 +18,10 @@ use {{ $generator->baseClass }};
 use {{ $generator->generatorForm->modelName }};
 @if ($generator->baseInterface)
 use {{ $generator->baseInterface }};
+@endif
+@if ($index !== false)
+use Illuminate\Database\Eloquent\Builder;
+use {{ $generator->generatorForm->enums['status']->enumName }};
 @endif
 @if (count($generator->traits) > 0)
 @foreach($generator->traits as $trait)
@@ -51,6 +57,17 @@ class {{ basename($generator->generatorForm->repositoryName) }} extends {{ basen
     public function getBy{{ucfirst($field)}}(${{$field}})
     {
         return $this->active()->where('{{$field}}', '=', ${{$field}})->first();
+    }
+
+@endif
+@if($index !== false)
+<?php
+    $activeStatusConst = in_array('active', $generator->generatorForm->enums['status']->types) ? 'ACTIVE' : ($generator->generatorForm->enums['status']->types[0] ?? 'active');
+    $activeStatusConst = strtoupper($activeStatusConst);
+?>
+    protected function active(): Builder
+    {
+        return $this->query()->where('status', '=', {{basename($generator->generatorForm->enums['status']->enumName)}}::{{$activeStatusConst}});
     }
 @endif
 }

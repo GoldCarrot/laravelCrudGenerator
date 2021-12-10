@@ -6,17 +6,16 @@
 /* @var $generator \Chatway\LaravelCrudGenerator\Core\Generators\ViewGenerator */
 
 ?>
-<?= '@extends(\'admin.layouts.app\', [\'title\' => __(\'admin.menu.'
-    . $generator->generatorForm->getResourceName(false, true) . '\')])' ?>
+@@extends('admin.layouts.app', ['title' => __('admin.menu.{{$generator->generatorForm->getResourceName(false, true)}}')])
 
 
-<?= '@push(\'breadcrumbs\')' . PHP_EOL .
-    '    <li class="breadcrumb-item"><a href="{{ route(\'admin.'
+@@push('breadcrumbs')
+<?=    '    <li class="breadcrumb-item"><a href="{{ route(\'admin.'
     . $generator->generatorForm->getResourceName(true, true) . '.index\') }}">{{ __(\'admin.menu.'
     . $generator->generatorForm->getResourceName(false, true) . '\') }}</a></li>'
     . PHP_EOL .
-    '    <li class="breadcrumb-item active">{{ __(\'admin.actions.creating\') }}</li>' . PHP_EOL .
-    '@endpush' ?>
+    '    <li class="breadcrumb-item active">{{ __(\'admin.actions.creating\') }}</li>' . PHP_EOL ?>
+@@endpush
 
 <?= '@section(\'content\')' . PHP_EOL .
     '    {!! BsForm::post([\'route\' => \'admin.'
