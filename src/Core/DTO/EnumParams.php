@@ -18,4 +18,9 @@ class EnumParams
         $this->types = isset($data[1]) && $data[1] && strlen($data[1]) > 0 ? explode(',', $data[1]) : [];
         $this->types = count($this->types) > 0 ? $this->types : $defaultValues;
     }
+
+    public function getFirstType()
+    {
+        return $this->types[0] ?? null;
+    }
 }

@@ -57,7 +57,7 @@ class {{ $generator->generatorForm->resourceName }} extends {{ basename($generat
     {!!  count($generator->generatorForm->dateProperties) > 0 ? "\n    protected \$dates = ['" . implode("', '", $generator->generatorForm->dateProperties) . "'];" : "" !!}
 @foreach($generator->generatorForm->internalForeignKeys as $internalForeignKey)
 
-    public function {{ Str::singular(str_replace('_id', '', $internalForeignKey['tableName'])) }}()
+    public function {{ Str::camel(Str::singular(str_replace('_id', '', $internalForeignKey['tableName']))) }}()
     {
         return $this->hasOne({{ basename($internalForeignKey['className']) }}::class, 'id', '{{ $internalForeignKey['columnName'] }}');
     }
