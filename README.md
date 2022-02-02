@@ -8,7 +8,7 @@
 Базовое использование:
 php artisan gen:all tableName
 
-Artisan::call('email:send', [
+Artisan::call('gen:all', [
 'table' => 'event',
 '--enum' => 'type-sport,home,work;status-active,inactive,deleted'
 ]);
