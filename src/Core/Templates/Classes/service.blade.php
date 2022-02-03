@@ -31,8 +31,8 @@ class {{ basename($generator->generatorForm->serviceName) }} extends {{ basename
 {
     public function create(array $data): {{ $generator->generatorForm->resourceName }}
     {
-        $new = new {{ $generator->generatorForm->resourceName }}();
-        return $this->update($new, $data);
+        $model = new {{ $generator->generatorForm->resourceName }}();
+        return $this->update($model, $data);
     }
 
     public function update({{ $generator->generatorForm->resourceName }}|Model $model, array $data): {{ $generator->generatorForm->resourceName }}
