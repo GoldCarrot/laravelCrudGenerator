@@ -2,6 +2,7 @@
 
 namespace Chatway\LaravelCrudGenerator\Core\Generators;
 
+use Chatway\LaravelCrudGenerator\Core\Base\Generators\BaseEloquentGenerator;
 use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\DTO\EnumParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
@@ -13,42 +14,42 @@ use View;
 /**
  * @property string $viewName
  */
-class ViewGenerator implements GeneratorInterface
+class ViewGenerator extends BaseEloquentGenerator implements GeneratorInterface
 {
     public mixed $viewName;
 
     public function __construct(public GeneratorForm $generatorForm, $config = [])
     {
         $this->viewName = \Arr::get($config, 'viewName');
+        $this->pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Views';
+        $this->filename = $this->viewName . $this->generatorForm::$VIEW_FILE_SUFFIX;
+        $this->path = resource_path($this->generatorForm->viewsPath);
     }
 
     public function generate()
     {
-        $path = $this->generatorForm->mainPath . '/Core/Templates/Views';
-        View::addLocation($path);
-        View::addNamespace($this->viewName, $path);
+        View::addLocation($this->pathTemplate);
+        View::addNamespace($this->viewName, $this->pathTemplate);
         $renderedModel = View::make($this->viewName)->with(
             [
                 'generator' => $this,
             ]);
-        $filename = $this->viewName . $this->generatorForm::$VIEW_FILE_SUFFIX;
-        $path = resource_path($this->generatorForm->viewsPath);
-        if (!File::isDirectory($path)) {
-            File::makeDirectory($path, 0777, true, true);
+        if (!File::isDirectory($this->path)) {
+            File::makeDirectory($this->path, 0777, true, true);
         }
-        if (!File::exists($path . '\\' . $filename) || $this->generatorForm->force) {
-            File::delete($path . '\\' . $filename);
-            if (File::put($path . '\\' . $filename, $renderedModel) !== false) {
-                ConsoleHelper::info("View $this->viewName generated! Path in app: " . $path . '\\' . $filename);
+        if (!File::exists($this->path . '\\' . $this->filename) || $this->generatorForm->force) {
+            File::delete($this->path . '\\' . $this->filename);
+            if (File::put($this->path . '\\' . $this->filename, $renderedModel) !== false) {
+                ConsoleHelper::info("$this->filename generated! Path in app: " . $this->path);
             } else {
-                ConsoleHelper::error("View $this->viewName generate error!");
+                ConsoleHelper::error("$this->filename generate error!");
             }
         } else {
-            ConsoleHelper::warning("View $this->viewName is exists! Add --force option to overwrite View!");
+            ConsoleHelper::warning("$this->filename is exists! Add --force option to overwrite View!");
         }
     }
 
-    public function renderedPropertyFormExist(PropertyDTO $propertyDTO)
+    public function renderedPropertyFormExist(PropertyDTO $propertyDTO): bool
     {
         $path = $this->generatorForm->mainPath . '/Core/Templates/Views/Form';
         view()->addLocation($path);

@@ -6,18 +6,22 @@ use Chatway\LaravelCrudGenerator\Core\DTO\ControllerParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\EnumParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\MainParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
+use Chatway\LaravelCrudGenerator\Core\DTO\RouteParams;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
 use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ColumnService;
 use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ForeignKeyService;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ClassHelper;
+use Chatway\LaravelCrudGenerator\Core\Templates\Routes\GeneratorRouteTemplates;
 use ReflectionException;
 use Str;
 
 /**
- * @property string         $baseNs
- * @property string         $resourceName
- * @property PropertyDTO [] $properties
- * @property EnumParams []  $enums
+ * @property string                $baseNs
+ * @property string                $resourceName
+ * @property PropertyDTO []        $properties
+ * @property EnumParams []         $enums
+ * @property ControllerParams []   $controllers
+ * @property RouteParams [] | array $routeTemplates
  */
 class GeneratorForm
 {
@@ -68,12 +72,18 @@ class GeneratorForm
     public string $viewsPath;
     /** Параметры View конец */
 
+    /** Параметры Route начало */
+    public array $routeTemplates = [];
+    /** Параметры Route конец */
+
     /** Общие параметры начало */
     public bool   $force;
     public string $mainPath;
     public bool   $testMode     = false;
     public array  $generateList = [];
+    public string  $action;
     /** Общие параметры конец */
+
     protected ForeignKeyService $foreignKeyService;
 
     public function __construct(MainParams $mainParams, ForeignKeyService $foreignKeyService)
@@ -84,6 +94,7 @@ class GeneratorForm
         $this->setResourceTable($mainParams->resourceTable);
         $this->resourceName = $mainParams->resourceName;
         $this->folderNs = $mainParams->folderNs ?? $this->resourceName;
+        $this->action = $mainParams->action;
 
         $this->initEnv();
 
@@ -129,6 +140,9 @@ class GeneratorForm
             $enum->enumName = $this->baseNs . $this->folderNs . '\\' . self::$ENUM_FOLDER_NAME . '\\' . $this->resourceName
                               . ucfirst($enum->name) . 'Enum';
         }
+
+        $this->routeTemplates = (new GeneratorRouteTemplates())->getRoutes();
+
         if ($mainParams->previewPaths) {
             if (count($this->generateList) == 0 || in_array('model', $this->generateList)) {
                 ConsoleHelper::info($this->modelName);
@@ -139,21 +153,21 @@ class GeneratorForm
                 }
             }
             if (count($this->generateList) == 0 || in_array('presenter', $this->generateList)) {
-                    ConsoleHelper::info($this->presenterName);
+                ConsoleHelper::info($this->presenterName);
             }
             if (count($this->generateList) == 0 || in_array('repository', $this->generateList)) {
-                    ConsoleHelper::info($this->repositoryName);
+                ConsoleHelper::info($this->repositoryName);
             }
             if (count($this->generateList) == 0 || in_array('service', $this->generateList)) {
-                    ConsoleHelper::info($this->serviceName);
+                ConsoleHelper::info($this->serviceName);
             }
             if (count($this->generateList) == 0 || in_array('enum', $this->generateList)) {
-                    foreach ($this->enums as $enum) {
-                        ConsoleHelper::info($enum->enumName);
-                    }
+                foreach ($this->enums as $enum) {
+                    ConsoleHelper::info($enum->enumName);
+                }
             }
             if (count($this->generateList) == 0 || in_array('view', $this->generateList)) {
-                    ConsoleHelper::info($this->viewsPath);
+                ConsoleHelper::info($this->viewsPath);
             }
         }
         $this->force = $mainParams->force;

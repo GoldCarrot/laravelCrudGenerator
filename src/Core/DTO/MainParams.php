@@ -17,7 +17,8 @@ class MainParams
     public bool   $previewPaths;
     public bool   $force;
     public string $mainPath;
-    public array $generateList;
+    public array  $generateList;
+    public ?string $action;
 
     public function __construct($data)
     {
@@ -27,8 +28,10 @@ class MainParams
         $this->enums = $this->getEnums(\Arr::get($data, 'enumParams'), \Arr::get($data, 'defaultStatusGenerate', false));
         $this->previewPaths = \Arr::get($data, 'previewPaths', false);
         $this->force = \Arr::get($data, 'force', false);
-        $this->mainPath = \Arr::get($data, 'mainPath', null);
+        $this->mainPath = \Arr::get($data, 'mainPath');
         $this->generateList = \Arr::get($data, 'generateList', []);
+        $this->action = \Arr::get($data, 'action') ?? 'generate';
+
         if (!$this->mainPath) {
             ConsoleHelper::error('Main path is not null');
             die;

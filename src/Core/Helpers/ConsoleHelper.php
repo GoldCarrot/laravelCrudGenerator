@@ -116,7 +116,7 @@ class ConsoleHelper
      *
      * @param integer $count Bell play count
      *
-     * @return string         Bell play string
+     * @return void         Bell play string
      */
     public static function bell($count = 1)
     {
@@ -128,18 +128,34 @@ class ConsoleHelper
         self::log($text, 'light_blue', true, 'black');
     }
 
-    public static function info($text)
+    /**
+     * @param mixed ...$texts
+     *
+     * @return void
+     */
+    public static function info(...$texts)
     {
+        $text = implode(' ', $texts);
         self::log($text, 'light_green', true, 'black');
     }
-
-    public static function error($text)
+    /**
+     * @param mixed ...$texts
+     *
+     * @return void
+     */
+    public static function error(...$texts)
     {
+        $text = implode(' ', $texts);
         self::log($text, 'light_red', true, 'black');
     }
-
-    public static function warning($text)
+    /**
+     * @param mixed ...$texts
+     *
+     * @return void
+     */
+    public static function warning(...$texts)
     {
+        $text = implode(' ', $texts);
         self::log($text, 'yellow', true, 'black');
     }
 }

@@ -7,7 +7,9 @@
 /* @var $generator->generatorForm->properties array list of properties (property => [type, name. comment]) */
 
 echo "<?php\n";
+
 ?>
+
 namespace {{ $generator->generatorForm->getNsByClassName($generator->generatorForm->modelName) }};
 
 

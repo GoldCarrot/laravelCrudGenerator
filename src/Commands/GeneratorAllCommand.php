@@ -17,6 +17,7 @@ class GeneratorAllCommand extends Command
     {--force : Удаляет файлы, и записывает новые, иначе пропускаются файлы}
     {--previewPaths : Показывает все пути }
     {--generateList= : список файлов для генерации, если пустое, то генерится все подряд }
+    {--action= : действие выполняемое скриптом, примеры generate - генерирует файлы (по-умолчанию); rollback - удаляет файлы и папки (если пустые) }
     ';
 
     public function __construct()
@@ -27,7 +28,6 @@ class GeneratorAllCommand extends Command
     public function handle(): int
     {
         //$arguments = $this->arguments();//todo
-        //dd($arguments);
         $tableName = $this->argument('table');
         $tables = \Arr::pluck(DB::select('SHOW TABLES'), "Tables_in_" . config('database.connections.mysql.database'));
         if (in_array($tableName, $tables)) {
@@ -41,6 +41,7 @@ class GeneratorAllCommand extends Command
                     'previewPaths'          => (bool)$this->option('previewPaths'),
                     'force'                 => (bool)$this->option('force'),
                     'mainPath'              => dirname(__DIR__),
+                    'action'                => $this->option('action'),
                 ];
             try {
                 (new GeneratorHandler())->start(new MainParams($data));

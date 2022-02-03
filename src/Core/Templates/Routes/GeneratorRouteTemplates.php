@@ -2,11 +2,18 @@
 
 namespace Chatway\LaravelCrudGenerator\Core\Templates\Routes;
 
+use Chatway\LaravelCrudGenerator\Core\DTO\RouteParams;
+
+/**
+ * @property array                 $defaultTemplates
+ * @property RouteParams []| array $templates
+ */
 class GeneratorRouteTemplates
 {
-    public $templates = [
+    private array $defaultTemplates = [
         'admin' => [
             'template' => "<?php
+
 Route::group(['middleware' => ['admin.auth']], function () {
     Route::resources([
         '{{resourceNamePlural}}' => '{{folderNs}}\{{resourceName}}Controller',
@@ -17,6 +24,7 @@ Route::group(['middleware' => ['admin.auth']], function () {
         ],
         'api'   => [
             'template' => "<?php
+
 Route::group(['prefix' => '{{resourceTable}}', 'namespace' => '{{folderNs}}'], function () {
     Route::get('show', '{{resourceName}}Controller@show');
     Route::get('', '{{resourceName}}Controller@index');
@@ -25,12 +33,23 @@ Route::group(['prefix' => '{{resourceTable}}', 'namespace' => '{{folderNs}}'], f
             'filename' => '{{resourceTable}}',
         ],
     ];
+
+    /**
+     * @var RouteParams[]
+     */
+    private array $templates;
+
     public function __construct($templates = [])
     {
-        $this->templates = array_replace($this->templates, $templates);
+        foreach (array_replace($this->defaultTemplates, $templates) as $template) {
+            $this->templates[] = new RouteParams($template);
+        }
     }
 
-    public function getRoutes()
+    /**
+     * @return array
+     */
+    public function getRoutes(): array
     {
         return $this->templates;
     }

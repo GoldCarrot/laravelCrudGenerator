@@ -2,54 +2,48 @@
 
 namespace Chatway\LaravelCrudGenerator\Core\Generators;
 
+use Chatway\LaravelCrudGenerator\Core\Base\Generators\BaseEloquentGenerator;
 use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
 use File;
 use View;
 
-class ServiceGenerator implements GeneratorInterface
+class ServiceGenerator extends BaseEloquentGenerator implements GeneratorInterface
 {
     public string $baseClass = 'App\Base\Services\BaseService';
     public string $baseInterface = 'App\Base\Interfaces\ManageServiceInterface';
 
     public function __construct(public GeneratorForm $generatorForm)
     {
+        $this->pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Classes';
+        $this->filename = $this->generatorForm->resourceName . $this->generatorForm::$SERVICE_SUFFIX . ".php";
+        $this->path = base_path(lcfirst(class_namespace($this->generatorForm->serviceName)));
     }
 
     public function generate()
     {
         $this->baseClass = GeneratorForm::getSafeEnv('GENERATOR_SERVICE_EXTENDS') ?? $this->baseClass;
         $this->baseInterface = GeneratorForm::getSafeEnv('GENERATOR_SERVICE_IMPLEMENTS') ?? $this->baseInterface;
-        $namespace = class_namespace($this->generatorForm->serviceName);
-        $path = $this->generatorForm->mainPath . '/Core/Templates/Classes';
-        View::addLocation($path);
-        View::addNamespace('service', $path);
-        $renderedModel = View::make('service')->with(
+        View::addLocation($this->pathTemplate);
+        View::addNamespace(self::label(), $this->pathTemplate);
+        $renderedModel = View::make(self::label())->with(
             [
                 'generator' => $this,
             ]);
-        $filename = $this->generatorForm->resourceName . $this->generatorForm::$SERVICE_SUFFIX . ".php";
-        $path = base_path(lcfirst($namespace));
-        if (!File::isDirectory($path)) {
-            File::makeDirectory($path, 0777, true, true);
+        if (!File::isDirectory($this->path)) {
+            File::makeDirectory($this->path, 0777, true, true);
         }
 
-        if (!File::exists($path . '\\' . $filename) || $this->generatorForm->force) {
-            File::delete($path . '\\' . $filename);
-            if (File::put($path . '\\' . $filename, $renderedModel) !== false) {
-                ConsoleHelper::info('Service generated! Path in app: ' . lcfirst($namespace) . '\\' . $filename);
+        if (!File::exists($this->path . '\\' . $this->filename) || $this->generatorForm->force) {
+            File::delete($this->path . '\\' . $this->filename);
+            if (File::put($this->path . '\\' . $this->filename, $renderedModel) !== false) {
+                ConsoleHelper::info("$this->filename generated! Path in app: " . $this->path . '\\');
             } else {
-                ConsoleHelper::error('Service generate error!');
+                ConsoleHelper::error("$this->filename generate error!");
             }
         } else {
-            ConsoleHelper::warning('Service is exists! Add --force option to overwrite Service!');
+            ConsoleHelper::warning("$this->filename is exists! Add --force option to overwrite Service!");
         }
-    }
-
-    public function getFormattedProperty($property)
-    {
-
-        return "\$model->{$property->name} = Arr::get(\$data, '{$property->name}', \$model->{$property->name});";
     }
 }

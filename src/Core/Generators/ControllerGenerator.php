@@ -2,6 +2,7 @@
 
 namespace Chatway\LaravelCrudGenerator\Core\Generators;
 
+use Chatway\LaravelCrudGenerator\Core\Base\Generators\BaseEloquentGenerator;
 use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\DTO\ControllerParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
@@ -12,42 +13,42 @@ use File;
 use Str;
 use View;
 
-class ControllerGenerator implements GeneratorInterface
+class ControllerGenerator extends BaseEloquentGenerator implements GeneratorInterface
 {
     public string $baseClass = 'App\Http\Admin\Controllers\ResourceController';
 
     public function __construct(public GeneratorForm $generatorForm, public ControllerParams $controllerParams)
     {
+        $this->pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Classes';
+        $this->filename = $this->generatorForm->resourceName . ($this->generatorForm::$CONTROLLER_SUFFIX) . ".php";
+        $this->path = base_path(lcfirst(class_namespace($this->controllerParams->controllerName)));
     }
 
     public function generate()
     {
-        $namespace = class_namespace($this->controllerParams->controllerName);
-        $path = $this->generatorForm->mainPath . '/Core/Templates/Classes';
-        View::addLocation($path);
-        View::addNamespace($this->controllerParams->templateName, $path);
+        View::addLocation($this->pathTemplate);
+        View::addNamespace($this->controllerParams->templateName, $this->pathTemplate);
+
         $renderedModel = View::make($this->controllerParams->templateName)->with(
             [
                 'generator' => $this,
             ]);
-        $filename = $this->generatorForm->resourceName . ($this->generatorForm::$CONTROLLER_SUFFIX) . ".php";
-        $path = base_path(lcfirst($namespace));
-        if (!File::isDirectory($path)) {
-            File::makeDirectory($path, 0777, true, true);
+
+        if (!File::isDirectory($this->path)) {
+            File::makeDirectory($this->path, 0777, true, true);
         }
 
-        if (!File::exists($path . '\\' . $filename) || $this->generatorForm->force) {
-            File::delete($path . '\\' . $filename);
-            if (File::put($path . '\\' . $filename, $renderedModel) !== false) {
-                ConsoleHelper::info('Controller generated! Path in app: ' . lcfirst($namespace) . '\\' . $filename);
+        if (!File::exists($this->path . '\\' . $this->filename) || $this->generatorForm->force) {
+            File::delete($this->path . '\\' . $this->filename);
+            if (File::put($this->path . '\\' . $this->filename, $renderedModel) !== false) {
+                ConsoleHelper::info("$this->filename generated! Path in app: " . $this->path . '\\');
             } else {
-                ConsoleHelper::error('Controller generate error!');
+                ConsoleHelper::error("$this->filename generate error!");
             }
         } else {
-            ConsoleHelper::warning('Controller is exists! Add --force option to overwrite Controller!');
+            ConsoleHelper::warning("$this->filename is exists! Add --force option to overwrite Controller!");
         }
     }
-
 
     public function getFormattedRule(PropertyDTO $property)
     {

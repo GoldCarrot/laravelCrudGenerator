@@ -2,6 +2,7 @@
 
 namespace Chatway\LaravelCrudGenerator\Core\Generators;
 
+use Chatway\LaravelCrudGenerator\Core\Base\Generators\BaseEloquentGenerator;
 use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\DTO\EnumParams;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
@@ -12,40 +13,39 @@ use View;
 /**
  * @property EnumParams $enum
  */
-class EnumGenerator implements GeneratorInterface
+class EnumGenerator extends BaseEloquentGenerator implements GeneratorInterface
 {
     public string $baseClass = 'App\Base\Enums\StatusEnum';
 
     public function __construct(public GeneratorForm $generatorForm, public EnumParams $enum)
     {
+        $this->generatorForm->enumName = $this->enum->enumName;
+        $this->pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Classes';
+        $this->filename = basename($this->enum->enumName) . ".php";
+        $this->path = base_path(lcfirst(class_namespace($this->generatorForm->enumName)));
     }
 
     public function generate()
     {
-        $this->generatorForm->enumName = $this->enum->enumName;
-        $namespace = class_namespace($this->generatorForm->enumName);
-        $pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Classes';
-        View::addLocation($pathTemplate);
-        View::addNamespace('enum', $pathTemplate);
+        View::addLocation($this->pathTemplate);
+        View::addNamespace('enum', $this->pathTemplate);
         $renderedModel = View::make('enum')->with(
             [
                 'generator' => $this,
             ]);
-        $filename = basename($this->enum->enumName) . ".php";
-        $path = base_path(lcfirst($namespace));
-        if (!File::isDirectory($path)) {
-            File::makeDirectory($path, 0777, true, true);
+        if (!File::isDirectory($this->path)) {
+            File::makeDirectory($this->path, 0777, true, true);
         }
 
-        if (!File::exists($path . '\\' . $filename) || $this->generatorForm->force) {
-            File::delete($path . '\\' . $filename);
-            if (File::put($path . '\\' . $filename, $renderedModel) !== false) {
-                ConsoleHelper::info("Enum {$this->enum->name} generated! Path in app: " . lcfirst($namespace) . '\\' . $filename);
+        if (!File::exists($this->path . '\\' . $this->filename) || $this->generatorForm->force) {
+            File::delete($this->path . '\\' . $this->filename);
+            if (File::put($this->path . '\\' . $this->filename, $renderedModel) !== false) {
+                ConsoleHelper::info("$this->filename generated! Path in app: " . $this->path . '\\', 'asd');
             } else {
-                ConsoleHelper::error("Enum {$this->enum->name} generate error!");
+                ConsoleHelper::error("$this->filename generate error!");
             }
         } else {
-            ConsoleHelper::warning("Enum {$this->enum->name} is exists! Add --force option to overwrite Enum!");
+            ConsoleHelper::warning("$this->filename is exists! Add --force option to overwrite Enum!");
         }
     }
 }

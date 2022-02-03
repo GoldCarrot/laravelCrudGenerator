@@ -6,9 +6,10 @@
 /* @var $propertyDTO \Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO */
 $variableName = $generator->generatorForm->getResourceName(false, true);
 ?>
-<div class="mt-3">
-    <label><?= "{{ __('admin.columns.$propertyDTO->name') }}" ?></label><br>
-    <span>
-                                <?= "{\{$$variableName->date_finish ? date('Y-m-d', strtotime($this->date_finish)) : null}}" ?>
+                        <div class="mt-3">
+                            <label><?= "{{ __('admin.columns.$propertyDTO->name') }}" ?></label><br>
+                            <span>
+                                <?= "{{  $$variableName->$propertyDTO->name ? date('Y-m-d', strtotime($$variableName->$propertyDTO->name)) : null}}" ?>
+
                             </span>
-</div>
+                        </div>

@@ -16,6 +16,8 @@ class GeneratorModelCommand extends Command
     {--enum : Генерация Enum файлов, пример: ="type-sport,home,work;status-active,inactive,deleted"}
     {--force : Удаляет файлы, и записывает новые, иначе пропускаются файлы}
     {--previewPaths : Показывает все пути }
+    {--generateList= : список файлов для генерации, если пустое, то генерится все подряд }
+    {--action= : действие выполняемое скриптом generate - генерирует файлы; rollback - удаляет файлы и папки (если пустые) }
     ';
 
     public function __construct()
@@ -26,7 +28,6 @@ class GeneratorModelCommand extends Command
     public function handle(): int
     {
         //$arguments = $this->arguments();//todo
-        //dd($arguments);
         $tableName = $this->argument('table');
         $tables = \Arr::pluck(DB::select('SHOW TABLES'), "Tables_in_" . config('database.connections.mysql.database'));
         if (in_array($tableName, $tables)) {
@@ -36,10 +37,11 @@ class GeneratorModelCommand extends Command
                     'folderNs'              => $this->argument('folderNs'),
                     'defaultStatusGenerate' => !$this->option('def-status-off'),
                     'enumParams'            => $this->option('enum'),
+                    'generateList'          => ['model'],
                     'previewPaths'          => (bool)$this->option('previewPaths'),
                     'force'                 => (bool)$this->option('force'),
                     'mainPath'              => dirname(__DIR__),
-                    'generateList'          => ['model'],
+                    'action'                => $this->option('action'),
                 ];
             try {
                 (new GeneratorHandler())->start(new MainParams($data));

@@ -2,13 +2,14 @@
 
 namespace Chatway\LaravelCrudGenerator\Core\Generators;
 
+use Chatway\LaravelCrudGenerator\Core\Base\Generators\BaseEloquentGenerator;
 use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
 use File;
 use View;
 
-class RepositoryGenerator implements GeneratorInterface
+class RepositoryGenerator extends BaseEloquentGenerator implements GeneratorInterface
 {
     public string $baseClass     = 'App\Base\Repositories\BaseEloquentRepository';
     public string $baseInterface = 'App\Base\Interfaces\DataProviderInterface';
@@ -16,38 +17,37 @@ class RepositoryGenerator implements GeneratorInterface
 
     public function __construct(public GeneratorForm $generatorForm)
     {
+        $this->pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Classes';
+        $this->filename = "{$this->generatorForm->resourceName}Repository.php";
+        $this->path = base_path(lcfirst(class_namespace($this->generatorForm->repositoryName)));
     }
 
     public function generate()
     {
         $this->baseClass = GeneratorForm::getSafeEnv('GENERATOR_REPOSITORY_EXTENDS') ?? $this->baseClass;
         $this->baseInterface = GeneratorForm::getSafeEnv('GENERATOR_REPOSITORY_IMPLEMENTS') ?? $this->baseInterface;
-        $namespace = class_namespace($this->generatorForm->repositoryName);
-        $path = $this->generatorForm->mainPath . '/Core/Templates/Classes';
-        View::addLocation($path);
-        View::addNamespace('repository', $path);
+        View::addLocation($this->pathTemplate);
+        View::addNamespace(self::label(), $this->pathTemplate);
         try {
-            $renderedModel = View::make('repository')->with(
+            $renderedModel = View::make(self::label())->with(
                 [
                     'generator' => $this,
                 ]);
-            $filename = "{$this->generatorForm->resourceName}Repository.php";
-            $path = base_path(lcfirst($namespace));
-            if (!File::isDirectory($path)) {
-                File::makeDirectory($path, 0777, true, true);
+            if (!File::isDirectory($this->path)) {
+                File::makeDirectory($this->path, 0777, true, true);
             }
-            if (($renderedModel && !File::exists($path . '\\' . $filename)) || $this->generatorForm->force) {
-                File::delete($path . '\\' . $filename);
-                if (File::put($path . '\\' . $filename, $renderedModel) !== false) {
-                    ConsoleHelper::info('Repository generated! Path in app: ' . lcfirst($namespace) . '\\' . $filename);
+            if (($renderedModel && !File::exists($this->path . '\\' . $this->filename)) || $this->generatorForm->force) {
+                File::delete($this->path . '\\' . $this->filename);
+                if (File::put($this->path . '\\' . $this->filename, $renderedModel) !== false) {
+                    ConsoleHelper::info("$this->filename generated! Path in app: " . $this->path . '\\');
                 } else {
-                    ConsoleHelper::error('Repository generate error!');
+                    ConsoleHelper::error("$this->filename generate error!");
                 }
             } else {
-                ConsoleHelper::warning('Repository is exists! Add --force option to overwrite Repository!');
+                ConsoleHelper::warning("$this->filename is exists! Add --force option to overwrite Repository!");
             }
         } catch (\Throwable $e) {
-            ConsoleHelper::error('Repository generate error!');
+            ConsoleHelper::error("$this->filename generate error!");
             dd($e);
         }
     }
