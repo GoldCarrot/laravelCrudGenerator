@@ -23,7 +23,7 @@ class ViewGenerator extends BaseEloquentGenerator implements GeneratorInterface
         $this->viewName = \Arr::get($config, 'viewName');
         $this->pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Views';
         $this->filename = $this->viewName . $this->generatorForm::$VIEW_FILE_SUFFIX;
-        $this->path = resource_path($this->generatorForm->viewsPath);
+        $this->path = resource_path(str_replace('\\', '/', $this->generatorForm->viewsPath));
     }
 
     public function generate()
@@ -40,7 +40,7 @@ class ViewGenerator extends BaseEloquentGenerator implements GeneratorInterface
         if (!File::exists($this->getFilePath()) || $this->generatorForm->force) {
             File::delete($this->getFilePath());
             if (File::put($this->getFilePath(), $renderedModel) !== false) {
-                ConsoleHelper::info("{$this->getFileName()} generated! Path in app: " . $this->getPath());
+                ConsoleHelper::info("{$this->getFileName()} generated! Path in app: " . $this->getPath() . '/');
             } else {
                 ConsoleHelper::error("{$this->getFileName()} generate error!");
             }
