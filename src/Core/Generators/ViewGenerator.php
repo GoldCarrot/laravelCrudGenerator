@@ -28,24 +28,24 @@ class ViewGenerator extends BaseEloquentGenerator implements GeneratorInterface
 
     public function generate()
     {
-        View::addLocation($this->pathTemplate);
-        View::addNamespace($this->viewName, $this->pathTemplate);
+        View::addLocation($this->getPathTemplate());
+        View::addNamespace($this->viewName, $this->getPathTemplate());
         $renderedModel = View::make($this->viewName)->with(
             [
                 'generator' => $this,
             ]);
-        if (!File::isDirectory($this->path)) {
-            File::makeDirectory($this->path, 0777, true, true);
+        if (!File::isDirectory($this->getPath())) {
+            File::makeDirectory($this->getPath(), 0777, true, true);
         }
-        if (!File::exists($this->path . '\\' . $this->filename) || $this->generatorForm->force) {
-            File::delete($this->path . '\\' . $this->filename);
-            if (File::put($this->path . '\\' . $this->filename, $renderedModel) !== false) {
-                ConsoleHelper::info("$this->filename generated! Path in app: " . $this->path);
+        if (!File::exists($this->getFilePath()) || $this->generatorForm->force) {
+            File::delete($this->getFilePath());
+            if (File::put($this->getFilePath(), $renderedModel) !== false) {
+                ConsoleHelper::info("{$this->getFileName()} generated! Path in app: " . $this->getPath());
             } else {
-                ConsoleHelper::error("$this->filename generate error!");
+                ConsoleHelper::error("{$this->getFileName()} generate error!");
             }
         } else {
-            ConsoleHelper::warning("$this->filename is exists! Add --force option to overwrite View!");
+            ConsoleHelper::warning("{$this->getFileName()} is exists! Add --force option to overwrite View!");
         }
     }
 

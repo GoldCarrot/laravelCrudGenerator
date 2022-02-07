@@ -18,32 +18,32 @@ class ServiceGenerator extends BaseEloquentGenerator implements GeneratorInterfa
     {
         $this->pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Classes';
         $this->filename = $this->generatorForm->resourceName . $this->generatorForm::$SERVICE_SUFFIX . ".php";
-        $this->path = base_path(lcfirst(class_namespace($this->generatorForm->serviceName)));
+        $this->path = str_replace('\\', '/', base_path(lcfirst(class_namespace($this->generatorForm->serviceName))));
     }
 
     public function generate()
     {
         $this->baseClass = GeneratorForm::getSafeEnv('GENERATOR_SERVICE_EXTENDS') ?? $this->baseClass;
         $this->baseInterface = GeneratorForm::getSafeEnv('GENERATOR_SERVICE_IMPLEMENTS') ?? $this->baseInterface;
-        View::addLocation($this->pathTemplate);
-        View::addNamespace(self::label(), $this->pathTemplate);
+        View::addLocation($this->getPathTemplate());
+        View::addNamespace(self::label(), $this->getPathTemplate());
         $renderedModel = View::make(self::label())->with(
             [
                 'generator' => $this,
             ]);
-        if (!File::isDirectory($this->path)) {
-            File::makeDirectory($this->path, 0777, true, true);
+        if (!File::isDirectory($this->getPath())) {
+            File::makeDirectory($this->getPath(), 0777, true, true);
         }
 
-        if (!File::exists($this->path . '\\' . $this->filename) || $this->generatorForm->force) {
-            File::delete($this->path . '\\' . $this->filename);
-            if (File::put($this->path . '\\' . $this->filename, $renderedModel) !== false) {
-                ConsoleHelper::info("$this->filename generated! Path in app: " . $this->path . '\\');
+        if (!File::exists($this->getFilePath()) || $this->generatorForm->force) {
+            File::delete($this->getFilePath());
+            if (File::put($this->getFilePath(), $renderedModel) !== false) {
+                ConsoleHelper::info("{$this->getFileName()} generated! Path in app: " . $this->getPath() . '/');
             } else {
-                ConsoleHelper::error("$this->filename generate error!");
+                ConsoleHelper::error("{$this->getFileName()} generate error!");
             }
         } else {
-            ConsoleHelper::warning("$this->filename is exists! Add --force option to overwrite Service!");
+            ConsoleHelper::warning("{$this->getFileName()} is exists! Add --force option to overwrite Service!");
         }
     }
 }

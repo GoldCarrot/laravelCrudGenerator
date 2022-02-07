@@ -13,26 +13,46 @@ abstract class BaseEloquentGenerator
 
     public static function label(): string
     {
-        return strtolower(str_replace('Generator', '', basename(static::class)));
+        return strtolower(str_replace('Generator', '', class_basename(static::class)));
     }
 
     public function rollback()
     {
-        if (File::exists($this->path . '\\' . $this->filename) && File::delete($this->path . '\\' . $this->filename)) {
-            ConsoleHelper::info("$this->filename deleted! Path in app: " . $this->path . '\\');
+        if (File::exists($this->getFilePath()) && File::delete($this->getFilePath())) {
+            ConsoleHelper::info("{$this->getFilename()} deleted! Path in app: " . $this->getPath() . '/');
         }
-        if (File::isDirectory($this->path) && count(scandir($this->path)) <= 2) {
-            if (File::deleteDirectory($this->path)) {
-                ConsoleHelper::info("Path $this->path deleted!");
+        if (File::isDirectory($this->getPath()) && count(scandir($this->getPath())) <= 2) {
+            if (File::deleteDirectory($this->getPath())) {
+                ConsoleHelper::info("Path {$this->getPath()} deleted!");
             }
         }
 
         //Удаление общей директории с условием, что она пустая
-        $pathUp = dirname($this->path);
+        $pathUp = dirname($this->getPath());
         if (File::isDirectory($pathUp) && count(scandir($pathUp)) <= 2) {
             if (File::deleteDirectory($pathUp)) {
                 ConsoleHelper::info("Path $pathUp deleted!");
             }
         }
+    }
+
+    protected function getPathTemplate(): string
+    {
+        return $this->pathTemplate;
+    }
+
+    protected function getPath(): string
+    {
+        return $this->path;
+    }
+
+    protected function getFilePath(): string
+    {
+        return "$this->path/$this->filename";
+    }
+
+    protected function getFilename(): string
+    {
+        return $this->filename;
     }
 }

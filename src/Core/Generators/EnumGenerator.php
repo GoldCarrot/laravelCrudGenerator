@@ -21,31 +21,31 @@ class EnumGenerator extends BaseEloquentGenerator implements GeneratorInterface
     {
         $this->generatorForm->enumName = $this->enum->enumName;
         $this->pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Classes';
-        $this->filename = basename($this->enum->enumName) . ".php";
-        $this->path = base_path(lcfirst(class_namespace($this->generatorForm->enumName)));
+        $this->filename = class_basename($this->enum->enumName) . ".php";
+        $this->path = str_replace('\\', '/', base_path(lcfirst(class_namespace($this->generatorForm->enumName))));
     }
 
     public function generate()
     {
-        View::addLocation($this->pathTemplate);
-        View::addNamespace('enum', $this->pathTemplate);
+        View::addLocation($this->getPathTemplate());
+        View::addNamespace('enum', $this->getPathTemplate());
         $renderedModel = View::make('enum')->with(
             [
                 'generator' => $this,
             ]);
-        if (!File::isDirectory($this->path)) {
-            File::makeDirectory($this->path, 0777, true, true);
+        if (!File::isDirectory($this->getPath())) {
+            File::makeDirectory($this->getPath(), 0777, true, true);
         }
 
-        if (!File::exists($this->path . '\\' . $this->filename) || $this->generatorForm->force) {
-            File::delete($this->path . '\\' . $this->filename);
-            if (File::put($this->path . '\\' . $this->filename, $renderedModel) !== false) {
-                ConsoleHelper::info("$this->filename generated! Path in app: " . $this->path . '\\', 'asd');
+        if (!File::exists($this->getFilePath()) || $this->generatorForm->force) {
+            File::delete($this->getFilePath());
+            if (File::put($this->getFilePath(), $renderedModel) !== false) {
+                ConsoleHelper::info("{$this->getFileName()} generated! Path in app: " . $this->getPath() . '/');
             } else {
-                ConsoleHelper::error("$this->filename generate error!");
+                ConsoleHelper::error("{$this->getFileName()} generate error!");
             }
         } else {
-            ConsoleHelper::warning("$this->filename is exists! Add --force option to overwrite Enum!");
+            ConsoleHelper::warning("{$this->getFileName()} is exists! Add --force option to overwrite Enum!");
         }
     }
 }

@@ -21,32 +21,32 @@ class ControllerGenerator extends BaseEloquentGenerator implements GeneratorInte
     {
         $this->pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Classes';
         $this->filename = $this->generatorForm->resourceName . ($this->generatorForm::$CONTROLLER_SUFFIX) . ".php";
-        $this->path = base_path(lcfirst(class_namespace($this->controllerParams->controllerName)));
+        $this->path = str_replace('\\', '/', base_path(lcfirst(class_namespace($this->controllerParams->controllerName))));
     }
 
     public function generate()
     {
-        View::addLocation($this->pathTemplate);
-        View::addNamespace($this->controllerParams->templateName, $this->pathTemplate);
+        View::addLocation($this->getPathTemplate());
+        View::addNamespace($this->controllerParams->templateName, $this->getPathTemplate());
 
         $renderedModel = View::make($this->controllerParams->templateName)->with(
             [
                 'generator' => $this,
             ]);
 
-        if (!File::isDirectory($this->path)) {
-            File::makeDirectory($this->path, 0777, true, true);
+        if (!File::isDirectory($this->getPath())) {
+            File::makeDirectory($this->getPath(), 0777, true, true);
         }
 
-        if (!File::exists($this->path . '\\' . $this->filename) || $this->generatorForm->force) {
-            File::delete($this->path . '\\' . $this->filename);
-            if (File::put($this->path . '\\' . $this->filename, $renderedModel) !== false) {
-                ConsoleHelper::info("$this->filename generated! Path in app: " . $this->path . '\\');
+        if (!File::exists($this->getFilePath()) || $this->generatorForm->force) {
+            File::delete($this->getFilePath());
+            if (File::put($this->getFilePath(), $renderedModel) !== false) {
+                ConsoleHelper::info("{$this->getFileName()} generated! Path in app: " . $this->getPath() . '/');
             } else {
-                ConsoleHelper::error("$this->filename generate error!");
+                ConsoleHelper::error("{$this->getFileName()} generate error!");
             }
         } else {
-            ConsoleHelper::warning("$this->filename is exists! Add --force option to overwrite Controller!");
+            ConsoleHelper::warning("{$this->getFileName()} is exists! Add --force option to overwrite Controller!");
         }
     }
 
