@@ -22,7 +22,7 @@ use {{ $generator->generatorForm->presenterName }};
  * @package {{ $generator->controllerParams->controllerName }}
 */
 
-class {{ basename($generator->controllerParams->controllerName) }} extends {{ basename($generator->controllerParams->baseClass) }}
+class {{ class_basename($generator->controllerParams->controllerName) }} extends {{ class_basename($generator->controllerParams->baseClass) }}
 {
     public function __construct(private \{{$generator->generatorForm->repositoryName}} $repository, private \{{$generator->generatorForm->serviceName}} $service)
     {
@@ -33,7 +33,7 @@ class {{ basename($generator->controllerParams->controllerName) }} extends {{ ba
         return response()->json(
             [
                 'success' => true,
-                'data' => collect($this->repository->getLast(null))->map(fn({{$generator->generatorForm->getResourceName(false, false)}} ${{$generator->generatorForm->getResourceName(false, true)}}) => (new {{ basename($generator->generatorForm->presenterName) }}(${{$generator->generatorForm->getResourceName(false, true)}}))->toArray()),
+                'data' => collect($this->repository->getLast(null))->map(fn({{$generator->generatorForm->getResourceName(false, false)}} ${{$generator->generatorForm->getResourceName(false, true)}}) => (new {{ class_basename($generator->generatorForm->presenterName) }}(${{$generator->generatorForm->getResourceName(false, true)}}))->toArray()),
             ]
         );
     }

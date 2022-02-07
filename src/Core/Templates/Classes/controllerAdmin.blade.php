@@ -21,7 +21,7 @@ use {{ $generator->generatorForm->modelName }};
  * @package {{ $generator->controllerParams->controllerName }}
 */
 
-class {{ basename($generator->controllerParams->controllerName) }} extends {{ basename($generator->controllerParams->baseClass) }}
+class {{ class_basename($generator->controllerParams->controllerName) }} extends {{ class_basename($generator->controllerParams->baseClass) }}
 {
     public function __construct(\{{$generator->generatorForm->repositoryName}} $repository, \{{$generator->generatorForm->serviceName}} $service)
     {

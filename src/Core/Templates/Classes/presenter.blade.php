@@ -15,14 +15,14 @@ use {{ $generator->generatorForm->modelName }};
 
 /**
  * This is the presenter api for table "{{ $generator->generatorForm->resourceTable }}".
- * Class {{ \class_namespace($generator->generatorForm->presenterName) }}
+ * Class {{ class_basename($generator->generatorForm->presenterName) }}
  *
- * @package {{ $generator->generatorForm->presenterName }}
+ * @package \{{ $generator->generatorForm->presenterName }}
 */
 
-class {{ basename($generator->generatorForm->presenterName) }}
+class {{ class_basename($generator->generatorForm->presenterName) }}
 {
-    protected {{ basename($generator->generatorForm->modelName) }} $model;
+    protected {{ class_basename($generator->generatorForm->modelName) }} $model;
 
     public function __construct($model)
     {

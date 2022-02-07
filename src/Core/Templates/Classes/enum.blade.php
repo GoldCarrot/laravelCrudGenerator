@@ -21,7 +21,7 @@ use {{ $generator->baseClass }};
  * @package {{ class_namespace($generator->generatorForm->enumName) }}
 */
 
-class {{ basename($generator->generatorForm->enumName) }} extends {{ basename($generator->baseClass) }}
+class {{ class_basename($generator->generatorForm->enumName) }} extends {{ class_basename($generator->baseClass) }}
 {
 @foreach($generator->enum->types as $type)
     public const {{strtoupper($type)}} = '{{$type}}';

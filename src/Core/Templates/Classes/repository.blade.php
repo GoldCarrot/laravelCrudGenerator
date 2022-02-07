@@ -21,6 +21,7 @@ use {{ $generator->baseInterface }};
 @endif
 @if ($index !== false)
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use {{ $generator->generatorForm->enums['status']->enumName }};
 @endif
 @if (count($generator->traits) > 0)
@@ -31,19 +32,19 @@ use {{ $trait }};
 
 /**
  * This is the repository class for table "{{ $generator->generatorForm->resourceTable }}".
- * Class {{ basename($generator->generatorForm->repositoryName) }}
+ * Class {{ class_basename($generator->generatorForm->repositoryName) }}
  *
  * @package {{ class_namespace($generator->generatorForm->repositoryName) }}
-<?= ' * @method ' . basename($generator->generatorForm->modelName) ?> []|Collection search(array $parameters = [], int $limit = null)
-<?= ' * @method ' . basename($generator->generatorForm->modelName) ?> []|Collection searchActive(array $parameters = [], int $limit = null)
-<?= ' * @method ' . basename($generator->generatorForm->modelName) ?>|null oneActive(array $params = [])
-<?= ' * @method ' . basename($generator->generatorForm->modelName) ?>|null find(array $params = [])
-<?= ' * @method ' . basename($generator->generatorForm->modelName) ?>|null findActive(array $params = [])
- */
-class {{ basename($generator->generatorForm->repositoryName) }} extends {{ basename($generator->baseClass) }} {{ $generator->baseInterface ? 'implements ' . basename($generator->baseInterface) : '' }}
+<?= ' * @method ' . class_basename($generator->generatorForm->modelName) ?> []|Collection search(array $parameters = [], int $limit = null)
+<?= ' * @method ' . class_basename($generator->generatorForm->modelName) ?> []|Collection searchActive(array $parameters = [], int $limit = null)
+<?= ' * @method ' . class_basename($generator->generatorForm->modelName) ?>|null oneActive(array $params = [])
+<?= ' * @method ' . class_basename($generator->generatorForm->modelName) ?>|null find(array $params = [])
+<?= ' * @method ' . class_basename($generator->generatorForm->modelName) ?>|null findActive(array $params = [])
+*/
+class {{ class_basename($generator->generatorForm->repositoryName) }} extends {{ class_basename($generator->baseClass) }} {{ $generator->baseInterface ? 'implements ' . class_basename($generator->baseInterface) : '' }}
 {
 @if (count($generator->traits) > 0)
-    use {{join(', ',  collect($generator->traits)->map(function ($trait) { return basename ($trait); })->toArray())}};
+    use {{join(', ',  collect($generator->traits)->map(function ($trait) { return class_basename($trait); })->toArray())}};
 
 @endif
     protected function modelClass(): string
@@ -71,7 +72,7 @@ class {{ basename($generator->generatorForm->repositoryName) }} extends {{ basen
 ?>
     protected function active(): Builder
     {
-        return $this->query()->where('status', '=', {{basename($generator->generatorForm->enums['status']->enumName)}}::{{$activeStatusConst}});
+        return $this->query()->where('status', '=', {{class_basename($generator->generatorForm->enums['status']->enumName)}}::{{$activeStatusConst}});
     }
 @endif
 }

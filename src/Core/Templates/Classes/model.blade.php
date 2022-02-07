@@ -53,7 +53,7 @@ use {{ $externalForeignKey['className'] }};
 @endforeach
 */
 
-class {{ $generator->generatorForm->resourceName }} extends {{ basename($generator->baseClass) }}
+class {{ $generator->generatorForm->resourceName }} extends {{ class_basename($generator->baseClass) }}
 {
     protected $table = '{{ $generator->generatorForm->resourceTable }}';
     {!!  count($generator->generatorForm->dateProperties) > 0 ? "\n    protected \$dates = ['" . implode("', '", $generator->generatorForm->dateProperties) . "'];" : "" !!}
