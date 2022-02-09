@@ -21,9 +21,9 @@ use {{ $generator->baseInterface }};
 @endif
 @if ($index !== false)
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use {{ $generator->generatorForm->enums['status']->enumName }};
 @endif
+use Illuminate\Database\Eloquent\Collection;
 @if (count($generator->traits) > 0)
 @foreach($generator->traits as $trait)
 use {{ $trait }};
