@@ -24,7 +24,7 @@
             "email": "denzlbro@gmail.com"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "require": {
       "php": "^8.0",
       "laravel/framework": "^8"
