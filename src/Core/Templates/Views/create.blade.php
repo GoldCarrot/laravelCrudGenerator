@@ -6,7 +6,7 @@
 /* @var $generator \Chatway\LaravelCrudGenerator\Core\Generators\ViewGenerator */
 
 ?>
-@@extends('admin.layouts.app', ['title' => __('admin.menu.{{$generator->generatorForm->getResourceName(false, true)}}')])
+@@extends('admin.layouts.app', ['title' => ''])
 
 
 @@push('breadcrumbs')

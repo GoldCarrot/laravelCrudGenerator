@@ -51,8 +51,7 @@ use {{ $externalForeignKey['className'] }};
 @foreach($generator->generatorForm->externalForeignKeys as $externalForeignKey)
  * @property {{ $generator->generatorForm->getFormattedProperty(basename($externalForeignKey['className']) .' []', Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className'])))) }}
 @endforeach
-*/
-
+ */
 class {{ $generator->generatorForm->resourceName }} extends {{ class_basename($generator->baseClass) }}
 {
     protected $table = '{{ $generator->generatorForm->resourceTable }}';
