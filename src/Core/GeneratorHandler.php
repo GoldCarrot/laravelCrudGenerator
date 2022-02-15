@@ -3,6 +3,7 @@
 namespace Chatway\LaravelCrudGenerator\Core;
 
 use App;
+use Artisan;
 use Chatway\LaravelCrudGenerator\Core\Base\Generators\BaseEloquentGenerator;
 use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\DTO\MainParams;
@@ -65,39 +66,12 @@ class GeneratorHandler
             }
         }
 
-        //dd(basename($generators[0]), $generators[0]::label());
-        //if (!$mainParams->previewPaths) {
-        //    if (count($generatorForm->generateList) == 0 || in_array('model', $generatorForm->generateList)) {
-        //        (new ModelGenerator($generatorForm))->generate();
-        //    }
-        //    if (count($generatorForm->generateList) == 0 || in_array('controller', $generatorForm->generateList)) {
-        //        (new ControllersGenerator($generatorForm))->generate();
-        //    }
-        //    if (count($generatorForm->generateList) == 0 || in_array('repository', $generatorForm->generateList)) {
-        //        (new RepositoryGenerator($generatorForm))->generate();
-        //    }
-        //    if (count($generatorForm->generateList) == 0 || in_array('service', $generatorForm->generateList)) {
-        //        (new ServiceGenerator($generatorForm))->generate();
-        //    }
-        //    if (count($generatorForm->generateList) == 0 || in_array('presenter', $generatorForm->generateList)) {
-        //        (new PresenterGenerator($generatorForm))->generate();
-        //    }
-        //    if (count($generatorForm->generateList) == 0 || in_array('enum', $generatorForm->generateList)) {
-        //        (new EnumsGenerator($generatorForm))->generate();
-        //    }
-        //    if (count($generatorForm->generateList) == 0 || in_array('view', $generatorForm->generateList)) {
-        //        (new ViewsGenerator($generatorForm))->generate();
-        //    }
-        //    if (count($generatorForm->generateList) == 0 || in_array('route', $generatorForm->generateList)) {
-        //        (new RoutesGenerator($generatorForm))->generate();
-        //    }
-        //}
-
         if ($mainParams->previewPaths) {
             ConsoleHelper::primary('------------Generator previewPaths finish!------------');
         } else {
             ConsoleHelper::primary('------------Generator finish!------------');
         }
+        Artisan::call('php artisan view:clear');
         ConsoleHelper::bell();
     }
 }
