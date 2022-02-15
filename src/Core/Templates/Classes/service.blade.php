@@ -25,7 +25,7 @@ use Illuminate\Support\Arr;
  * Class {{ $generator->generatorForm->serviceName }}
  *
  * @package {{ class_namespace($generator->generatorForm->serviceName) }}
-<?= ' * @method ' . class_namespace($generator->generatorForm->modelName) ?>|null findActive(array $params = [])
+<?= ' * @method ' . class_basename($generator->generatorForm->modelName) ?>|null findActive(array $params = [])
  */
 class {{ class_basename($generator->generatorForm->serviceName) }} extends {{ class_basename($generator->baseClass) }} {{ $generator->baseInterface ? 'implements ' . class_basename($generator->baseInterface) : '' }}
 {
