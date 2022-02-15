@@ -71,7 +71,7 @@ class GeneratorHandler
         } else {
             ConsoleHelper::primary('------------Generator finish!------------');
         }
-        Artisan::call('php artisan view:clear');
+        Artisan::call('view:clear');
         ConsoleHelper::bell();
     }
 }
