@@ -9,15 +9,15 @@ use Illuminate\Console\Command;
 
 class GeneratorAllCommand extends Command
 {
-    protected $signature = 'gen:all 
-    {table : Таблица в БД} 
-    {folderNs? : Базовый namespace папки \App\Domain\{folderNs}\[Entities,repositories]} 
-    {--def-status-off : Генерация Enum Status со стандартными текстовыми статусами active, inactive, deleted }
-    {--enum= : Генерация Enum файлов, пример: ="type-sport,home,work;status-active,inactive,deleted"}
-    {--force : Удаляет файлы, и записывает новые, иначе пропускаются файлы}
-    {--previewPaths : Показывает все пути }
-    {--generateList= : список файлов для генерации, если пустое, то генерится все подряд }
-    {--action= : действие выполняемое скриптом, примеры generate - генерирует файлы (по-умолчанию); rollback - удаляет файлы и папки (если пустые) }
+    protected $signature = 'gen:all
+    {table : Table name in DB}
+    {folderNs? : Base namespace folder \App\Domain\{folderNs}\[Entities,repositories]}
+    {--def-status-off : Generate Enum Status with default text statuses active, inactive, deleted }
+    {--enum= : Generate Enum files, example: ="type-sport,home,work;status-active,inactive,deleted"}
+    {--force : Delete and write new files, if off this parameter, then skip files}
+    {--previewPaths : View all paths files, generate off }
+    {--generateList= : Generate file list, if empty, then generate all files }
+    {--action= : Action, example generate - generate files (default); rollback - delete generated files and folders (if empty) }
     ';
 
     public function __construct()
@@ -49,7 +49,7 @@ class GeneratorAllCommand extends Command
                 dd($e->getMessage(), $e->getTraceAsString());
             }
         } else {
-            $this->error("\nТаблицы $tableName не существует\n");
+            $this->error("\nTable $tableName not exists in DB\n");
         }
         return 0;
     }
