@@ -26,7 +26,7 @@ abstract class BaseCommand extends Command
     protected function setSignature($variables = ['commandName' => 'gen:all'])
     {
         foreach ($variables as $key => $value) {
-            $this->signature = str_replace("{{$key}}", $value, $this->signature);
+            $this->signature = str_replace('{{' . $key . '}}', $value, $this->signature);
         }
     }
 }
