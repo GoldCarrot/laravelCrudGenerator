@@ -7,21 +7,11 @@ use Chatway\LaravelCrudGenerator\Core\GeneratorHandler;
 use DB;
 use Illuminate\Console\Command;
 
-class GeneratorModelCommand extends Command
+class GeneratorModelCommand extends BaseCommand
 {
-    protected $signature = 'gen:model 
-    {table : Таблица в БД} 
-    {folderNs? : Базовый namespace папки \App\Domain\{folderNs}\[Entities,repositories]} 
-    {--def-status-off : Генерация Enum Status со стандартными текстовыми статусами active, inactive, deleted }
-    {--enum : Генерация Enum файлов, пример: ="type-sport,home,work;status-active,inactive,deleted"}
-    {--force : Удаляет файлы, и записывает новые, иначе пропускаются файлы}
-    {--previewPaths : Показывает все пути }
-    {--generateList= : список файлов для генерации, если пустое, то генерится все подряд }
-    {--action= : действие выполняемое скриптом generate - генерирует файлы; rollback - удаляет файлы и папки (если пустые) }
-    ';
-
     public function __construct()
     {
+        $this->setSignature(['commandName' => 'gen:model']);
         parent::__construct();
     }
 

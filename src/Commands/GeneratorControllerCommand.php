@@ -7,26 +7,17 @@ use Chatway\LaravelCrudGenerator\Core\GeneratorHandler;
 use DB;
 use Illuminate\Console\Command;
 
-class GeneratorControllerCommand extends Command
+class GeneratorControllerCommand extends BaseCommand
 {
-    protected $signature = 'gen:controller 
-    {table : Таблица в БД} 
-    {folderNs? : Базовый namespace папки \App\Domain\{folderNs}\[Entities,repositories]} 
-    {--def-status-off : Генерация Enum Status со стандартными текстовыми статусами active, inactive, deleted }
-    {--enum : Генерация Enum файлов, пример: ="type-sport,home,work;status-active,inactive,deleted"}
-    {--force : Удаляет файлы, и записывает новые, иначе пропускаются файлы}
-    {--previewPaths : Показывает все пути }
-    ';
-
     public function __construct()
     {
+        $this->setSignature(['commandName' => 'gen:controller']);
         parent::__construct();
     }
 
     public function handle(): int
     {
         //$arguments = $this->arguments();//todo
-        //dd($arguments);
         $tableName = $this->argument('table');
         $tables = \Arr::pluck(DB::select('SHOW TABLES'), "Tables_in_" . config('database.connections.mysql.database'));
         if (in_array($tableName, $tables)) {

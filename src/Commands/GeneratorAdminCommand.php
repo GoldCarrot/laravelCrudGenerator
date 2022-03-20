@@ -5,29 +5,18 @@ namespace Chatway\LaravelCrudGenerator\Commands;
 use Chatway\LaravelCrudGenerator\Core\DTO\MainParams;
 use Chatway\LaravelCrudGenerator\Core\GeneratorHandler;
 use DB;
-use Illuminate\Console\Command;
 
-class GeneratorAdminCommand extends Command
+class GeneratorAdminCommand extends BaseCommand
 {
-    protected $signature = 'gen:admin
-    {table : Таблица в БД} 
-    {folderNs? : Базовый namespace папки \App\Domain\{folderNs}\[Entities,repositories]} 
-    {--def-status-off : Генерация Enum Status со стандартными текстовыми статусами active, inactive, deleted }
-    {--enum= : Генерация Enum файлов, пример: ="type-sport,home,work;status-active,inactive,deleted"}
-    {--force : Удаляет файлы, и записывает новые, иначе пропускаются файлы}
-    {--previewPaths : Показывает все пути }
-    {--generateList= : список файлов для генерации, если пустое, то генерится все подряд }
-    ';
-
     public function __construct()
     {
+        $this->setSignature(['commandName' => 'gen:admin']);
         parent::__construct();
     }
 
     public function handle(): int
     {
         //$arguments = $this->arguments();//todo
-        //dd($arguments);
         $tableName = $this->argument('table');
         $tables = \Arr::pluck(DB::select('SHOW TABLES'), "Tables_in_" . config('database.connections.mysql.database'));
         if (in_array($tableName, $tables)) {
