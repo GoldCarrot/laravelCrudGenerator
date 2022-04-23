@@ -125,7 +125,7 @@ class ConsoleHelper
 
     public static function primary($text)
     {
-        self::log($text, 'light_blue', true, 'black');
+        self::log($text, 'light_blue', true, 'transparent');
     }
 
     /**
@@ -136,7 +136,7 @@ class ConsoleHelper
     public static function info(...$texts)
     {
         $text = implode(' ', $texts);
-        self::log($text, 'light_green', true, 'black');
+        self::log($text, 'light_green', true, 'transparent');
     }
     /**
      * @param mixed ...$texts
@@ -146,7 +146,7 @@ class ConsoleHelper
     public static function error(...$texts)
     {
         $text = implode(' ', $texts);
-        self::log($text, 'light_red', true, 'black');
+        self::log($text, 'light_red', true, 'transparent');
     }
     /**
      * @param mixed ...$texts
@@ -156,6 +156,6 @@ class ConsoleHelper
     public static function warning(...$texts)
     {
         $text = implode(' ', $texts);
-        self::log($text, 'yellow', true, 'black');
+        self::log($text, 'yellow', true, 'transparent');
     }
 }
