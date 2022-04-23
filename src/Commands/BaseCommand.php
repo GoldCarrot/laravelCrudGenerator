@@ -14,7 +14,7 @@ abstract class BaseCommand extends Command
     {--enum= : Generate Enum files, example: ="type-sport,home,work;status-active,inactive,deleted"}
     {--force : Delete and write new files, if off this parameter, then skip files}
     {--previewPaths : View all paths files, generate off }
-    {--generateList= : Generate file list, if empty, then generate all files }
+    {--generateList= : Generate file list, if empty, then generate all files. Example: =model,controllers,enums,views,service,repository }
     {--action= : Action, example generate - generate files (default); rollback - delete generated files and folders (if empty) }
     ';
 

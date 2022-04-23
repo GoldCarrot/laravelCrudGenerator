@@ -147,7 +147,7 @@ class GeneratorForm
             if (count($this->generateList) == 0 || in_array('model', $this->generateList)) {
                 ConsoleHelper::info($this->modelName);
             }
-            if (count($this->generateList) == 0 || in_array('controller', $this->generateList)) {
+            if (count($this->generateList) == 0 || in_array('controllers', $this->generateList)) {
                 foreach ($this->controllers as $controller) {
                     ConsoleHelper::info($controller->controllerName);
                 }
@@ -161,12 +161,12 @@ class GeneratorForm
             if (count($this->generateList) == 0 || in_array('service', $this->generateList)) {
                 ConsoleHelper::info($this->serviceName);
             }
-            if (count($this->generateList) == 0 || in_array('enum', $this->generateList)) {
+            if (count($this->generateList) == 0 || in_array('enums', $this->generateList)) {
                 foreach ($this->enums as $enum) {
                     ConsoleHelper::info($enum->enumName);
                 }
             }
-            if (count($this->generateList) == 0 || in_array('view', $this->generateList)) {
+            if (count($this->generateList) == 0 || in_array('views', $this->generateList)) {
                 ConsoleHelper::info($this->viewsPath);
             }
         }
