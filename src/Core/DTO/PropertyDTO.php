@@ -14,6 +14,7 @@ class PropertyDTO
     public string|null $classTable;
     public bool $isEnum;
     public EnumParams $enum;
+    public bool $foreignKeyExists;
 
     const INLET_PROPERTIES = [
         'id',
@@ -32,5 +33,6 @@ class PropertyDTO
         $this->class = Arr::get($data, 'class');
         $this->classTable = Arr::get($data, 'classTable');
         $this->isEnum = Arr::get($data, 'isEnum', false);
+        $this->foreignKeyExists = Arr::get($data, 'foreignKeyExists', false);
     }
 }

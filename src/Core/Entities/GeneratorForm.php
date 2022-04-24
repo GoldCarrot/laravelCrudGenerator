@@ -244,6 +244,11 @@ class GeneratorForm
                 if (isset($this->properties[$foreignKey->COLUMN_NAME])) {
                     $this->properties[$foreignKey->COLUMN_NAME]->class = $classes[$index]['className'];
                     $this->properties[$foreignKey->COLUMN_NAME]->classTable = $classes[$index]['tableName'];
+                    $this->properties[$foreignKey->COLUMN_NAME]->foreignKeyExists = true;
+                }
+            } else {
+                if (isset($this->properties[$foreignKey->COLUMN_NAME])) {
+                    $this->properties[$foreignKey->COLUMN_NAME]->foreignKeyExists = true;
                 }
             }
         }
@@ -266,9 +271,15 @@ class GeneratorForm
         foreach ($foreignKeys as $foreignKey) {
             $foreignExtKeys = $this->foreignKeyService->getInternalKeys($foreignKey->TABLE_NAME);
             foreach ($foreignExtKeys as $foreignExtKey) {
-                $index = array_search($foreignExtKey->REFERENCED_TABLE_NAME, array_column($classes, 'tableName'));
-                if ($foreignExtKey->REFERENCED_TABLE_NAME != $tableName && $index != false) {
+                $index = array_search($foreignExtKey->TABLE_NAME, array_column($classes, 'tableName'));
+                $pushed = in_array($foreignExtKey->TABLE_NAME, array_column($keys, 'tableName'));
+                if ($foreignExtKey->REFERENCED_TABLE_NAME == $tableName && $index != false && !$pushed) {
                     $keys[] = array_replace($classes[$index], ['tableName' => $foreignExtKey->TABLE_NAME]);
+                } elseif ($foreignExtKey->REFERENCED_TABLE_NAME == $tableName && !$pushed) {
+                    $className = Str::singular($foreignExtKey->TABLE_NAME);
+                    $className = Str::camel($className);
+                    $className = ucfirst($className);
+                    $keys[] = ['className' => $className, 'tableName' => $foreignExtKey->TABLE_NAME];
                 }
             }
         }
@@ -369,7 +380,8 @@ class GeneratorForm
      */
     public function getFormattedProperty($type, $name): string
     {
-        return $type . str_repeat(' ', $this->spaceForProperties - strlen($type)) . ' $' . $name;
+        $spaces = $this->spaceForProperties - strlen($type);
+        return $type . str_repeat(' ', max($spaces, 0)) . ' $' . $name;
     }
 
     public function getResourceName($plural = false, $lowFirstSymbol = false, $camel = false): string

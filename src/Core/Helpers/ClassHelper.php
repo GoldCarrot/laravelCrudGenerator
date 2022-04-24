@@ -9,7 +9,6 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionException;
 use RegexIterator;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 class ClassHelper
 {
@@ -18,17 +17,17 @@ class ClassHelper
      * Description Запрос всех моделей в проекте
      * @param string $path
      * @return array
-     * @throws ReflectionException
      */
-    public static function getAllEntitiesInProject(string $path = "app\\Domain"): array
+    public static function getAllEntitiesInProject(string $path = "app/Domain"): array
     {
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(base_path($path)));
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
         $regex = new RegexIterator($iterator, '/^.+\.php$/i', RegexIterator::GET_MATCH);
         $classes = [];
         foreach ($regex as $file => $value) {
-            if (preg_match("/^.*Domain\\\.*\\\Entities\\\.*$/", $file)) {
-                $className = str_replace(base_path("app"), 'App', $file);
+            if (preg_match("/^.*Domain\/.*\/Entities\/.*$/", $file)) {
+                $className = str_replace("app", 'App', $file);
                 $className = str_replace('.php', '', $className);
+                $className = str_replace('/', '\\', $className);
                 $classes[] = $className;
             }
         }
@@ -39,7 +38,6 @@ class ClassHelper
      * Description получение всех таблиц в моделях
      * @param $classes
      * @return array
-     * @throws ReflectionException
      */
     public static function getTablesByClassArray($classes): array
     {
@@ -56,8 +54,40 @@ class ClassHelper
                 }
             } catch (ReflectionException $e) {
                 info($e->getMessage());
+                ConsoleHelper::error($e->getMessage());
             }
         }
         return $tables;
+    }
+    /**
+     * Description Запрос всех ресурсов в проекте
+     * @param string $path
+     * @return array
+     */
+    public static function getAllResourcesInProject(string $path = "app/Http"): array
+    {
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
+        $regex = new RegexIterator($iterator, '/^.+\.php$/i', RegexIterator::GET_MATCH);
+        $classes = [];
+        foreach ($regex as $file => $value) {
+            if (preg_match("/^.*Http\/.*\/Resources\/.*$/", $file)) {
+                $className = str_replace("app", 'App', $file);
+                $className = str_replace('.php', '', $className);
+                $className = str_replace('/', '\\', $className);
+                $classes[] = $className;
+            }
+        }
+        return $classes;
+    }
+
+    public static function getResourceByName($name)
+    {
+        $resources = self::getAllResourcesInProject();
+        foreach ($resources as $resource) {
+            if (str_contains($resource, $name)) {
+                return $resource;
+            }
+        }
+        return $name;
     }
 }

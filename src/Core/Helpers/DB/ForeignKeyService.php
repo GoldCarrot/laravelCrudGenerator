@@ -3,6 +3,7 @@
 namespace Chatway\LaravelCrudGenerator\Core\Helpers\DB;
 
 use DB;
+use Illuminate\Support\Collection;
 
 class ForeignKeyService
 {
@@ -13,18 +14,26 @@ class ForeignKeyService
 
     /**
      * Description возвращает все ключи объявленные в таблице
+     *
      * @param $tableName
-     * @return array
+     *
+     * @return Collection
      */
-    public function getExternalKeys($tableName): array
+    public function getExternalKeys($tableName): Collection
     {
-        $query = "SELECT * ";
-        $query .= "FROM information_schema.KEY_COLUMN_USAGE ";
-        $query .= " WHERE ";
-        $query .= "(REFERENCED_TABLE_NAME = '$tableName')";
-        $query .= " AND ";
-        $query .= "TABLE_SCHEMA = '{$this->getDBName()}' AND CONSTRAINT_NAME <>'PRIMARY' AND REFERENCED_TABLE_NAME is not null;";
-        return DB::select($query);
+        //$query = "SELECT * ";
+        //$query .= "FROM information_schema.KEY_COLUMN_USAGE ";
+        //$query .= " WHERE ";
+        //$query .= "(REFERENCED_TABLE_NAME = '$tableName')";
+        //$query .= " AND ";
+        //$query .= "TABLE_SCHEMA = '{$this->getDBName()}' AND CONSTRAINT_NAME <>'PRIMARY' AND REFERENCED_TABLE_NAME is not null;";
+        //return DB::select($query);
+        return DB::table('information_schema.KEY_COLUMN_USAGE')
+            ->where('TABLE_NAME', '<>', $tableName)
+            ->where('TABLE_SCHEMA', $this->getDBName())
+            ->where('CONSTRAINT_NAME', '!=', 'PRIMARY')
+            ->whereNotNull('REFERENCED_TABLE_NAME')
+            ->get();
     }
 
     /**
@@ -32,9 +41,9 @@ class ForeignKeyService
      *
      * @param $tableName
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
-    public function getInternalKeys($tableName)
+    public function getInternalKeys($tableName): Collection
     {
         return DB::table('information_schema.KEY_COLUMN_USAGE')
             ->where('TABLE_NAME', $tableName)

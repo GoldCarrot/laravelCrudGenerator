@@ -38,15 +38,14 @@ class {{ class_basename($generator->generatorForm->serviceName) }} extends {{ cl
     public function update({{ $generator->generatorForm->resourceName }}|Model $model, array $data): {{ $generator->generatorForm->resourceName }}
     {
 @foreach($generator->generatorForm->properties as $property)
-    @php
-        $propertyCamelCase = Str::camel($property->name)
-    @endphp
+@php
+    $propertyCamelCase = Str::camel($property->name)
+@endphp
 @if(($property->name == 'alias' || $property->name == 'slug') && isset($generator->generatorForm->properties['title']))
         {!! "\$model->{$property->name} = Arr::get(\$data, '$propertyCamelCase', \$model->$property->name) ?: \$this->slug(\$model, \$model->title, \$model->id, '$property->name');" !!}
 @continue
 @endif
 @if(!$property->inlet)
-
         {!! "\$model->{$property->name} = Arr::get(\$data, '{$propertyCamelCase}', \$model->{$property->name});" !!}
 @continue
 @endif
@@ -54,13 +53,12 @@ class {{ class_basename($generator->generatorForm->serviceName) }} extends {{ cl
 
         $model->saveOrFail();
 
-@foreach($generator->generatorForm->externalForeignKeys as $externalForeignKey)
-if (isset($data['{!! Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) !!}List'])) {
+@foreach($generator->generatorForm->externalForeignKeys as $index => $externalForeignKey)
+        if (isset($data['{!! Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) !!}List'])) {
             $model->{!! Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) !!}()->detach($model->{!! Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) !!});
             $model->{!! Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) !!}()->attach($data['{!! Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) !!}List']);
         }
-
-        @endforeach
+@endforeach
         return $model;
     }
 

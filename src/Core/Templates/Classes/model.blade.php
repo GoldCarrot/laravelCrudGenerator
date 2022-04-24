@@ -15,6 +15,7 @@ namespace {{ $generator->generatorForm->getNsByClassName($generator->generatorFo
 
 use {{ $generator->baseClass }};
 use Eloquent;
+use Illuminate\Database\Eloquent\Collection;
 <?php /** Начало прикрепления классов для внутренних ключей **/ ?>
 <?php $addedClasses = [] ?>
 @foreach($generator->generatorForm->internalForeignKeys as $internalForeignKey)
@@ -26,7 +27,7 @@ use {{ $internalForeignKey['className'] }};
 <?php /** Конец прикрепления классов для внутренних ключей **/ ?>
 <?php /** Начало прикрепления классов для внешних ключей **/ ?>
 @foreach($generator->generatorForm->externalForeignKeys as $externalForeignKey)
-@if ($externalForeignKey['className'] != $generator->generatorForm->modelName && !in_array($externalForeignKey['className'], $addedClasses))
+@if ($externalForeignKey['className'] != $generator->generatorForm->modelName && !in_array($externalForeignKey['className'], $addedClasses) && str_contains($externalForeignKey['className'], '\\'))
 @php($addedClasses[] = $externalForeignKey['className'])
 use {{ $externalForeignKey['className'] }};
 @endif
@@ -45,11 +46,11 @@ use {{ $externalForeignKey['className'] }};
 @endforeach
  *
 @foreach($generator->generatorForm->internalForeignKeys as $internalForeignKey)
- * @property {{ $generator->generatorForm->getFormattedProperty(basename($internalForeignKey['className']), Str::singular($internalForeignKey['tableName'])) }}
+ * @property {{ $generator->generatorForm->getFormattedProperty(class_basename($internalForeignKey['className']), Str::camel(Str::singular($internalForeignKey['tableName']))) }}
 @endforeach
  *
 @foreach($generator->generatorForm->externalForeignKeys as $externalForeignKey)
- * @property {{ $generator->generatorForm->getFormattedProperty(basename($externalForeignKey['className']) .' []', Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className'])))) }}
+ * @property {{ $generator->generatorForm->getFormattedProperty(class_basename($externalForeignKey['className']) .'[]|Collection', Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className'])))) }}
 @endforeach
  */
 class {{ $generator->generatorForm->resourceName }} extends {{ class_basename($generator->baseClass) }}
@@ -60,14 +61,14 @@ class {{ $generator->generatorForm->resourceName }} extends {{ class_basename($g
 
     public function {{ Str::camel(Str::singular(str_replace('_id', '', $internalForeignKey['tableName']))) }}()
     {
-        return $this->hasOne({{ basename($internalForeignKey['className']) }}::class, 'id', '{{ $internalForeignKey['columnName'] }}');
+        return $this->hasOne({{ class_basename($internalForeignKey['className']) }}::class, 'id', '{{ $internalForeignKey['columnName'] }}');
     }
 @endforeach
 @foreach($generator->generatorForm->externalForeignKeys as $externalForeignKey)
 
     public function {{ Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) }}()
     {
-        return $this->belongsToMany({{ basename($externalForeignKey['className']) }}::class, '{{ $externalForeignKey['tableName'] }}');
+        return $this->belongsToMany({{ class_basename($externalForeignKey['className']) }}::class, '{{ $externalForeignKey['tableName'] }}');
     }
 @endforeach
 }
