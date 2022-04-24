@@ -16,11 +16,11 @@ use ReflectionException;
 use Str;
 
 /**
- * @property string                $baseNs
- * @property string                $resourceName
- * @property PropertyDTO []        $properties
- * @property EnumParams []         $enums
- * @property ControllerParams []   $controllers
+ * @property string                 $baseNs
+ * @property string                 $resourceName
+ * @property PropertyDTO []         $properties
+ * @property EnumParams []          $enums
+ * @property ControllerParams []    $controllers
  * @property RouteParams [] | array $routeTemplates
  */
 class GeneratorForm
@@ -31,7 +31,9 @@ class GeneratorForm
     public static string $VIEW_FILE_SUFFIX       = '.blade.php';
     public static string $SERVICE_FOLDER_NAME    = 'Services';
     public static string $PRESENTER_FOLDER_NAME  = 'Presenters';
+    public static string $RESOURCE_FOLDER_NAME   = 'Resources';
 
+    public static string $RESOURCE_SUFFIX   = 'Resource';
     public static string $PRESENTER_SUFFIX  = 'Presenter';
     public static string $SERVICE_SUFFIX    = 'Service';
     public static string $REPOSITORY_SUFFIX = 'Repository';
@@ -46,6 +48,7 @@ class GeneratorForm
     public string $serviceName;
     public string $enumName;
     public string $presenterName;
+    public string $resourceClassName;
 
     public string $baseNs    = 'App\Domain';
     public string $httpNs    = 'App\Http\Admin';
@@ -81,7 +84,7 @@ class GeneratorForm
     public string $mainPath;
     public bool   $testMode     = false;
     public array  $generateList = [];
-    public string  $action;
+    public string $action;
     /** Общие параметры конец */
 
     protected ForeignKeyService $foreignKeyService;
@@ -131,6 +134,8 @@ class GeneratorForm
             $this->baseNs . $this->folderNs . '\\' . self::$SERVICE_FOLDER_NAME . '\\' . $this->resourceName . self::$SERVICE_SUFFIX;
         $this->presenterName = $this->httpApiNs . self::$PRESENTER_FOLDER_NAME . '\\' . $this->folderNs . '\\' . $this->resourceName
                                . self::$PRESENTER_SUFFIX;
+        $this->resourceClassName = $this->httpApiNs . self::$RESOURCE_FOLDER_NAME . '\\' . $this->folderNs . '\\' . $this->resourceName
+                                   . self::$RESOURCE_SUFFIX;
 
 
         $this->viewsPath = self::getSafeEnv('GENERATOR_VIEWS_PATH') ??
@@ -169,6 +174,9 @@ class GeneratorForm
             if (count($this->generateList) == 0 || in_array('views', $this->generateList)) {
                 ConsoleHelper::info($this->viewsPath);
             }
+            if (count($this->generateList) == 0 || in_array('resource', $this->generateList)) {
+                ConsoleHelper::info($this->resourceClassName);
+            }
         }
         $this->force = $mainParams->force;
         $this->mainPath = $mainParams->mainPath;
@@ -179,7 +187,7 @@ class GeneratorForm
         $this->testMode = self::getSafeEnv('GENERATOR_TEST_MODE') ?? false;
         self::$CONTROLLER_SUFFIX = self::getSafeEnv('GENERATOR_CONTROLLER_SUFFIX') ?? self::$CONTROLLER_SUFFIX;
         self::$PRESENTER_SUFFIX = self::getSafeEnv('GENERATOR_PRESENTER_SUFFIX') ?? self::$PRESENTER_SUFFIX;
-        self::$PRESENTER_SUFFIX = self::getSafeEnv('GENERATOR_PRESENTER_SUFFIX') ?? self::$PRESENTER_SUFFIX;
+        self::$RESOURCE_SUFFIX = self::getSafeEnv('GENERATOR_RESOURCE_SUFFIX') ?? self::$RESOURCE_SUFFIX;
         self::$REPOSITORY_SUFFIX = self::getSafeEnv('GENERATOR_REPOSITORY_SUFFIX') ?? self::$REPOSITORY_SUFFIX;
 
         self::$MODEL_FOLDER_NAME = self::getSafeEnv('GENERATOR_MODEL_FOLDER_NAME') ?? self::$MODEL_FOLDER_NAME;
@@ -364,9 +372,10 @@ class GeneratorForm
         return $type . str_repeat(' ', $this->spaceForProperties - strlen($type)) . ' $' . $name;
     }
 
-    public function getResourceName($plural = false, $lowFirstSymbol = false): string
+    public function getResourceName($plural = false, $lowFirstSymbol = false, $camel = false): string
     {
         $resourceName = $lowFirstSymbol ? lcfirst($this->resourceName) : $this->resourceName;
-        return $plural ? Str::pluralStudly($resourceName) : $resourceName;
+        $resourceName = $plural ? Str::pluralStudly($resourceName) : $resourceName;
+        return $camel ? Str::camel($resourceName) : $resourceName;
     }
 }

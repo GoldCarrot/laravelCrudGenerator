@@ -18,7 +18,7 @@ class RouteGenerator extends BaseEloquentGenerator implements GeneratorInterface
         $this->variables = [
             'resourceTable'      => str_replace('_', '-', $this->generatorForm->resourceTable),
             'resourceName'       => $this->generatorForm->resourceName,
-            'resourceNamePlural' => $this->generatorForm->getResourceName(true, true),
+            'resourceNamePlural' => $this->generatorForm->getResourceName(true, true, true),
             'folderNs'           => $this->generatorForm->folderNs,
         ];
 

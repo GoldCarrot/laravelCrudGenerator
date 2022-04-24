@@ -9,6 +9,7 @@ $repository =
     str_replace($generator->generatorForm::$MODEL_FOLDER_NAME, $generator->generatorForm::$REPOSITORY_FOLDER_NAME, $propertyDTO->class);
 $repository = '(new ' . $repository . $generator->generatorForm::$REPOSITORY_SUFFIX . '())';
 $name = str_replace('_id', '', $propertyDTO->name);
+$propertyNameCamelCase = Str::camel($name)
 ///////////Пример функции getArrayForSelect
 ///**
 // * @return Collection
@@ -20,8 +21,8 @@ $name = str_replace('_id', '', $propertyDTO->name);
 //    });
 //}
 ?>
-<?= "{{ BsForm::select('$propertyDTO->name', {$repository}->getArrayForSelect())
+<?= "{{ BsForm::select('$propertyNameCamelCase', {$repository}->getArrayForSelect())
                                 ->value(old('$propertyDTO->name', \${$generator->generatorForm->getResourceName(false, true)}->$propertyDTO->name))
-                                ->placeholder(__('admin.columns.$name'))
-                                ->label(__('admin.columns.$name'))
+                                ->placeholder(__('admin.columns.$propertyNameCamelCase'))
+                                ->label(__('admin.columns.$propertyNameCamelCase'))
                         }}" . PHP_EOL ?>

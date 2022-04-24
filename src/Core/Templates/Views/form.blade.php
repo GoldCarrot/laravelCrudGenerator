@@ -10,7 +10,7 @@ echo "<?php\n";
 ?>
 
 /**
- * @var \{{ $generator->generatorForm->modelName }} ${{ $generator->generatorForm->getResourceName(false, true) }}
+ * @var \{{ $generator->generatorForm->modelName }} ${{ $generator->generatorForm->getResourceName(false, true, true) }}
  *
 */
 

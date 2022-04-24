@@ -52,7 +52,8 @@ class ControllerGenerator extends BaseEloquentGenerator implements GeneratorInte
 
     public function getFormattedRule(PropertyDTO $property)
     {
-        return "'{$property->name}' => '{$this->getRule($property)}',";
+        $propertyCamelCase = Str::camel($property->name);
+        return "'{$propertyCamelCase}' => '{$this->getRule($property)}',";
     }
 
     private function getRule(PropertyDTO $property)

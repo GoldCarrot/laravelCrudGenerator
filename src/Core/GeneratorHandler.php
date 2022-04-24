@@ -13,6 +13,7 @@ use Chatway\LaravelCrudGenerator\Core\Generators\EnumsGenerator;
 use Chatway\LaravelCrudGenerator\Core\Generators\ModelGenerator;
 use Chatway\LaravelCrudGenerator\Core\Generators\PresenterGenerator;
 use Chatway\LaravelCrudGenerator\Core\Generators\RepositoryGenerator;
+use Chatway\LaravelCrudGenerator\Core\Generators\ResourceGenerator;
 use Chatway\LaravelCrudGenerator\Core\Generators\RoutesGenerator;
 use Chatway\LaravelCrudGenerator\Core\Generators\ServiceGenerator;
 use Chatway\LaravelCrudGenerator\Core\Generators\ViewsGenerator;
@@ -42,6 +43,7 @@ class GeneratorHandler
             RepositoryGenerator::class,
             ServiceGenerator::class,
             PresenterGenerator::class,
+            ResourceGenerator::class,
             EnumsGenerator::class,
             ViewsGenerator::class,
             RoutesGenerator::class,

@@ -5,8 +5,8 @@
 
 /* @var $generator \Chatway\LaravelCrudGenerator\Core\Generators\ViewGenerator */
 /* @var $generator- >generatorForm->properties array list of properties (property => [type, name. comment]) */
-$variableName = $generator->generatorForm->getResourceName(false, true);
-$routeName = $generator->generatorForm->getResourceName(true, true);
+$variableName = $generator->generatorForm->getResourceName(false, true, true);
+$routeName = $generator->generatorForm->getResourceName(true, true, true);
 $modelName = $generator->generatorForm->modelName;
 ?>
 <?= "@extends('admin.layouts.app', ['title' => __('admin.menu.$variableName')])" ?>

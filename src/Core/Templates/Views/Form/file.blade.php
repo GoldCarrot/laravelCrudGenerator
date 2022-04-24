@@ -4,7 +4,7 @@
  */
 /* @var $generator \Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm */
 /* @var $propertyDTO \Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO */
-
+$propertyNameCamelCase = Str::camel($propertyDTO->name)
 //в классе File должен быть объявлен метод
 //public function getInfoForDZAttribute()
 //{
@@ -14,7 +14,7 @@
                     <div class="col-lg-12 mb-5">
                             <h6 class="heading-small text-muted mb-4">Файл</h6>
                             <div class="pl-lg-4">
-                                <?= "{{ Form::file('$propertyDTO->name', [
+                                <?= "{{ Form::file('$propertyNameCamelCase', [
                                         'dropzone' => true,
                                         'hidden' => true,
                                         'data-files' => '[' . (\${$generator->generatorForm->getResourceName(false, true)}->".Str::singular(str_replace('_id', '', $propertyDTO->classTable))."->infoForDZ ?? '') . ']',
