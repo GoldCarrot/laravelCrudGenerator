@@ -20,7 +20,6 @@ class PresenterGenerator extends BaseEloquentGenerator implements GeneratorInter
         $this->pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Classes';
         $this->filename = class_basename($this->generatorForm->presenterName) . ".php";
         $this->path = str_replace('\\', '/', base_path(lcfirst(class_namespace($this->generatorForm->presenterName))));
-        //dd($this->path);
     }
 
     public function generate()

@@ -20,7 +20,6 @@ class ResourceGenerator extends BaseEloquentGenerator implements GeneratorInterf
         $this->pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Classes';
         $this->filename = class_basename($this->generatorForm->resourceClassName) . ".php";
         $this->path = str_replace('\\', '/', base_path(lcfirst(class_namespace($this->generatorForm->resourceClassName))));
-        //dd($this->path);
     }
 
     public function generate()
