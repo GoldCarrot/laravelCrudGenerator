@@ -16,6 +16,7 @@ namespace {{ class_namespace($generator->generatorForm->repositoryName) }};
 
 use {{ $generator->baseClass }};
 use {{ $generator->generatorForm->modelName }};
+use Illuminate\Support\Arr;
 @if ($generator->baseInterface)
 use {{ $generator->baseInterface }};
 @endif
@@ -40,7 +41,7 @@ use {{ $trait }};
 <?= ' * @method ' . class_basename($generator->generatorForm->modelName) ?>|null oneActive(array $params = [])
 <?= ' * @method ' . class_basename($generator->generatorForm->modelName) ?>|null find(array $params = [])
 <?= ' * @method ' . class_basename($generator->generatorForm->modelName) ?>|null findActive(array $params = [])
-*/
+ */
 class {{ class_basename($generator->generatorForm->repositoryName) }} extends {{ class_basename($generator->baseClass) }} {{ $generator->baseInterface ? 'implements ' . class_basename($generator->baseInterface) : '' }}
 {
 @if (count($generator->traits) > 0)
@@ -50,6 +51,11 @@ class {{ class_basename($generator->generatorForm->repositoryName) }} extends {{
     protected function modelClass(): string
     {
         return {{ $generator->generatorForm->resourceName }}::class;
+    }
+
+    protected function make(): static
+    {
+        return new static();
     }
 
     public function getLast($limit = 15)
@@ -70,9 +76,26 @@ class {{ class_basename($generator->generatorForm->repositoryName) }} extends {{
     $activeStatusConst = in_array('active', $generator->generatorForm->enums['status']->types) ? 'ACTIVE' : ($generator->generatorForm->enums['status']->types[0] ?? 'active');
     $activeStatusConst = strtoupper($activeStatusConst);
 ?>
+
     protected function active(): Builder
     {
         return $this->query()->where('status', '=', {{class_basename($generator->generatorForm->enums['status']->enumName)}}::{{$activeStatusConst}});
     }
 @endif
+
+    protected function applyParameters(Builder $query, array $parameters = []): Builder
+    {
+        return parent::applyParameters($query, $parameters)
+            ->when(Arr::get($parameters, 'paramName'), fn(Builder $query, $value) => $query->where('paramName', $value));
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getArrayForSelect(): Collection
+    {
+        return $this->active()->get()->mapWithKeys(function ($item) {
+            return [$item['id'] => trim($item['title'])];
+        });
+    }
 }
