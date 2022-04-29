@@ -53,7 +53,7 @@ class {{ class_basename($generator->generatorForm->repositoryName) }} extends {{
         return {{ $generator->generatorForm->resourceName }}::class;
     }
 
-    protected function make(): static
+    public static function make(): static
     {
         return new static();
     }
