@@ -17,11 +17,11 @@ namespace {{ class_namespace($generator->generatorForm->repositoryName) }};
 use {{ $generator->baseClass }};
 use {{ $generator->generatorForm->modelName }};
 use Illuminate\Support\Arr;
+use Illuminate\Database\Eloquent\Builder;
 @if ($generator->baseInterface)
 use {{ $generator->baseInterface }};
 @endif
 @if ($index !== false)
-use Illuminate\Database\Eloquent\Builder;
 use {{ $generator->generatorForm->enums['status']->enumName }};
 @endif
 use Illuminate\Support\Collection;
