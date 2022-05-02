@@ -18,13 +18,14 @@ use {{ $generator->baseClass }};
 use {{ $generator->generatorForm->modelName }};
 use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 @if ($generator->baseInterface)
 use {{ $generator->baseInterface }};
 @endif
 @if ($index !== false)
 use {{ $generator->generatorForm->enums['status']->enumName }};
 @endif
-use Illuminate\Support\Collection;
+
 @if (count($generator->traits) > 0)
 @foreach($generator->traits as $trait)
 use {{ $trait }};
