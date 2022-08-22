@@ -27,7 +27,8 @@ class {{ class_basename($generator->controllerParams->controllerName) }} extends
 {
     public function __construct(
         {{class_basename($generator->generatorForm->repositoryName)}} $repository,
-        {{class_basename($generator->generatorForm->serviceName)}} $service),
+        {{class_basename($generator->generatorForm->serviceName)}} $service,
+    )
     {
         parent::__construct($repository, $service);
     }
