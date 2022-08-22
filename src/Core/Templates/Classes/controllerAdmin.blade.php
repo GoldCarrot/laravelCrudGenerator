@@ -13,6 +13,8 @@ namespace {{ class_namespace($generator->controllerParams->controllerName) }};
 
 use {{ $generator->controllerParams->baseClass }};
 use {{ $generator->generatorForm->modelName }};
+use {{$generator->generatorForm->repositoryName}};
+use {{$generator->generatorForm->serviceName}};
 
 /**
  * This is the controller class for table "{{ $generator->generatorForm->resourceTable }}".
@@ -23,7 +25,9 @@ use {{ $generator->generatorForm->modelName }};
 
 class {{ class_basename($generator->controllerParams->controllerName) }} extends {{ class_basename($generator->controllerParams->baseClass) }}
 {
-    public function __construct(\{{$generator->generatorForm->repositoryName}} $repository, \{{$generator->generatorForm->serviceName}} $service)
+    public function __construct(
+        {{class_basename($generator->generatorForm->repositoryName)}} $repository,
+        {{class_basename($generator->generatorForm->serviceName)}} $service),
     {
         parent::__construct($repository, $service);
     }
