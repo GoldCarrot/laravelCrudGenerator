@@ -337,10 +337,11 @@ class GeneratorForm
                     }
             }
             $data = [
-                'type'     => $type,
-                'name'     => $column->Field,
-                'nullable' => $column->Null != 'NO',
-                'isEnum'   => in_array($column->Field, array_keys($this->enums)),
+                'type'        => $type,
+                'typeInTable' => $column->Type,
+                'name'        => $column->Field,
+                'nullable'    => $column->Null != 'NO',
+                'isEnum'      => in_array($column->Field, array_keys($this->enums)),
             ];
             $this->properties[$column->Field] = new PropertyDTO($data);
             if ($this->properties[$column->Field]->isEnum) {

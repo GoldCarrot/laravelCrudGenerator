@@ -8,6 +8,7 @@ use Chatway\LaravelCrudGenerator\Core\DTO\ControllerParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
+use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ColumnService;
 use DB;
 use File;
 use Str;
@@ -60,7 +61,7 @@ class ControllerGenerator extends BaseEloquentGenerator implements GeneratorInte
     {
         $result = $property->nullable ? 'nullable|' : 'required|';
         $result .= str_contains($property->type, 'string')
-            ? 'string|max:255'
+            ? ($property->typeInTable == ColumnService::TYPE_TEXT ? 'string' : 'string|max:255')
             : (str_contains($property->type, 'Carbon') ? 'date'
                 : 'numeric');
         if (str_contains($property->name, '_id')) {
