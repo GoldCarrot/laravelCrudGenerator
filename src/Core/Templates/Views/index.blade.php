@@ -1,3 +1,9 @@
+<?= "@php
+/**
+ * @var \App\Base\DataProviders\EloquentDataProvider \$dataProvider
+ */
+@endphp" ?>
+
 <?php
 /**
  * This is the template for generating the controller class of a specified table.
