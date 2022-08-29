@@ -214,6 +214,10 @@ class ViewGenerator extends BaseEloquentGenerator implements GeneratorInterface
                         'value' => function ({{modelName}} \${{resourceTable}}) {
                             return {{statusName}}::label(\${{resourceTable}}->status);
                         },
+                        'filter' => [
+                            'class' => Itstructure\GridView\Filters\DropdownFilter::class,
+                            'data' => \$statuses
+                        ]
                     ]";
         $publishedAtTemplate = ",
                     [

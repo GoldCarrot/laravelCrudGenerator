@@ -49,13 +49,13 @@ class {{ class_basename($generator->controllerParams->controllerName) }} extends
         return {{ $generator->generatorForm->resourceName }}::class;
     }
     @if(count($generator->generatorForm->enums) > 0)
-    protected function resourceClass(): string
+protected function viewParameters(): array
     {
         return [
-            @foreach($generator->generatorForm->enums as $enum)
-            '{{ Str::plural($enum->name) }}' => \{{ $enum->enumName }}::labels(),
-            @endforeach
-        ];
+    @foreach($generator->generatorForm->enums as $enum)
+    '{{ Str::plural($enum->name) }}' => \{{ $enum->enumName }}::labels(),
+    @endforeach
+];
     }
     @endif
 }
