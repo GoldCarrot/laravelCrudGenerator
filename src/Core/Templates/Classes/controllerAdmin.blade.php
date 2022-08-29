@@ -53,7 +53,7 @@ class {{ class_basename($generator->controllerParams->controllerName) }} extends
     {
         return [
             @foreach($generator->generatorForm->enums as $enum)
-            '{{ Str::plural($enum->name) }}' => \{{ $enumName }}::labels(),
+            '{{ Str::plural($enum->name) }}' => \{{ $enum->enumName }}::labels(),
             @endforeach
         ];
     }
