@@ -81,8 +81,9 @@ class {{ class_basename($generator->generatorForm->repositoryName) }}{{ $generat
 ?>
     protected function query(): Builder
     {
-        return $this->newQuery()->where('status', '!=', {{class_basename($generator->generatorForm->enums['status']->enumName)}}::{{$activeStatusConst}});
+        return $this->newQuery()->where('status', '!=', {{class_basename($generator->generatorForm->enums['status']->enumName)}}::{{$deletedStatusConst}});
     }
+
     protected function active(): Builder
     {
         return $this->query()->where('status', '=', {{class_basename($generator->generatorForm->enums['status']->enumName)}}::{{$activeStatusConst}});
