@@ -20,6 +20,12 @@ class RepositoryGenerator extends BaseEloquentGenerator implements GeneratorInte
         $this->pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Classes';
         $this->filename = "{$this->generatorForm->resourceName}Repository.php";
         $this->path = str_replace('\\', '/', base_path(lcfirst(class_namespace($this->generatorForm->repositoryName))));
+        if (env('GENERATOR_REPOSITORY_TRAITS')) {
+            $this->traits = [];
+            foreach (explode(',', env('GENERATOR_REPOSITORY_TRAITS')) as $trait) {
+                $this->traits[] = $trait;
+            }
+        }
     }
 
     public function generate()
