@@ -19,14 +19,14 @@ class EnumsGenerator extends BaseEloquentGenerator implements GeneratorInterface
     public function generate()
     {
         foreach ($this->generatorForm->enums as $enum) {
-            (new EnumGenerator($this->generatorForm, $enum))->generate();
+            !$enum->isDefaultStatus && (new EnumGenerator($this->generatorForm, $enum))->generate();
         }
     }
 
     public function rollback()
     {
         foreach ($this->generatorForm->enums as $enum) {
-            (new EnumGenerator($this->generatorForm, $enum))->rollback();
+            !$enum->isDefaultStatus && (new EnumGenerator($this->generatorForm, $enum))->rollback();
         }
     }
 }

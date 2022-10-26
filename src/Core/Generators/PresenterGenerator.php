@@ -24,9 +24,8 @@ class PresenterGenerator extends BaseEloquentGenerator implements GeneratorInter
 
     public function generate()
     {
-        View::addLocation($this->getPathTemplate());
-        View::addNamespace('presenter', $this->getPathTemplate());
-        $renderedModel = View::make('presenter')->with(
+        $templateName = $this->getTemplateFileName('classes', 'presenter');
+        $renderedModel = View::make($templateName)->with(
             [
                 'generator' => $this,
             ]);

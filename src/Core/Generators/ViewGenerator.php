@@ -28,9 +28,8 @@ class ViewGenerator extends BaseEloquentGenerator implements GeneratorInterface
 
     public function generate()
     {
-        View::addLocation($this->getPathTemplate());
-        View::addNamespace($this->viewName, $this->getPathTemplate());
-        $renderedModel = View::make($this->viewName)->with(
+        $templateName = $this->getTemplateFileName('classes', $this->viewName);
+        $renderedModel = View::make($templateName)->with(
             [
                 'generator' => $this,
             ]);
@@ -211,11 +210,11 @@ class ViewGenerator extends BaseEloquentGenerator implements GeneratorInterface
                     [
                         'label' => __('admin.columns.status'),
                         'attribute' => 'status',
-                        'value' => function ({{modelName}} \${{resourceTable}}) {
-                            return {{statusName}}::label(\${{resourceTable}}->status);
+                        'value' => function (\{{modelName}} \${{variableName}}) {
+                            return \{{statusName}}::label(\${{variableName}}->status);
                         },
                         'filter' => [
-                            'class' => Itstructure\GridView\Filters\DropdownFilter::class,
+                            'class' => \Itstructure\GridView\Filters\DropdownFilter::class,
                             'data' => \$statuses
                         ]
                     ]";

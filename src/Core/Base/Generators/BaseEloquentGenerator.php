@@ -4,6 +4,7 @@ namespace Chatway\LaravelCrudGenerator\Core\Base\Generators;
 
 use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
 use File;
+use View;
 
 abstract class BaseEloquentGenerator
 {
@@ -54,5 +55,16 @@ abstract class BaseEloquentGenerator
     protected function getFilename(): string
     {
         return $this->filename;
+    }
+
+    protected function getTemplateFileName($folder, $templateName)
+    {
+        if (View::exists("generator.$folder." . $templateName)) {
+            return "generator.$folder." . $templateName;
+        } else {
+            View::addLocation($this->getPathTemplate());
+            View::addNamespace($templateName, $this->getPathTemplate());
+            return $templateName;
+        }
     }
 }

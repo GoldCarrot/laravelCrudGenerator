@@ -13,7 +13,8 @@ namespace {{ $generator->generatorForm->getNsByClassName($generator->controllerP
 
 use {{ $generator->controllerParams->baseClass }};
 use {{ $generator->generatorForm->modelName }};
-use {{ $generator->generatorForm->presenterName }};
+use {{ $generator->generatorForm->resourceClassName }};
+use Illuminate\Http\JsonResponse;
 
 /**
  * This is the controller class for table "{{ $generator->generatorForm->resourceTable }}".
@@ -28,12 +29,22 @@ class {{ class_basename($generator->controllerParams->controllerName) }} extends
     {
     }
 
-    public function index()
+    public function index(): JsonResponse
     {
         return response()->json(
             [
                 'success' => true,
-                'data' => collect($this->repository->getLast(null))->map(fn({{$generator->generatorForm->getResourceName(false, false)}} ${{$generator->generatorForm->getResourceName(false, true)}}) => (new {{ class_basename($generator->generatorForm->presenterName) }}(${{$generator->generatorForm->getResourceName(false, true)}}))->toArray()),
+                'data' => {{ class_basename($generator->generatorForm->resourceClassName) }}::collection($this->repository->allActive()),
+            ]
+        );
+    }
+
+    public function show({{$generator->generatorForm->getResourceName()}} ${{$generator->generatorForm->getResourceName(false, true)}}): JsonResponse
+    {
+        return response()->json(
+            [
+                'success' => true,
+                'data' => {{ class_basename($generator->generatorForm->resourceClassName) }}::make(${{$generator->generatorForm->getResourceName(false, true)}}),
             ]
         );
     }

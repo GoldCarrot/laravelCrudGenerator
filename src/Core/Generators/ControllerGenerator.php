@@ -27,10 +27,8 @@ class ControllerGenerator extends BaseEloquentGenerator implements GeneratorInte
 
     public function generate()
     {
-        View::addLocation($this->getPathTemplate());
-        View::addNamespace($this->controllerParams->templateName, $this->getPathTemplate());
-
-        $renderedModel = View::make($this->controllerParams->templateName)->with(
+        $templateName = $this->getTemplateFileName('classes', $this->controllerParams->templateName);
+        $renderedModel = View::make($templateName)->with(
             [
                 'generator' => $this,
             ]);

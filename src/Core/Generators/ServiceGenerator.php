@@ -23,18 +23,16 @@ class ServiceGenerator extends BaseEloquentGenerator implements GeneratorInterfa
 
     public function generate()
     {
-        $this->baseClass = GeneratorForm::getSafeEnv('GENERATOR_SERVICE_EXTENDS') ?? $this->baseClass;
-        $this->baseInterface = GeneratorForm::getSafeEnv('GENERATOR_SERVICE_IMPLEMENTS') ?? $this->baseInterface;
-        View::addLocation($this->getPathTemplate());
-        View::addNamespace(self::label(), $this->getPathTemplate());
-        $renderedModel = View::make(self::label())->with(
+        $this->baseClass = env('GENERATOR_SERVICE_EXTENDS') ?? $this->baseClass;
+        $this->baseInterface = env('GENERATOR_SERVICE_IMPLEMENTS') ?? $this->baseInterface;
+        $templateName = $this->getTemplateFileName('classes', self::label());
+        $renderedModel = View::make($templateName)->with(
             [
                 'generator' => $this,
             ]);
         if (!File::isDirectory($this->getPath())) {
             File::makeDirectory($this->getPath(), 0777, true, true);
         }
-
         if (!File::exists($this->getFilePath()) || $this->generatorForm->force) {
             File::delete($this->getFilePath());
             if (File::put($this->getFilePath(), $renderedModel) !== false) {

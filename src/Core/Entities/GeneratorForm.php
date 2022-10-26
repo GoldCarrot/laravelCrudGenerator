@@ -14,6 +14,7 @@ use Chatway\LaravelCrudGenerator\Core\Helpers\ClassHelper;
 use Chatway\LaravelCrudGenerator\Core\Templates\Routes\GeneratorRouteTemplates;
 use ReflectionException;
 use Str;
+use View;
 
 /**
  * @property string                 $baseNs
@@ -116,7 +117,7 @@ class GeneratorForm
             'controllerName' => $this->httpNs . 'Controllers\\' . $this->folderNs . '\\' . $this->resourceName
                                 . self::$CONTROLLER_SUFFIX,
             'templateName'   => 'controllerAdmin',
-            'baseClass'      => GeneratorForm::getSafeEnv('GENERATOR_ADMIN_CONTROLLER_EXTENDS') ??
+            'baseClass'      => env('GENERATOR_ADMIN_CONTROLLER_EXTENDS') ??
                                 'App\Http\Admin\Controllers\ResourceController',
         ]);
 
@@ -125,7 +126,7 @@ class GeneratorForm
             'controllerName' => $this->httpApiNs . 'Controllers\\' . $this->folderNs . '\\' . $this->resourceName
                                 . self::$CONTROLLER_SUFFIX,
             'templateName'   => 'controllerApi',
-            'baseClass'      => GeneratorForm::getSafeEnv('GENERATOR_API_CONTROLLER_EXTENDS') ?? 'App\Http\Api\Controllers\Controller',
+            'baseClass'      => env('GENERATOR_API_CONTROLLER_EXTENDS') ?? 'App\Http\Api\Controllers\Controller',
         ]);
         $this->controllers['controllerApi'] = $controller;
         $this->repositoryName = $this->baseNs . $this->folderNs . '\\' . self::$REPOSITORY_FOLDER_NAME . '\\' . $this->resourceName
@@ -138,14 +139,17 @@ class GeneratorForm
                                    . self::$RESOURCE_SUFFIX;
 
 
-        $this->viewsPath = self::getSafeEnv('GENERATOR_VIEWS_PATH') ??
+        $this->viewsPath = env('GENERATOR_VIEWS_PATH') ??
                            'views\admin\\' . Str::pluralStudly(lcfirst(class_basename($this->resourceName)));
 
         foreach ($this->enums as $enum) {
-            $enum->enumName = $this->baseNs . $this->folderNs . '\\' . self::$ENUM_FOLDER_NAME . '\\' . $this->resourceName
-                              . ucfirst($enum->name) . 'Enum';
+            if ($enum->isDefaultStatus) {
+                $enum->enumName = env('GENERATOR_DEFAULT_STATUS_ENUM') ?? 'App\Domain\Application\Admin\Enums\DefaultStatusEnum';
+            } else {
+                $enum->enumName = $this->baseNs . $this->folderNs . '\\' . self::$ENUM_FOLDER_NAME . '\\' . $this->resourceName
+                                  . ucfirst($enum->name) . 'Enum';
+            }
         }
-
         $this->routeTemplates = (new GeneratorRouteTemplates())->getRoutes();
 
         if ($mainParams->previewPaths) {
@@ -184,23 +188,18 @@ class GeneratorForm
 
     private function initEnv()
     {
-        $this->testMode = self::getSafeEnv('GENERATOR_TEST_MODE') ?? false;
-        self::$CONTROLLER_SUFFIX = self::getSafeEnv('GENERATOR_CONTROLLER_SUFFIX') ?? self::$CONTROLLER_SUFFIX;
-        self::$PRESENTER_SUFFIX = self::getSafeEnv('GENERATOR_PRESENTER_SUFFIX') ?? self::$PRESENTER_SUFFIX;
-        self::$RESOURCE_SUFFIX = self::getSafeEnv('GENERATOR_RESOURCE_SUFFIX') ?? self::$RESOURCE_SUFFIX;
-        self::$REPOSITORY_SUFFIX = self::getSafeEnv('GENERATOR_REPOSITORY_SUFFIX') ?? self::$REPOSITORY_SUFFIX;
+        $this->testMode = env('GENERATOR_TEST_MODE') ?? false;
+        self::$CONTROLLER_SUFFIX = env('GENERATOR_CONTROLLER_SUFFIX') ?? self::$CONTROLLER_SUFFIX;
+        self::$PRESENTER_SUFFIX = env('GENERATOR_PRESENTER_SUFFIX') ?? self::$PRESENTER_SUFFIX;
+        self::$RESOURCE_SUFFIX = env('GENERATOR_RESOURCE_SUFFIX') ?? self::$RESOURCE_SUFFIX;
+        self::$REPOSITORY_SUFFIX = env('GENERATOR_REPOSITORY_SUFFIX') ?? self::$REPOSITORY_SUFFIX;
 
-        self::$MODEL_FOLDER_NAME = self::getSafeEnv('GENERATOR_MODEL_FOLDER_NAME') ?? self::$MODEL_FOLDER_NAME;
-        self::$REPOSITORY_FOLDER_NAME = self::getSafeEnv('GENERATOR_REPOSITORY_FOLDER_NAME') ?? self::$REPOSITORY_FOLDER_NAME;
+        self::$MODEL_FOLDER_NAME = env('GENERATOR_MODEL_FOLDER_NAME') ?? self::$MODEL_FOLDER_NAME;
+        self::$REPOSITORY_FOLDER_NAME = env('GENERATOR_REPOSITORY_FOLDER_NAME') ?? self::$REPOSITORY_FOLDER_NAME;
 
-        $this->baseNs = self::getSafeEnv('GENERATOR_BASE_NS') ?? $this->baseNs;
-        $this->httpNs = self::getSafeEnv('GENERATOR_HTTP_NS') ?? $this->httpNs;
-        $this->httpApiNs = self::getSafeEnv('GENERATOR_HTTP_API_NS') ?? $this->httpApiNs;
-    }
-
-    public static function getSafeEnv($parameterName)
-    {
-        return env($parameterName) ? env($parameterName) : null;
+        $this->baseNs = env('GENERATOR_BASE_NS') ?? $this->baseNs;
+        $this->httpNs = env('GENERATOR_HTTP_NS') ?? $this->httpNs;
+        $this->httpApiNs = env('GENERATOR_HTTP_API_NS') ?? $this->httpApiNs;
     }
 
     public function getNsByClassName($className): string

@@ -28,11 +28,20 @@ class {{ class_basename($generator->controllerParams->controllerName) }} extends
     public function __construct(
         {{class_basename($generator->generatorForm->repositoryName)}} $repository,
         {{class_basename($generator->generatorForm->serviceName)}} $service,
+@foreach($generator->generatorForm->properties as $property)
+@if ($property->foreignKeyExists && !in_array($property->name, ['file_id', 'image_id']))
+@php
+    $repository =
+            str_replace($generator->generatorForm::$MODEL_FOLDER_NAME, $generator->generatorForm::$REPOSITORY_FOLDER_NAME, $property->class);
+    $repository .= $generator->generatorForm::$REPOSITORY_SUFFIX;
+@endphp
+        private \{!!  $repository  !!} ${{ lcfirst(class_basename($repository))  }},
+@endif
+@endforeach
     )
     {
         parent::__construct($repository, $service);
     }
-
 
     protected function rules($model = null): array
     {
@@ -44,16 +53,23 @@ class {{ class_basename($generator->controllerParams->controllerName) }} extends
 @endforeach
         ];
     }
+
     protected function resourceClass(): string
     {
         return {{ $generator->generatorForm->resourceName }}::class;
     }
 @if(count($generator->generatorForm->enums) > 0)
+
     protected function viewParameters(): array
     {
         return [
 @foreach($generator->generatorForm->enums as $enum)
             '{{ Str::plural($enum->name) }}' => \{{ $enum->enumName }}::labels(),
+@endforeach
+@foreach($generator->generatorForm->properties as $property)
+@if ($property->foreignKeyExists && !in_array($property->name, ['file_id', 'image_id']))
+            '{!!  Str::pluralStudly( lcfirst(class_basename($property->class)));  !!}' => $this->{{ lcfirst(class_basename($property->class)) . $generator->generatorForm::$REPOSITORY_SUFFIX }}->allActive(),
+@endif
 @endforeach
         ];
     }

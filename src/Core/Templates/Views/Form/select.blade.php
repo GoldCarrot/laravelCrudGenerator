@@ -7,6 +7,7 @@
 /* @var $propertyDTO \Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO */
 $repository =
     str_replace($generator->generatorForm::$MODEL_FOLDER_NAME, $generator->generatorForm::$REPOSITORY_FOLDER_NAME, $propertyDTO->class);
+$variableName = Str::pluralStudly( lcfirst(class_basename($propertyDTO->class)));
 $repository = '(new ' . $repository . $generator->generatorForm::$REPOSITORY_SUFFIX . '())';
 $propertyNameCamelCase = Str::camel($propertyDTO->name)
 ///////////Пример функции getArrayForSelect
@@ -20,8 +21,8 @@ $propertyNameCamelCase = Str::camel($propertyDTO->name)
 //    });
 //}
 ?>
-<?= "{{ BsForm::select('$propertyNameCamelCase', {$repository}->getArrayForSelect())
+<?= "{{ BsForm::select('$propertyNameCamelCase', $$variableName)
                                 ->value(old('$propertyNameCamelCase', \${$generator->generatorForm->getResourceName(false, true)}->$propertyDTO->name))
-                                ->placeholder(__('admin.columns.$propertyDTO->name'))
-                                ->label(__('admin.columns.$propertyDTO->name'))
+                                ->placeholder(__('admin.columns.$propertyNameCamelCase'))
+                                ->label(__('admin.columns.$propertyNameCamelCase'))
                         }}" . PHP_EOL ?>

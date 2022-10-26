@@ -39,7 +39,7 @@ class {{ class_basename($generator->generatorForm->resourceClassName) }} extends
     {
         return [
 @foreach($generator->generatorForm->properties as $property)
-@if($property->name != 'id' && !$property->inlet)
+@if(!$property->inlet && !in_array($property->name, ['status', 'sort']))
             {!!  $generator->getFormattedRule($property)  !!}
 @endif
 @endforeach

@@ -22,10 +22,9 @@ class ModelGenerator extends BaseEloquentGenerator implements GeneratorInterface
 
     public function generate()
     {
-        $this->baseClass = GeneratorForm::getSafeEnv('GENERATOR_MODEL_EXTENDS') ?? $this->baseClass;
-        View::addLocation($this->getPathTemplate());
-        View::addNamespace('model', $this->getPathTemplate());
-        $renderedModel = View::make('model')->with(
+        $this->baseClass = env('GENERATOR_MODEL_EXTENDS') ?? $this->baseClass;
+        $templateName = $this->getTemplateFileName('classes', 'model');
+        $renderedModel = View::make($templateName)->with(
             [
                 'generator' => $this,
             ]);

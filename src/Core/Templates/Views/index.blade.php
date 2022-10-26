@@ -35,7 +35,7 @@ $modelName = $generator->generatorForm->modelName;
                         'label' => __('admin.columns.title'),
                         'attribute' => 'title',
                         'value' => function (\\$modelName \$$variableName) {
-                            return mb_substr(\$$variableName"."->title, 0, 200);
+                            return \$$variableName"."->title;
                         },
                     ]" . $generator->getIndexColumns() . ",
                     [

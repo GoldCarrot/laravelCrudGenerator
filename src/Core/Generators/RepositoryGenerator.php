@@ -24,12 +24,11 @@ class RepositoryGenerator extends BaseEloquentGenerator implements GeneratorInte
 
     public function generate()
     {
-        $this->baseClass = GeneratorForm::getSafeEnv('GENERATOR_REPOSITORY_EXTENDS') ?? $this->baseClass;
-        $this->baseInterface = GeneratorForm::getSafeEnv('GENERATOR_REPOSITORY_IMPLEMENTS') ?? $this->baseInterface;
-        View::addLocation($this->getPathTemplate());
-        View::addNamespace(self::label(), $this->getPathTemplate());
+        $this->baseClass = env('GENERATOR_REPOSITORY_EXTENDS') ?? $this->baseClass;
+        $this->baseInterface = env('GENERATOR_REPOSITORY_IMPLEMENTS') ?? $this->baseInterface;
+        $templateName = $this->getTemplateFileName('classes', self::label());
         try {
-            $renderedModel = View::make(self::label())->with(
+            $renderedModel = View::make($templateName)->with(
                 [
                     'generator' => $this,
                 ]);

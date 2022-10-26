@@ -27,9 +27,8 @@ class EnumGenerator extends BaseEloquentGenerator implements GeneratorInterface
 
     public function generate()
     {
-        View::addLocation($this->getPathTemplate());
-        View::addNamespace('enum', $this->getPathTemplate());
-        $renderedModel = View::make('enum')->with(
+        $templateName = $this->getTemplateFileName('classes', 'enum');
+        $renderedModel = View::make($templateName)->with(
             [
                 'generator' => $this,
             ]);

@@ -13,8 +13,9 @@ echo "<?php\n";
 
 namespace {{ class_namespace($generator->generatorForm->repositoryName) }};
 
-
+@if ($generator->baseClass)
 use {{ $generator->baseClass }};
+@endif
 use {{ $generator->generatorForm->modelName }};
 use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Builder;
@@ -31,7 +32,6 @@ use {{ $generator->generatorForm->enums['status']->enumName }};
 use {{ $trait }};
 @endforeach
 @endif
-
 /**
  * This is the repository class for table "{{ $generator->generatorForm->resourceTable }}".
  * Class {{ class_basename($generator->generatorForm->repositoryName) }}
@@ -43,7 +43,7 @@ use {{ $trait }};
 <?= ' * @method ' . class_basename($generator->generatorForm->modelName) ?>|null find(array $params = [])
 <?= ' * @method ' . class_basename($generator->generatorForm->modelName) ?>|null findActive(array $params = [])
  */
-class {{ class_basename($generator->generatorForm->repositoryName) }} extends {{ class_basename($generator->baseClass) }} {{ $generator->baseInterface ? 'implements ' . class_basename($generator->baseInterface) : '' }}
+class {{ class_basename($generator->generatorForm->repositoryName) }}{{ $generator->baseClass ? (' extends ' . class_basename($generator->baseClass)) : '' }}{{ $generator->baseInterface ? ' implements ' . class_basename($generator->baseInterface) : '' }}
 {
 @if (count($generator->traits) > 0)
     use {{join(', ',  collect($generator->traits)->map(function ($trait) { return class_basename($trait); })->toArray())}};
@@ -74,10 +74,15 @@ class {{ class_basename($generator->generatorForm->repositoryName) }} extends {{
 @endif
 @if($index !== false)
 <?php
-    $activeStatusConst = in_array('active', $generator->generatorForm->enums['status']->types) ? 'ACTIVE' : ($generator->generatorForm->enums['status']->types[0] ?? 'active');
+    $activeStatusConst = in_array('active', $generator->generatorForm->enums['status']->types) ? 'ACTIVE' : ($generator->generatorForm->enums['status']->types[0] ?? 'ACTIVE');
     $activeStatusConst = strtoupper($activeStatusConst);
+    $deletedStatusConst = in_array('deleted', $generator->generatorForm->enums['status']->types) ? 'DELETED' : ($generator->generatorForm->enums['status']->types[0] ?? 'DELETED');
+    $deletedStatusConst = strtoupper($deletedStatusConst);
 ?>
-
+    protected function query(): Builder
+    {
+        return $this->newQuery()->where('status', '!=', {{class_basename($generator->generatorForm->enums['status']->enumName)}}::{{$activeStatusConst}});
+    }
     protected function active(): Builder
     {
         return $this->query()->where('status', '=', {{class_basename($generator->generatorForm->enums['status']->enumName)}}::{{$activeStatusConst}});

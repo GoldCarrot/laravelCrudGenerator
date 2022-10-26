@@ -68,7 +68,7 @@ class {{ $generator->generatorForm->resourceName }} extends {{ class_basename($g
 
     public function {{ Str::pluralStudly(lcfirst(class_basename($externalForeignKey['className']))) }}()
     {
-        return $this->belongsToMany({{ class_basename($externalForeignKey['className']) }}::class, '{{ $externalForeignKey['tableName'] }}');
+        return $this->hasMany({{ class_basename($externalForeignKey['className']) }}::class);
     }
 @endforeach
 }

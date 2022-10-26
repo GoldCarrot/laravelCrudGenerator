@@ -25,9 +25,8 @@ class ResourceGenerator extends BaseEloquentGenerator implements GeneratorInterf
 
     public function generate()
     {
-        View::addLocation($this->getPathTemplate());
-        View::addNamespace('resource', $this->getPathTemplate());
-        $renderedModel = View::make('resource')->with(
+        $templateName = $this->getTemplateFileName('classes', self::label());
+        $renderedModel = View::make($templateName)->with(
             [
                 'generator' => $this,
             ]);

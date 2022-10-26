@@ -39,7 +39,7 @@ class GeneratorAllCommand extends BaseCommand
                 dd($e->getMessage(), $e->getTraceAsString());
             }
         } else {
-            $this->error("\nTable $tableName not exists in DB\n");
+            $this->error("Table $tableName not exists in DB");
         }
         return 0;
     }

@@ -19,7 +19,6 @@ class PropertyDTO
 
     const INLET_PROPERTIES = [
         'id',
-        'status',
         'created_at',
         'updated_at',
         'deleted_at',

@@ -31,7 +31,6 @@ class MainParams
         $this->mainPath = \Arr::get($data, 'mainPath');
         $this->generateList = \Arr::get($data, 'generateList', []);
         $this->action = \Arr::get($data, 'action') ?? 'generate';
-
         if (!$this->mainPath) {
             ConsoleHelper::error('Main path is not null');
             die;
@@ -57,9 +56,9 @@ class MainParams
         if (!isset($enums['status']) && $defaultStatusGenerate) {
             $columns = ColumnService::getColumnsByTableName($this->resourceTable);
             $columns = array_column($columns, 'Field');
-
+            //проверяем наличие столбца status, если есть то генерируем стандартный enum
             if (in_array('status', $columns)) {
-                $enums['status'] = new EnumParams('status-', $defaultValues);
+                $enums['status'] = new EnumParams('status-', $defaultValues, true);
             }
         }
         return $enums;

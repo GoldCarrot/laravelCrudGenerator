@@ -42,7 +42,7 @@ class GeneratorHandler
             ControllersGenerator::class,
             RepositoryGenerator::class,
             ServiceGenerator::class,
-            PresenterGenerator::class,
+            //PresenterGenerator::class,
             ResourceGenerator::class,
             EnumsGenerator::class,
             ViewsGenerator::class,
