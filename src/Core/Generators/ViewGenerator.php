@@ -62,19 +62,16 @@ class ViewGenerator extends BaseEloquentGenerator implements GeneratorInterface
     public function getRenderedPropertyForm(PropertyDTO $propertyDTO)
     {
         $path = $this->generatorForm->mainPath . '/Core/Templates/Views/Form';
-        view()->addLocation($path);
+        $this->pathTemplate = $path;
         if ($propertyDTO->isEnum) {
-            view()->addNamespace('selectEnum', $path);
-            return view()->make('selectEnum')->with(
+            return view()->make($this->getTemplateFileName('views.form', 'selectEnum'))->with(
                 [
                     'propertyDTO' => $propertyDTO,
                     'generator'   => $this,
                 ]);
         }
-
         if ($propertyDTO->type == 'Carbon') {
-            view()->addNamespace('dateFormat', $path);
-            return view()->make('dateFormat')->with(
+            return view()->make($this->getTemplateFileName('views.form', 'dateFormat'))->with(
                 [
                     'propertyDTO' => $propertyDTO,
                     'generator'   => $this,
@@ -83,14 +80,14 @@ class ViewGenerator extends BaseEloquentGenerator implements GeneratorInterface
 
         if ($propertyDTO->class) {
             if (class_basename($propertyDTO->class) == 'Image') {
-                return view()->make('image')->with(
+                return view()->make($this->getTemplateFileName('views.form', 'image'))->with(
                     [
                         'propertyDTO' => $propertyDTO,
                         'generator'   => $this,
                     ]);
             }
             if (class_basename($propertyDTO->class) == 'File') {
-                return view()->make('file')->with(
+                return view()->make($this->getTemplateFileName('views.form', 'file'))->with(
                     [
                         'propertyDTO' => $propertyDTO,
                         'generator'   => $this,
@@ -99,22 +96,22 @@ class ViewGenerator extends BaseEloquentGenerator implements GeneratorInterface
             /**
              * Если не Image и не File, то выбор элемента один к одному
              */
-            return view()->make('select')->with(
+            return view()->make($this->getTemplateFileName('views.form', 'select'))->with(
                 [
                     'propertyDTO' => $propertyDTO,
                     'generator'   => $this,
                 ]);
         }
+        /** Если нет предустановленных шаблонов, то генерируем обычный string input **/
         if (!view()->exists($propertyDTO->name)) {
-            view()->addNamespace('string', $path);
-            return view()->make('string')->with(
+            return view()->make($this->getTemplateFileName('views.form', 'string'))->with(
                 [
                     'propertyDTO' => $propertyDTO,
                     'generator'   => $this,
                 ]);
         }
-        view()->addNamespace($propertyDTO->name, $path);
-        return view()->make($propertyDTO->name)->with(
+        /** Здесь можно создавать собственные шаблоны в папке views/generator/views/form/ **/
+        return view()->make($this->getTemplateFileName('views.form', $propertyDTO->name))->with(
             [
                 'propertyDTO' => $propertyDTO,
                 'generator'   => $this,
@@ -126,20 +123,16 @@ class ViewGenerator extends BaseEloquentGenerator implements GeneratorInterface
         $path = $this->generatorForm->mainPath . '/Core/Templates/Views/Show';
         view()->addLocation($path);
         view()->addNamespace($propertyDTO->name, $path);
-        //if ($propertyDTO->type == 'Carbon'/* || $propertyDTO->class*/) {
-        //    return true;
-        //}
         return view()->exists($propertyDTO->name) || (!view()->exists($propertyDTO->name));
     }
 
     public function getRenderedPropertyShow(PropertyDTO $propertyDTO)
     {
         $path = $this->generatorForm->mainPath . '/Core/Templates/Views/Show';
-        view()->addLocation($path);
+        $this->pathTemplate = $path;
 
         if ($propertyDTO->type == 'Carbon') {
-            view()->addNamespace('dateFormat', $path);
-            return view()->make('dateFormatShow')->with(
+            return view()->make($this->getTemplateFileName('views.show', 'dateFormatShow'))->with(
                 [
                     'propertyDTO' => $propertyDTO,
                     'generator'   => $this,
@@ -148,35 +141,23 @@ class ViewGenerator extends BaseEloquentGenerator implements GeneratorInterface
 
         if ($propertyDTO->class) {
             if (class_basename($propertyDTO->class) == 'Image') {
-                return view()->make('imageShow')->with(
+                return view()->make($this->getTemplateFileName('views.show', 'imageShow'))->with(
                     [
                         'propertyDTO' => $propertyDTO,
                         'generator'   => $this,
                     ]);
-            }/*
-            if (class_basename($propertyDTO->class) == 'File') {
-                return view()->make('file')->with(
-                    [
-                        'propertyDTO'   => $propertyDTO,
-                        'generator' => $this,
-                    ]);
             }
-            return view()->make('select')->with(
-                [
-                    'propertyDTO'   => $propertyDTO,
-                    'generator' => $this,
-                ]);*/
         }
         /** Если нет предустановленных шаблонов, то генерируем обычный <span></span>**/
         if (!view()->exists($propertyDTO->name . 'Show')) {
-            return view()->make('stringShow')->with(
+            return view()->make($this->getTemplateFileName('views.show', 'stringShow'))->with(
                 [
                     'propertyDTO' => $propertyDTO,
                     'generator'   => $this,
                 ]);
         }
-        view()->addNamespace($propertyDTO->name . 'Show', $path);
-        return view()->make($propertyDTO->name . 'Show')->with(
+        /** Здесь можно создавать собственные шаблоны в папке views/generator/views/show/ **/
+        return view()->make($this->getTemplateFileName('views.show', $propertyDTO->name . 'Show'))->with(
             [
                 'propertyDTO' => $propertyDTO,
                 'generator'   => $this,
