@@ -9,8 +9,8 @@ $firstType = strtoupper($propertyDTO->enum->getFirstType());
 $enumName = $propertyDTO->enum->enumName;
 $propertyNameCamelCase = Str::camel($propertyDTO->name)
 ?>
-<?= "{{ BsForm::select('$propertyNameCamelCase', \\{$enumName}::labels())
-                                ->value(old('$propertyNameCamelCase', \${$generator->generatorForm->getResourceName(false, true)}->$propertyDTO->name) ?: \\{$enumName}::$firstType)
+<?= "{{ BsForm::select('$propertyNameCamelCase', \$statuses)
+                                ->value(old('$propertyNameCamelCase', \${$generator->generatorForm->getResourceName(false, true)}->$propertyDTO->name) ?: \\{$enumName}::{$firstType}->value)
                                 ->placeholder(__('admin.columns.{$propertyNameCamelCase}'))
                                 ->label(__('admin.columns.{$propertyNameCamelCase}'))
                         }}" . PHP_EOL ?>
