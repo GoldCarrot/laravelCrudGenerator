@@ -2,6 +2,7 @@
 
 namespace Chatway\LaravelCrudGenerator\Core\Generators;
 
+use Arr;
 use Chatway\LaravelCrudGenerator\Core\Base\Generators\BaseEloquentGenerator;
 use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
@@ -16,25 +17,26 @@ class ResourceGenerator extends BaseEloquentGenerator implements GeneratorInterf
 {
     public string $baseClass = 'App\Http\Admin\Controllers\ResourceController';
 
-    public function __construct(public GeneratorForm $generatorForm)
+    public function __construct(public GeneratorForm $generatorForm, $options)
     {
         $this->pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Classes';
-        $this->filename = class_basename($this->generatorForm->resourceClassName) . ".php";
-        $this->path = str_replace('\\', '/', base_path(lcfirst(class_namespace($this->generatorForm->resourceClassName))));
+        $this->filename = class_basename(Arr::get($options, 'resourceClassName')) . ".php";
+        $this->path = str_replace('\\', '/', base_path(lcfirst(class_namespace(Arr::get($options, 'resourceClassName')))));
     }
 
     public function generate()
     {
         $templateName = $this->getTemplateFileName('classes', self::label());
-        $renderedModel = View::make($templateName)->with(
-            [
-                'generator' => $this,
-            ]);
+
         if (!File::isDirectory($this->getPath())) {
             File::makeDirectory($this->getPath(), 0777, true, true);
         }
 
         if (!File::exists($this->getFilePath()) || $this->generatorForm->force) {
+            $renderedModel = View::make($templateName)->with(
+                [
+                    'generator' => $this,
+                ]);
             File::delete($this->getFilePath());
             if (File::put($this->getFilePath(), $renderedModel) !== false) {
                 ConsoleHelper::info("{$this->getFileName()} generated! Path in app: " . $this->getPath() . '/');
@@ -53,7 +55,7 @@ class ResourceGenerator extends BaseEloquentGenerator implements GeneratorInterf
         if ($property->foreignKeyExists) {
             $propertyName = str_replace('_id', '', $property->name);
         }
-        $field = \Str::camel($propertyName);
+        $field = Str::camel($propertyName);
         return "'{$field}' => {$this->getRule($property)},";
     }
     public function getChildren($externalForeignKey): string

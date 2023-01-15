@@ -15,11 +15,11 @@ class RepositoryGenerator extends BaseEloquentGenerator implements GeneratorInte
     public string $baseInterface = 'App\Base\Interfaces\DataProviderInterface';
     public array  $traits        = ['App\Base\Traits\DataProviderTrait'];
 
-    public function __construct(public GeneratorForm $generatorForm)
+    public function __construct(public GeneratorForm $generatorForm, $options)
     {
         $this->pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Classes';
         $this->filename = "{$this->generatorForm->resourceName}Repository.php";
-        $this->path = str_replace('\\', '/', base_path(lcfirst(class_namespace($this->generatorForm->repositoryName))));
+        $this->path = str_replace('\\', '/', base_path(lcfirst(class_namespace(\Arr::get($options, 'repositoryName')))));
         if (env('GENERATOR_REPOSITORY_TRAITS')) {
             $this->traits = [];
             foreach (explode(',', env('GENERATOR_REPOSITORY_TRAITS')) as $trait) {
@@ -34,14 +34,15 @@ class RepositoryGenerator extends BaseEloquentGenerator implements GeneratorInte
         $this->baseInterface = env('GENERATOR_REPOSITORY_IMPLEMENTS') ?? $this->baseInterface;
         $templateName = $this->getTemplateFileName('classes', self::label());
         try {
-            $renderedModel = View::make($templateName)->with(
-                [
-                    'generator' => $this,
-                ]);
+
             if (!File::isDirectory($this->getPath())) {
                 File::makeDirectory($this->getPath(), 0777, true, true);
             }
-            if (($renderedModel && !File::exists($this->getFilePath())) || $this->generatorForm->force) {
+            if (!File::exists($this->getFilePath()) || $this->generatorForm->force) {
+                $renderedModel = View::make($templateName)->with(
+                    [
+                        'generator' => $this,
+                    ]);
                 File::delete($this->getFilePath());
                 if (File::put($this->getFilePath(), $renderedModel) !== false) {
                     ConsoleHelper::info("{$this->getFileName()} generated! Path in app: " . $this->getPath() . '/');

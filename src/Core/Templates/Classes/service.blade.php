@@ -9,12 +9,12 @@
 echo "<?php\n";
 ?>
 
-namespace {{ class_namespace($generator->generatorForm->serviceName) }};
+namespace {{ class_namespace($generator->scenarioValue('serviceName')) }};
 
 @if ($generator->baseClass)
 use {{ $generator->baseClass }};
 @endif
-use {{ $generator->generatorForm->modelName }};
+use {{ $generator->scenarioValue('modelName') }};
 @if ($generator->baseInterface)
 use {{ $generator->baseInterface }};
 @endif
@@ -23,11 +23,11 @@ use Illuminate\Support\Arr;
 
 /**
  * This is the service class for table "{{ $generator->generatorForm->resourceTable }}".
- * Class {{ $generator->generatorForm->serviceName }}
+ * Class {{ $generator->scenarioValue('serviceName') }}
  *
- * @package {{ class_namespace($generator->generatorForm->serviceName) }}
+ * @package {{ class_namespace($generator->scenarioValue('serviceName')) }}
  */
-class {{ class_basename($generator->generatorForm->serviceName) }}{{ $generator->baseClass ? (' extends ' . class_basename($generator->baseClass)) : '' }}{{ $generator->baseInterface ? ' implements ' . class_basename($generator->baseInterface) : '' }}
+class {{ class_basename($generator->scenarioValue('serviceName')) }}{{ $generator->baseClass ? (' extends ' . class_basename($generator->baseClass)) : '' }}{{ $generator->baseInterface ? ' implements ' . class_basename($generator->baseInterface) : '' }}
 {
     public function create(array $data): {{ $generator->generatorForm->resourceName }}
     {

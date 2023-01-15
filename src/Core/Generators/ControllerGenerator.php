@@ -2,6 +2,8 @@
 
 namespace Chatway\LaravelCrudGenerator\Core\Generators;
 
+use Arr;
+use ArrayAccess;
 use Chatway\LaravelCrudGenerator\Core\Base\Generators\BaseEloquentGenerator;
 use Chatway\LaravelCrudGenerator\Core\Base\Interfaces\GeneratorInterface;
 use Chatway\LaravelCrudGenerator\Core\DTO\ControllerParams;
@@ -17,9 +19,14 @@ use View;
 class ControllerGenerator extends BaseEloquentGenerator implements GeneratorInterface
 {
     public string $baseClass = 'App\Http\Admin\Controllers\ResourceController';
+    /**
+     * @var ControllerParams|array|ArrayAccess|mixed
+     */
+    public mixed $controllerParams;
 
-    public function __construct(public GeneratorForm $generatorForm, public ControllerParams $controllerParams)
+    public function __construct(public GeneratorForm $generatorForm, public $options)
     {
+        $this->controllerParams = Arr::get($this->options, 'controllerParams');
         $this->pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Classes';
         $this->filename = $this->generatorForm->resourceName . ($this->generatorForm::$CONTROLLER_SUFFIX) . ".php";
         $this->path = str_replace('\\', '/', base_path(lcfirst(class_namespace($this->controllerParams->controllerName))));
@@ -28,16 +35,17 @@ class ControllerGenerator extends BaseEloquentGenerator implements GeneratorInte
     public function generate()
     {
         $templateName = $this->getTemplateFileName('classes', $this->controllerParams->templateName);
-        $renderedModel = View::make($templateName)->with(
-            [
-                'generator' => $this,
-            ]);
+
 
         if (!File::isDirectory($this->getPath())) {
             File::makeDirectory($this->getPath(), 0777, true, true);
         }
 
         if (!File::exists($this->getFilePath()) || $this->generatorForm->force) {
+            $renderedModel = View::make($templateName)->with(
+                [
+                    'generator' => $this,
+                ]);
             File::delete($this->getFilePath());
             if (File::put($this->getFilePath(), $renderedModel) !== false) {
                 ConsoleHelper::info("{$this->getFileName()} generated! Path in app: " . $this->getPath() . '/');
@@ -64,7 +72,7 @@ class ControllerGenerator extends BaseEloquentGenerator implements GeneratorInte
                 : 'numeric');
         if (str_contains($property->name, '_id')) {
             $tableName = str_replace('_id', '', $property->name);
-            $tables = \Arr::pluck(DB::select('SHOW TABLES'), "Tables_in_" . config('database.connections.mysql.database'));
+            $tables = Arr::pluck(DB::select('SHOW TABLES'), "Tables_in_" . config('database.connections.mysql.database'));
             if (($index = array_search($tableName, $tables)) !== false) {
                 $result .= "|exists:{$tables[$index]},id";
             } elseif (($index = array_search(Str::singular($tableName), $tables)) !== false) {

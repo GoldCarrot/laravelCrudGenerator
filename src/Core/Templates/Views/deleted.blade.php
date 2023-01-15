@@ -7,7 +7,7 @@
 /* @var $generator- >generatorForm->properties array list of properties (property => [type, name. comment]) */
 $variableName = $generator->generatorForm->getResourceName(false, true);
 $routeName = $generator->generatorForm->getResourceName(true, true);
-$modelName = $generator->generatorForm->modelName;
+$modelName = $generator->scenarioValue('modelName');
 ?>
 <?= "@extends('admin.layouts.app', ['title' => 'Удаленные записи ' . '__('admin.menu.$variableName')'])" ?>
 

@@ -12,9 +12,9 @@ echo "<?php\n";
 namespace {{ class_namespace($generator->controllerParams->controllerName) }};
 
 use {{ $generator->controllerParams->baseClass }};
-use {{ $generator->generatorForm->modelName }};
-use {{$generator->generatorForm->repositoryName}};
-use {{$generator->generatorForm->serviceName}};
+use {{ $generator->scenarioValue('modelName') }};
+use {{$generator->scenarioValue('repositoryName')}};
+use {{$generator->scenarioValue('serviceName')}};
 use Illuminate\Http\Request;
 
 /**
@@ -27,8 +27,8 @@ use Illuminate\Http\Request;
 class {{ class_basename($generator->controllerParams->controllerName) }} extends {{ class_basename($generator->controllerParams->baseClass) }}
 {
 public function __construct(
-{{class_basename($generator->generatorForm->repositoryName)}} $repository,
-{{class_basename($generator->generatorForm->serviceName)}} $service,
+{{class_basename($generator->scenarioValue('repositoryName'))}} $repository,
+{{class_basename($generator->scenarioValue('serviceName'))}} $service,
 @foreach($generator->generatorForm->properties as $property)
     @if ($property->foreignKeyExists && !in_array($property->name, ['file_id', 'image_id']))
         @php

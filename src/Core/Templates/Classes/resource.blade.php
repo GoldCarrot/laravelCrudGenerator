@@ -9,9 +9,9 @@
 echo "<?php\n";
 ?>
 
-namespace {{ class_namespace($generator->generatorForm->resourceClassName) }};
+namespace {{ class_namespace($generator->scenarioValue('resourceClassName')) }};
 
-use {{ $generator->generatorForm->modelName }};
+use {{ $generator->scenarioValue('modelName') }};
 use Illuminate\Http\Resources\Json\JsonResource;
 @foreach($generator->generatorForm->properties as $property)
 @if($generator->getUse($property))
@@ -28,12 +28,12 @@ use {!!  $generator->getUseChildren($externalForeignKey)  !!};
 @endforeach
 /**
  * This is the resource api for table "{{ $generator->generatorForm->resourceTable }}".
- * Class {{ class_basename($generator->generatorForm->resourceClassName) }}
+ * Class {{ class_basename($generator->scenarioValue('resourceClassName')) }}
  *
- * @property {{ class_basename($generator->generatorForm->modelName) }} $resource
+ * @property {{ class_basename($generator->scenarioValue('modelName')) }} $resource
 */
 
-class {{ class_basename($generator->generatorForm->resourceClassName) }} extends JsonResource
+class {{ class_basename($generator->scenarioValue('resourceClassName')) }} extends JsonResource
 {
     public function toArray($request): array
     {

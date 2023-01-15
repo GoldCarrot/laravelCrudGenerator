@@ -2,15 +2,18 @@
 
 namespace Chatway\LaravelCrudGenerator\Core\Base\Generators;
 
+use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
 use File;
+use LogicException;
 use View;
 
 abstract class BaseEloquentGenerator
 {
-    protected string $pathTemplate;
-    protected string $path;
-    protected string $filename;
+    protected string     $pathTemplate;
+    protected string     $path;
+    protected string     $filename;
+    public GeneratorForm $generatorForm;
 
     public static function label(): string
     {
@@ -66,5 +69,19 @@ abstract class BaseEloquentGenerator
             View::addNamespace($templateName, $this->getPathTemplate());
             return $templateName;
         }
+    }
+
+    public function scenarioValue($name): string
+    {
+        foreach ($this->generatorForm->generators as $generator) {
+            foreach ($generator->options as $key => $paramValue) {
+                if ($key == $name && is_string($paramValue)) {
+                    return $paramValue;
+                } elseif (is_object($paramValue) && property_exists($paramValue, $name)) {
+                    return $paramValue->$name;
+                }
+            }
+        }
+        throw new LogicException('Value is not found in Scenario: ' . $name);
     }
 }

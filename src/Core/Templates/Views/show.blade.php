@@ -7,11 +7,11 @@
 /* @var $generator->generatorForm->properties array list of properties (property => [type, name. comment]) */
 $variableName = $generator->generatorForm->getResourceName(false, true, true);
 $routeName = $generator->generatorForm->getResourceName(true, true, true);
-$modelName = $generator->generatorForm->modelName;
+$modelName = $generator->scenarioValue('modelName');
 echo "<?php\n";
 ?>
 /**
- * @var \{{ $generator->generatorForm->modelName }} ${{ $generator->generatorForm->getResourceName(false, true) }}
+ * @var \{{ $generator->scenarioValue('modelName') }} ${{ $generator->generatorForm->getResourceName(false, true) }}
  *
  */
 

@@ -12,8 +12,8 @@ echo "<?php\n";
 namespace {{ $generator->generatorForm->getNsByClassName($generator->controllerParams->controllerName) }};
 
 use {{ $generator->controllerParams->baseClass }};
-use {{ $generator->generatorForm->modelName }};
-use {{ $generator->generatorForm->resourceClassName }};
+use {{ $generator->scenarioValue('modelName') }};
+use {{ $generator->scenarioValue('resourceClassName') }};
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -25,7 +25,7 @@ use Illuminate\Http\JsonResponse;
 
 class {{ class_basename($generator->controllerParams->controllerName) }} extends {{ class_basename($generator->controllerParams->baseClass) }}
 {
-    public function __construct(private \{{$generator->generatorForm->repositoryName}} $repository, private \{{$generator->generatorForm->serviceName}} $service)
+    public function __construct(private \{{$generator->scenarioValue('repositoryName')}} $repository, private \{{$generator->scenarioValue('serviceName')}} $service)
     {
     }
 
@@ -34,7 +34,7 @@ class {{ class_basename($generator->controllerParams->controllerName) }} extends
         return response()->json(
             [
                 'success' => true,
-                'data' => {{ class_basename($generator->generatorForm->resourceClassName) }}::collection($this->repository->allActive()),
+                'data' => {{ class_basename($generator->scenarioValue('resourceClassName')) }}::collection($this->repository->allActive()),
             ]
         );
     }
@@ -44,7 +44,7 @@ class {{ class_basename($generator->controllerParams->controllerName) }} extends
         return response()->json(
             [
                 'success' => true,
-                'data' => {{ class_basename($generator->generatorForm->resourceClassName) }}::make(${{$generator->generatorForm->getResourceName(false, true)}}),
+                'data' => {{ class_basename($generator->scenarioValue('resourceClassName')) }}::make(${{$generator->generatorForm->getResourceName(false, true)}}),
             ]
         );
     }

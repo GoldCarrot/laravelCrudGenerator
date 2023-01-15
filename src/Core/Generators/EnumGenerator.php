@@ -28,15 +28,16 @@ class EnumGenerator extends BaseEloquentGenerator implements GeneratorInterface
     public function generate()
     {
         $templateName = $this->getTemplateFileName('classes', 'enum');
-        $renderedModel = View::make($templateName)->with(
-            [
-                'generator' => $this,
-            ]);
+
         if (!File::isDirectory($this->getPath())) {
             File::makeDirectory($this->getPath(), 0777, true, true);
         }
 
         if (!File::exists($this->getFilePath()) || $this->generatorForm->force) {
+            $renderedModel = View::make($templateName)->with(
+                [
+                    'generator' => $this,
+                ]);
             File::delete($this->getFilePath());
             if (File::put($this->getFilePath(), $renderedModel) !== false) {
                 ConsoleHelper::info("{$this->getFileName()} generated! Path in app: " . $this->getPath() . '/');

@@ -14,11 +14,11 @@ class ServiceGenerator extends BaseEloquentGenerator implements GeneratorInterfa
     public string $baseClass = 'App\Base\Services\BaseService';
     public string $baseInterface = 'App\Base\Interfaces\ManageServiceInterface';
 
-    public function __construct(public GeneratorForm $generatorForm)
+    public function __construct(public GeneratorForm $generatorForm, $options)
     {
         $this->pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Classes';
         $this->filename = $this->generatorForm->resourceName . $this->generatorForm::$SERVICE_SUFFIX . ".php";
-        $this->path = str_replace('\\', '/', base_path(lcfirst(class_namespace($this->generatorForm->serviceName))));
+        $this->path = str_replace('\\', '/', base_path(lcfirst(class_namespace(\Arr::get($options, 'serviceName')))));
     }
 
     public function generate()
@@ -26,14 +26,15 @@ class ServiceGenerator extends BaseEloquentGenerator implements GeneratorInterfa
         $this->baseClass = env('GENERATOR_SERVICE_EXTENDS') ?? $this->baseClass;
         $this->baseInterface = env('GENERATOR_SERVICE_IMPLEMENTS') ?? $this->baseInterface;
         $templateName = $this->getTemplateFileName('classes', self::label());
-        $renderedModel = View::make($templateName)->with(
-            [
-                'generator' => $this,
-            ]);
+
         if (!File::isDirectory($this->getPath())) {
             File::makeDirectory($this->getPath(), 0777, true, true);
         }
         if (!File::exists($this->getFilePath()) || $this->generatorForm->force) {
+            $renderedModel = View::make($templateName)->with(
+                [
+                    'generator' => $this,
+                ]);
             File::delete($this->getFilePath());
             if (File::put($this->getFilePath(), $renderedModel) !== false) {
                 ConsoleHelper::info("{$this->getFileName()} generated! Path in app: " . $this->getPath() . '/');

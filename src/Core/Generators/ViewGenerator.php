@@ -9,6 +9,7 @@ use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
 use Chatway\LaravelCrudGenerator\Core\Entities\GeneratorForm;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
 use File;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use View;
 
 /**
@@ -18,25 +19,26 @@ class ViewGenerator extends BaseEloquentGenerator implements GeneratorInterface
 {
     public mixed $viewName;
 
-    public function __construct(public GeneratorForm $generatorForm, $config = [])
+    public function __construct(public GeneratorForm $generatorForm, $options)
     {
-        $this->viewName = \Arr::get($config, 'viewName');
+        $this->viewName = \Arr::get($options, 'viewName');
         $this->pathTemplate = $this->generatorForm->mainPath . '/Core/Templates/Views';
         $this->filename = $this->viewName . $this->generatorForm::$VIEW_FILE_SUFFIX;
-        $this->path = resource_path(str_replace('\\', '/', $this->generatorForm->viewsPath));
+        $this->path = resource_path(str_replace('\\', '/', \Arr::get($options, 'viewsPath')));
     }
 
     public function generate()
     {
         $templateName = $this->getTemplateFileName('classes', $this->viewName);
-        $renderedModel = View::make($templateName)->with(
-            [
-                'generator' => $this,
-            ]);
+
         if (!File::isDirectory($this->getPath())) {
             File::makeDirectory($this->getPath(), 0777, true, true);
         }
         if (!File::exists($this->getFilePath()) || $this->generatorForm->force) {
+            $renderedModel = View::make($templateName)->with(
+                [
+                    'generator' => $this,
+                ]);
             File::delete($this->getFilePath());
             if (File::put($this->getFilePath(), $renderedModel) !== false) {
                 ConsoleHelper::info("{$this->getFileName()} generated! Path in app: " . $this->getPath() . '/');
@@ -126,6 +128,9 @@ class ViewGenerator extends BaseEloquentGenerator implements GeneratorInterface
         return view()->exists($propertyDTO->name) || (!view()->exists($propertyDTO->name));
     }
 
+    /**
+     * @throws BindingResolutionException
+     */
     public function getRenderedPropertyShow(PropertyDTO $propertyDTO)
     {
         $path = $this->generatorForm->mainPath . '/Core/Templates/Views/Show';
@@ -168,6 +173,7 @@ class ViewGenerator extends BaseEloquentGenerator implements GeneratorInterface
      * Description генерирует столбцы на странице Index
      * Шаблоны распространненых столбцов внутри функции
      * Пока нет возможности извне взять шаблоны
+     *
      * @return string
      */
     public function getIndexColumns(): string
@@ -179,7 +185,7 @@ class ViewGenerator extends BaseEloquentGenerator implements GeneratorInterface
             'variableName'       => $this->generatorForm->getResourceName(false, true),
             'resourceTable'      => $this->generatorForm->resourceTable,
             'resourceName'       => $this->generatorForm->resourceName,
-            'modelName'          => $this->generatorForm->modelName,
+            'modelName'          => $this->scenarioValue('modelName'),
             'resourceNamePlural' => $this->generatorForm->getResourceName(true, true),
             'folderNs'           => $this->generatorForm->folderNs,
         ];

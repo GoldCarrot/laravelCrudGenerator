@@ -10,7 +10,7 @@ echo "<?php\n";
 
 ?>
 
-namespace {{ $generator->generatorForm->getNsByClassName($generator->generatorForm->modelName) }};
+namespace {{ $generator->generatorForm->getNsByClassName($generator->scenarioValue('modelName')) }};
 
 
 use {{ $generator->baseClass }};
@@ -19,7 +19,7 @@ use Illuminate\Support\Collection;
 <?php /** Начало прикрепления классов для внутренних ключей **/ ?>
 <?php $addedClasses = [] ?>
 @foreach($generator->generatorForm->internalForeignKeys as $internalForeignKey)
-@if ($internalForeignKey['className'] != $generator->generatorForm->modelName && !in_array($internalForeignKey['className'], $addedClasses))
+@if ($internalForeignKey['className'] != $generator->scenarioValue('modelName') && !in_array($internalForeignKey['className'], $addedClasses))
 @php($addedClasses[] = $internalForeignKey['className'])
 use {{ $internalForeignKey['className'] }};
 @endif
@@ -27,7 +27,7 @@ use {{ $internalForeignKey['className'] }};
 <?php /** Конец прикрепления классов для внутренних ключей **/ ?>
 <?php /** Начало прикрепления классов для внешних ключей **/ ?>
 @foreach($generator->generatorForm->externalForeignKeys as $externalForeignKey)
-@if ($externalForeignKey['className'] != $generator->generatorForm->modelName && !in_array($externalForeignKey['className'], $addedClasses) && str_contains($externalForeignKey['className'], '\\'))
+@if ($externalForeignKey['className'] != $generator->scenarioValue('modelName') && !in_array($externalForeignKey['className'], $addedClasses) && str_contains($externalForeignKey['className'], '\\'))
 @php($addedClasses[] = $externalForeignKey['className'])
 use {{ $externalForeignKey['className'] }};
 @endif
@@ -39,7 +39,7 @@ use {{ $externalForeignKey['className'] }};
  * This is the model class for table "{{ $generator->generatorForm->resourceTable }}".
  * Class {{ $generator->generatorForm->resourceName }}
  *
- * @package {{ $generator->generatorForm->modelName }}
+ * @package {{ $generator->scenarioValue('modelName') }}
  * @mixin Eloquent
 @foreach($generator->generatorForm->properties as $property)
  * @property {{ $generator->generatorForm->getFormattedProperty($property->type, $property->name) }}

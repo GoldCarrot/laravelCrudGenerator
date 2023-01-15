@@ -2,19 +2,16 @@
 
 namespace Chatway\LaravelCrudGenerator\Core\Entities;
 
+use Chatway\LaravelCrudGenerator\Core\Base\BaseScenario;
 use Chatway\LaravelCrudGenerator\Core\DTO\ControllerParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\EnumParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\MainParams;
 use Chatway\LaravelCrudGenerator\Core\DTO\PropertyDTO;
-use Chatway\LaravelCrudGenerator\Core\DTO\RouteParams;
-use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
+use Chatway\LaravelCrudGenerator\Core\DTO\ScenarioItem;
 use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ColumnService;
 use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ForeignKeyService;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ClassHelper;
-use Chatway\LaravelCrudGenerator\Core\Templates\Routes\GeneratorRouteTemplates;
-use ReflectionException;
 use Str;
-use View;
 
 /**
  * @property string                 $baseNs
@@ -22,7 +19,8 @@ use View;
  * @property PropertyDTO []         $properties
  * @property EnumParams []          $enums
  * @property ControllerParams []    $controllers
- * @property RouteParams [] | array $routeTemplates
+ * @property ScenarioItem []    $generators
+ //* @property RouteParams [] | array $routeTemplates
  */
 class GeneratorForm
 {
@@ -31,11 +29,9 @@ class GeneratorForm
     public static string $ENUM_FOLDER_NAME       = 'Enums';
     public static string $VIEW_FILE_SUFFIX       = '.blade.php';
     public static string $SERVICE_FOLDER_NAME    = 'Services';
-    public static string $PRESENTER_FOLDER_NAME  = 'Presenters';
     public static string $RESOURCE_FOLDER_NAME   = 'Resources';
 
     public static string $RESOURCE_SUFFIX   = 'Resource';
-    public static string $PRESENTER_SUFFIX  = 'Presenter';
     public static string $SERVICE_SUFFIX    = 'Service';
     public static string $REPOSITORY_SUFFIX = 'Repository';
     public static string $CONTROLLER_SUFFIX = 'Controller';
@@ -43,18 +39,14 @@ class GeneratorForm
     public string $resourceTable;
     public string $resourceName;
 
-    public string $modelName;
-    public array  $controllers = [];
-    public string $repositoryName;
-    public string $serviceName;
     public string $enumName;
-    public string $presenterName;
-    public string $resourceClassName;
 
     public string $baseNs    = 'App\Domain';
     public string $httpNs    = 'App\Http\Admin';
     public string $httpApiNs = 'App\Http\Api';
     public string $folderNs  = '';
+
+    public array $generators;
 
     /** Свойства и ключи модели начало */
     public array $properties;
@@ -73,18 +65,17 @@ class GeneratorForm
     /** Параметры Enum конец */
 
     /** Параметры View начало */
-    public string $viewsPath;
+    //public string $viewsPath;
     /** Параметры View конец */
 
     /** Параметры Route начало */
-    public array $routeTemplates = [];
+    //public array $routeTemplates = [];
     /** Параметры Route конец */
 
     /** Общие параметры начало */
     public bool   $force;
     public string $mainPath;
     public bool   $testMode     = false;
-    public array  $generateList = [];
     public string $action;
     /** Общие параметры конец */
 
@@ -93,7 +84,6 @@ class GeneratorForm
     public function __construct(MainParams $mainParams, ForeignKeyService $foreignKeyService)
     {
         $this->enums = $mainParams->enums;
-        $this->generateList = $mainParams->generateList;
         $this->foreignKeyService = $foreignKeyService;
         $this->setResourceTable($mainParams->resourceTable);
         $this->resourceName = $mainParams->resourceName;
@@ -112,36 +102,9 @@ class GeneratorForm
             $this->baseNs .= '\\';
         }
 
-        $this->modelName = $this->baseNs . $this->folderNs . '\\' . self::$MODEL_FOLDER_NAME . '\\' . $this->resourceName;
-        $controller = new ControllerParams([
-            'controllerName' => $this->httpNs . 'Controllers\\' . $this->folderNs . '\\' . $this->resourceName
-                                . self::$CONTROLLER_SUFFIX,
-            'templateName'   => 'controllerAdmin',
-            'baseClass'      => env('GENERATOR_ADMIN_CONTROLLER_EXTENDS') ??
-                                'App\Http\Admin\Controllers\ResourceController',
-        ]);
-
-        $this->controllers['controllerAdmin'] = $controller;
-        $controller = new ControllerParams([
-            'controllerName' => $this->httpApiNs . 'Controllers\\' . $this->folderNs . '\\' . $this->resourceName
-                                . self::$CONTROLLER_SUFFIX,
-            'templateName'   => 'controllerApi',
-            'baseClass'      => env('GENERATOR_API_CONTROLLER_EXTENDS') ?? 'App\Http\Api\Controllers\Controller',
-        ]);
-        $this->controllers['controllerApi'] = $controller;
-        $this->repositoryName = $this->baseNs . $this->folderNs . '\\' . self::$REPOSITORY_FOLDER_NAME . '\\' . $this->resourceName
-                                . self::$REPOSITORY_SUFFIX;
-        $this->serviceName =
-            $this->baseNs . $this->folderNs . '\\' . self::$SERVICE_FOLDER_NAME . '\\' . $this->resourceName . self::$SERVICE_SUFFIX;
-        $this->presenterName = $this->httpApiNs . self::$PRESENTER_FOLDER_NAME . '\\' . $this->folderNs . '\\' . $this->resourceName
-                               . self::$PRESENTER_SUFFIX;
-        $this->resourceClassName = $this->httpApiNs . self::$RESOURCE_FOLDER_NAME . '\\' . $this->folderNs . '\\' . $this->resourceName
-                                   . self::$RESOURCE_SUFFIX;
-
-
-        $this->viewsPath = env('GENERATOR_VIEWS_PATH') ??
-                           'views\admin\\' . Str::pluralStudly(lcfirst(class_basename($this->resourceName)));
-
+        /** @var BaseScenario $scenario */
+        $scenario = app($mainParams->scenariosEnum->scenarios[$mainParams->scenario], ['generatorForm' => $this]);
+        $this->generators = $scenario->init();
         foreach ($this->enums as $enum) {
             if ($enum->isDefaultStatus) {
                 $enum->enumName = env('GENERATOR_DEFAULT_STATUS_ENUM') ?? 'App\Domain\Application\Admin\Enums\DefaultStatusEnum';
@@ -150,47 +113,15 @@ class GeneratorForm
                                   . ucfirst($enum->name) . 'Enum';
             }
         }
-        $this->routeTemplates = (new GeneratorRouteTemplates())->getRoutes();
 
-        if ($mainParams->previewPaths) {
-            if (count($this->generateList) == 0 || in_array('model', $this->generateList)) {
-                ConsoleHelper::info($this->modelName);
-            }
-            if (count($this->generateList) == 0 || in_array('controllers', $this->generateList)) {
-                foreach ($this->controllers as $controller) {
-                    ConsoleHelper::info($controller->controllerName);
-                }
-            }
-            if (count($this->generateList) == 0 || in_array('presenter', $this->generateList)) {
-                ConsoleHelper::info($this->presenterName);
-            }
-            if (count($this->generateList) == 0 || in_array('repository', $this->generateList)) {
-                ConsoleHelper::info($this->repositoryName);
-            }
-            if (count($this->generateList) == 0 || in_array('service', $this->generateList)) {
-                ConsoleHelper::info($this->serviceName);
-            }
-            if (count($this->generateList) == 0 || in_array('enums', $this->generateList)) {
-                foreach ($this->enums as $enum) {
-                    ConsoleHelper::info($enum->enumName);
-                }
-            }
-            if (count($this->generateList) == 0 || in_array('views', $this->generateList)) {
-                ConsoleHelper::info($this->viewsPath);
-            }
-            if (count($this->generateList) == 0 || in_array('resource', $this->generateList)) {
-                ConsoleHelper::info($this->resourceClassName);
-            }
-        }
         $this->force = $mainParams->force;
         $this->mainPath = $mainParams->mainPath;
     }
 
-    private function initEnv()
+    private function initEnv(): void
     {
         $this->testMode = env('GENERATOR_TEST_MODE') ?? false;
         self::$CONTROLLER_SUFFIX = env('GENERATOR_CONTROLLER_SUFFIX') ?? self::$CONTROLLER_SUFFIX;
-        self::$PRESENTER_SUFFIX = env('GENERATOR_PRESENTER_SUFFIX') ?? self::$PRESENTER_SUFFIX;
         self::$RESOURCE_SUFFIX = env('GENERATOR_RESOURCE_SUFFIX') ?? self::$RESOURCE_SUFFIX;
         self::$REPOSITORY_SUFFIX = env('GENERATOR_REPOSITORY_SUFFIX') ?? self::$REPOSITORY_SUFFIX;
 
@@ -207,20 +138,12 @@ class GeneratorForm
         return join("\\", array_slice(explode("\\", $className), 0, -1));
     }
 
-    public function setResourceTable($resourceTable)
+    public function setResourceTable($resourceTable): void
     {
         $this->resourceTable = $resourceTable;
         $this->generateProperties($resourceTable);
-        try {
-            $this->generateInternalForeignKeys($resourceTable);
-        } catch (ReflectionException $e) {
-            dd($e->getMessage(), $e->getTraceAsString());
-        }
-        try {
-            $this->generateExternalForeignKeys($resourceTable);
-        } catch (ReflectionException $e) {
-            dd($e->getMessage(), $e->getTraceAsString());
-        }
+        $this->generateInternalForeignKeys($resourceTable);
+        $this->generateExternalForeignKeys($resourceTable);
         $this->solveTextSpaceForProperties();
     }
 
@@ -230,9 +153,8 @@ class GeneratorForm
      *
      * @param $tableName
      *
-     * @throws ReflectionException
      */
-    private function generateInternalForeignKeys($tableName)
+    private function generateInternalForeignKeys($tableName): void
     {
         $keys = [];
         $foreignKeys = $this->foreignKeyService->getInternalKeys($tableName);
@@ -260,9 +182,8 @@ class GeneratorForm
      *
      * @param $tableName
      *
-     * @throws ReflectionException
      */
-    private function generateExternalForeignKeys($tableName)
+    private function generateExternalForeignKeys($tableName): void
     {
         $keys = [];
         $foreignKeys = $this->foreignKeyService->getExternalKeys($tableName);
@@ -272,7 +193,7 @@ class GeneratorForm
             foreach ($foreignExtKeys as $foreignExtKey) {
                 $index = array_search($foreignExtKey->TABLE_NAME, array_column($classes, 'tableName'));
                 $pushed = in_array($foreignExtKey->TABLE_NAME, array_column($keys, 'tableName'));
-                if ($foreignExtKey->REFERENCED_TABLE_NAME == $tableName && $index != false && !$pushed) {
+                if ($foreignExtKey->REFERENCED_TABLE_NAME == $tableName && $index !== false && !$pushed) {
                     $keys[] = array_replace($classes[$index], ['tableName' => $foreignExtKey->TABLE_NAME]);
                 } elseif ($foreignExtKey->REFERENCED_TABLE_NAME == $tableName && !$pushed) {
                     $className = Str::singular($foreignExtKey->TABLE_NAME);
@@ -285,7 +206,7 @@ class GeneratorForm
         $this->externalForeignKeys = $keys;
     }
 
-    private function generateProperties($tableName)
+    private function generateProperties($tableName): void
     {
         $this->properties = [];
         $this->columns = [];
@@ -350,7 +271,7 @@ class GeneratorForm
         }
     }
 
-    private function solveTextSpaceForProperties()
+    private function solveTextSpaceForProperties(): void
     {
         $this->spaceForProperties = 0;
         foreach ($this->properties as $property) {

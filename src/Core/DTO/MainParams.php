@@ -2,8 +2,12 @@
 
 namespace Chatway\LaravelCrudGenerator\Core\DTO;
 
+use App;
+use Arr;
+use Chatway\LaravelCrudGenerator\Core\Enums\ScenariosEnum;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
 use Chatway\LaravelCrudGenerator\Core\Helpers\DB\ColumnService;
+use Str;
 
 /**
  * @property EnumParams[] $enums
@@ -14,23 +18,23 @@ class MainParams
     public string $resourceName;
     public mixed  $folderNs;
     public array  $enums;
-    public bool   $previewPaths;
     public bool   $force;
     public string $mainPath;
-    public array  $generateList;
-    public ?string $action;
+    public ?string       $action;
+    public ?string       $scenario;
+    public ScenariosEnum $scenariosEnum;
 
     public function __construct($data)
     {
-        $this->resourceTable = \Arr::get($data, 'resourceTable');
-        $this->resourceName = ucfirst(\Str::camel(\Str::singular($this->resourceTable)));
-        $this->folderNs = \Arr::get($data, 'folderNs');
-        $this->enums = $this->getEnums(\Arr::get($data, 'enumParams'), \Arr::get($data, 'defaultStatusGenerate', false));
-        $this->previewPaths = \Arr::get($data, 'previewPaths', false);
-        $this->force = \Arr::get($data, 'force', false);
-        $this->mainPath = \Arr::get($data, 'mainPath');
-        $this->generateList = \Arr::get($data, 'generateList', []);
-        $this->action = \Arr::get($data, 'action') ?? 'generate';
+        $this->resourceTable = Arr::get($data, 'resourceTable');
+        $this->resourceName = ucfirst(Str::camel(Str::singular($this->resourceTable)));
+        $this->folderNs = Arr::get($data, 'folderNs');
+        $this->enums = $this->getEnums(Arr::get($data, 'enumParams'), Arr::get($data, 'defaultStatusGenerate', false));
+        $this->force = Arr::get($data, 'force', false);
+        $this->mainPath = Arr::get($data, 'mainPath');
+        $this->action = Arr::get($data, 'action') ?? 'generate';
+        $this->scenariosEnum = Arr::get($data, 'scenariosEnum', App::make(ScenariosEnum::class));
+        $this->scenario = Arr::get($data, 'scenario', ScenariosEnum::DEFAULT);
         if (!$this->mainPath) {
             ConsoleHelper::error('Main path is not null');
             die;

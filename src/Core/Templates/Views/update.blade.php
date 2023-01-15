@@ -7,7 +7,7 @@
 /* @var $generator->generatorForm->properties array list of properties (property => [type, name. comment]) */
 $variableName = $generator->generatorForm->getResourceName(false, true, true);
 $routeName = $generator->generatorForm->getResourceName(true, true, true);
-$modelName = $generator->generatorForm->modelName;
+$modelName = $generator->scenarioValue('modelName');
 ?>
 <?= "@extends('admin.layouts.app', ['title' => \${$variableName}->title])" . PHP_EOL?>
 
