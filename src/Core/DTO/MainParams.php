@@ -22,7 +22,7 @@ class MainParams
     public string $mainPath;
     public ?string       $action;
     public ?string       $scenario;
-    public ScenariosEnum $scenariosEnum;
+    public $scenariosEnum;
 
     public function __construct($data)
     {

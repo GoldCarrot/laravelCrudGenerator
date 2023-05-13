@@ -70,9 +70,10 @@ abstract class BaseEloquentGenerator
             return $templateName;
         }
     }
-
+    //todo сначала проверять генератор, с которого выполняется функция
     public function scenarioValue($name): string
     {
+        //$this->getGenerator()
         foreach ($this->generatorForm->generators as $generator) {
             foreach ($generator->options as $key => $paramValue) {
                 if ($key == $name && is_string($paramValue)) {
