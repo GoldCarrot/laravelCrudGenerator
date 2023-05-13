@@ -156,12 +156,14 @@ class MigrationCreatorCommand extends Command
                     $nullable = !(isset($fieldWithParamsArray[2]) && $fieldWithParamsArray[2] == 'notNull');
                     $foreignUuid = isset($fieldWithParamsArray[3]) && filter_var($fieldWithParamsArray[3], FILTER_VALIDATE_BOOLEAN);
                     $foreignId = isset($fieldWithParamsArray[4]) && filter_var($fieldWithParamsArray[4], FILTER_VALIDATE_BOOLEAN);
+                    $default = $fieldWithParamsArray[5] ?? null;
                     $columns[] = new ColumnMigrationDTO(
                         $fieldWithParamsArray[0],
                         $fieldWithParamsArray[1] ?? 'string',
                         $nullable,
                         $foreignUuid,
-                        $foreignId
+                        $foreignId,
+                        $default
                     );
                 }
             }
