@@ -89,7 +89,7 @@ class MigrationCreatorCommand extends Command
                 }
             }
             $tempFile = $this->getMigrationsPath() . DIRECTORY_SEPARATOR . $migrationFilename;
-            $tempFile = str_contains($tempFile, '_1.php') ? $tempFile : str_replace(['.php'], '_1.php', $tempFile);
+            //$tempFile = str_contains($tempFile, '_1.php') ? $tempFile : str_replace(['.php'], '_1.php', $tempFile);
             file_put_contents($tempFile, $fileClass);
         }
         return 0;
