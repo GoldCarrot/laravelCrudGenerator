@@ -1,0 +1,49 @@
+[
+    {
+        "name": "image_id",
+        "foreignUuid": true
+    },
+    {
+        "name": "title",
+        "type": "string",
+        "nullable": false,
+        "default": null
+    },
+    {
+        "name": "slug",
+        "type": "string",
+        "default": null
+    },
+    {
+        "name": "description",
+        "type": "text",
+        "default": null
+    },
+    {
+        "name": "short_description",
+        "type": "text",
+        "default": null
+    },
+    {
+        "name": "text",
+        "type": "text",
+        "default": null
+    },
+    {
+        "name": "sort",
+        "type": "integer",
+        "nullable": false,
+        "default": 100
+    },
+    {
+        "name": "status",
+        "type": "string",
+        "nullable": false,
+        "default": "active"
+    },
+    {
+        "name": "softDeletes",
+        "templateForCreate": "softDeletes()",
+        "templateForDrop": "dropSoftDeletes()"
+    }
+]
