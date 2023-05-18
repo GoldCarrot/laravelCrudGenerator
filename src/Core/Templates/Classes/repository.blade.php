@@ -37,9 +37,11 @@ use {{ $trait }};
 * Class {{ class_basename($generator->scenarioValue('repositoryName')) }}
 *
 * @package {{ class_namespace($generator->scenarioValue('repositoryName')) }}
+<?= ' * @method ' . class_basename($generator->scenarioValue('modelName')) ?> []|Collection allActive()
 <?= ' * @method ' . class_basename($generator->scenarioValue('modelName')) ?> []|Collection search(array $parameters = [], int $limit = null)
 <?= ' * @method ' . class_basename($generator->scenarioValue('modelName')) ?> []|Collection searchActive(array $parameters = [], int $limit = null)
 <?= ' * @method ' . class_basename($generator->scenarioValue('modelName')) ?>|null oneActive(array $params = [])
+<?= ' * @method ' . class_basename($generator->scenarioValue('modelName')) ?>|null one(string|int|null $id, bool $active = false)
 <?= ' * @method ' . class_basename($generator->scenarioValue('modelName')) ?>|null find(array $params = [])
 <?= ' * @method ' . class_basename($generator->scenarioValue('modelName')) ?>|null findActive(array $params = [])
 */
@@ -60,11 +62,12 @@ $activeStatusConst = strtoupper($activeStatusConst);
 $deletedStatusConst = in_array('deleted', $generator->generatorForm->enums['status']->types) ? 'DELETED' : ($generator->generatorForm->enums['status']->types[0] ?? 'DELETED');
 $deletedStatusConst = strtoupper($deletedStatusConst);
 ?>
+@if(!$generator->generatorForm->columnExists('deleted_at') && !$generator->generatorForm->columnExists('status'))
     protected function query(): Builder
     {
         return $this->newQuery()->where('status', '!=', {{class_basename($generator->generatorForm->enums['status']->enumName)}}::{{$deletedStatusConst}});
     }
-
+@endif
     protected function active(): Builder
     {
         return $this->query()->where('status', '=', {{class_basename($generator->generatorForm->enums['status']->enumName)}}::{{$activeStatusConst}});

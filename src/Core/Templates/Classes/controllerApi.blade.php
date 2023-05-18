@@ -14,6 +14,8 @@ namespace {{ $generator->generatorForm->getNsByClassName($generator->controllerP
 use {{ $generator->controllerParams->baseClass }};
 use {{ $generator->scenarioValue('modelName') }};
 use {{ $generator->scenarioValue('resourceClassName') }};
+use {{ $generator->scenarioValue('repositoryName') }};
+use {{ $generator->scenarioValue('serviceName') }};
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -25,7 +27,10 @@ use Illuminate\Http\JsonResponse;
 
 class {{ class_basename($generator->controllerParams->controllerName) }} extends {{ class_basename($generator->controllerParams->baseClass) }}
 {
-    public function __construct(private \{{$generator->scenarioValue('repositoryName')}} $repository, private \{{$generator->scenarioValue('serviceName')}} $service)
+    public function __construct(
+        private {{ class_basename($generator->scenarioValue('repositoryName')) }} $repository,
+        private {{ class_basename($generator->scenarioValue('serviceName')) }} $service,
+    )
     {
     }
 

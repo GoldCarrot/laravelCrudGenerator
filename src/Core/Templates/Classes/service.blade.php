@@ -64,6 +64,7 @@ class {{ class_basename($generator->scenarioValue('serviceName')) }}{{ $generato
 
     public function destroy({{ $generator->generatorForm->resourceName }}|Model $model): bool
     {
-        return $model->forceFill(['status' => 'deleted'])->save();
+        return $model->@if($generator->generatorForm->columnExists('deleted_at'))deleteOrFail()@else
+forceFill(['status' => 'deleted'])->save()@endif;
     }
 }

@@ -311,4 +311,9 @@ class GeneratorForm
         $resourceName = $plural ? Str::pluralStudly($resourceName) : $resourceName;
         return $camel ? Str::camel($resourceName) : $resourceName;
     }
+
+    public function columnExists($column): bool
+    {
+        return in_array('deleted_at', array_column($this->properties, 'name'));
+    }
 }

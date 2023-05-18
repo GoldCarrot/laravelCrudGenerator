@@ -16,6 +16,9 @@ namespace {{ $generator->generatorForm->getNsByClassName($generator->scenarioVal
 use {{ $generator->baseClass }};
 use Eloquent;
 use Illuminate\Support\Collection;
+@if($generator->generatorForm->columnExists('deleted_at'))
+use Illuminate\Database\Eloquent\SoftDeletes;
+@endif
 <?php /** Начало прикрепления классов для внутренних ключей **/ ?>
 <?php $addedClasses = [] ?>
 @foreach($generator->generatorForm->internalForeignKeys as $internalForeignKey)
@@ -55,6 +58,10 @@ use {{ $externalForeignKey['className'] }};
  */
 class {{ $generator->generatorForm->resourceName }} extends {{ class_basename($generator->baseClass) }}
 {
+@if($generator->generatorForm->columnExists('deleted_at'))
+    use SoftDeletes;
+
+@endif
     protected $table = '{{ $generator->generatorForm->resourceTable }}';
     {!!  count($generator->generatorForm->dateProperties) > 0 ? "\n    protected \$dates = ['" . implode("', '", $generator->generatorForm->dateProperties) . "'];" : "" !!}
 @foreach($generator->generatorForm->internalForeignKeys as $internalForeignKey)
