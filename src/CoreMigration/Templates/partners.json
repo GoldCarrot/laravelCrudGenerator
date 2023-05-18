@@ -1,0 +1,4 @@
+{
+    "up": "$table->foreignUuid('image_id')->nullable()->constrained();\n            $table->string('title');\n            $table->string('link');\n            $table->string('status')->default('active');\n            $table->softDeletes();\n            $table->timestamps();\n        });\n",
+    "down": ""
+}

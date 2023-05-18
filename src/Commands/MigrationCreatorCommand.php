@@ -5,7 +5,6 @@ namespace Chatway\LaravelCrudGenerator\Commands;
 use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
 use Chatway\LaravelCrudGenerator\Core\Helpers\EnvHelper;
 use Chatway\LaravelCrudGenerator\CoreMigration\DTO\ColumnMigrationDTO;
-use Chatway\LaravelCrudGenerator\CoreMigration\Enums\ScenariosMigrationEnum;
 use Illuminate\Console\Command;
 
 class MigrationCreatorCommand extends Command
@@ -21,7 +20,7 @@ class MigrationCreatorCommand extends Command
     {
         $migrationName = $this->argument('name');
         $scenario = $this->option('scenario');
-        $fields = $this->option('fields', '');
+        $fields = $this->option('fields');
         $this->makeMigrationByLaravel($migrationName);
         $migrationFilename = $this->getLastMigrationFilename();
         if (EnvHelper::devMode() && str_contains($migrationFilename, '_1.php')) {
@@ -115,7 +114,7 @@ class MigrationCreatorCommand extends Command
         $tableName = $this->getTableName($migrationName);
         $fieldsFromMigrationName = preg_replace("/^\d+_|add_|_to_{$tableName}_table/", '', $migrationName);
         $fieldsSimpleArray = str_contains($fieldsFromMigrationName, 'add_') ? explode('_and_', $fieldsFromMigrationName) : [];
-        $fields = explode(',', $fields);
+        $fields = $fields ? explode(',', $fields) : [];
         $columns = [];
         if (file_exists(storage_path('app') . DIRECTORY_SEPARATOR . "fieldTemplates.json")) {
             $pathToPackage = storage_path('app') . DIRECTORY_SEPARATOR . "fieldTemplates.json";
@@ -216,9 +215,11 @@ class MigrationCreatorCommand extends Command
     }
 
     /**
+     * @param int $offset
+     *
      * @return string|null
      */
-    public function getLastMigrationFilename($offset = 1): ?string
+    public function getLastMigrationFilename(int $offset = 1): ?string
     {
         $path = $this->getMigrationsPath();
         $files = scandir($path);
