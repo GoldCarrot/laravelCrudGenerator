@@ -39,7 +39,7 @@
         "name": "status",
         "type": "string",
         "nullable": false,
-        "default": "active"
+        "default": "'active'"
     },
     {
         "name": "softDeletes",

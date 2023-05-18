@@ -49,7 +49,7 @@ class MainParams
         $defaultValues = env('GENERATOR_DEFAULT_ENUM_VALUES', ['active', 'inactive', 'deleted']);
         $enums = [];
         if ($enumParams) {
-            $enumParams = explode(';', $enumParams);
+            $enumParams = explode('*', $enumParams);
             foreach ($enumParams as $enumParam) {
                 $enumParam = new EnumParams($enumParam, $defaultValues);
                 if ($enumParam->name) {
