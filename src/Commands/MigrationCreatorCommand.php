@@ -2,6 +2,8 @@
 
 namespace Chatway\LaravelCrudGenerator\Commands;
 
+use Chatway\LaravelCrudGenerator\Core\Helpers\ConsoleHelper;
+use Chatway\LaravelCrudGenerator\Core\Helpers\EnvHelper;
 use Chatway\LaravelCrudGenerator\CoreMigration\DTO\ColumnMigrationDTO;
 use Chatway\LaravelCrudGenerator\CoreMigration\Enums\ScenariosMigrationEnum;
 use Illuminate\Console\Command;
@@ -11,7 +13,7 @@ class MigrationCreatorCommand extends Command
     protected $signature = '
     migrate:new
     {name : migration name}
-    {--scenario=default : Scenario, create your custom class for generate custom list files"}
+    {--scenario= : Scenario, create your custom class for generate custom list files"}
     {--fields= : Fields list example --fields=title:string,slug:string:notNull"}
     ';
 
@@ -22,10 +24,12 @@ class MigrationCreatorCommand extends Command
         $fields = $this->option('fields', '');
         $this->makeMigrationByLaravel($migrationName);
         $migrationFilename = $this->getLastMigrationFilename();
-
+        if (EnvHelper::devMode() && str_contains($migrationFilename, '_1.php')) {
+            $migrationFilename = $this->getLastMigrationFilename(2);
+        }
         if ($migrationFilename) {
             $tableName = $this->getTableName($migrationName);
-            if ($scenario == ScenariosMigrationEnum::DEFAULT) {
+            if (strlen($scenario) === 0) {
                 $columns = $this->prepareColumnList($migrationName, $fields);
                 $this->info('Column list prepared. Count columns = ' . count($columns));
                 $columnsForCreate = '';
@@ -69,13 +73,17 @@ class MigrationCreatorCommand extends Command
                 }
             } else {
                 $path = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'CoreMigration' . DIRECTORY_SEPARATOR . 'Templates';
-                if (!file_exists($path . DIRECTORY_SEPARATOR . "$tableName.json")) {
-                    $this->error('File not exists: ' . $path . DIRECTORY_SEPARATOR . "$tableName.json");
+                //dd(storage_path('app') . DIRECTORY_SEPARATOR . "$scenario.json");
+                if (file_exists(storage_path('app') . DIRECTORY_SEPARATOR . "$scenario.json")) {
+                    $template = storage_path('app') . DIRECTORY_SEPARATOR . "$scenario.json";
+                } elseif (file_exists($path . DIRECTORY_SEPARATOR . "$scenario.json")) {
+                    $template = $path . DIRECTORY_SEPARATOR . "$scenario.json";
+                } else {
+                    $this->error('File not exists: ' . $path . DIRECTORY_SEPARATOR . "$scenario.json");
                     die;
                 }
-                $template = file_get_contents($path . DIRECTORY_SEPARATOR . "$tableName.json");
-                $template = json_decode($template, true);
-
+                ConsoleHelper::info("File with templates: $template");
+                $template = json_decode(file_get_contents($template), true);
                 $fileClass = file_get_contents($this->getMigrationsPath() . DIRECTORY_SEPARATOR . $migrationFilename);
                 $fileClass = str_replace($migrationName, $tableName, $fileClass);
 
@@ -89,7 +97,9 @@ class MigrationCreatorCommand extends Command
                 }
             }
             $tempFile = $this->getMigrationsPath() . DIRECTORY_SEPARATOR . $migrationFilename;
-            //$tempFile = str_contains($tempFile, '_1.php') ? $tempFile : str_replace(['.php'], '_1.php', $tempFile);
+            if (EnvHelper::devMode()) {
+                $tempFile = str_contains($tempFile, '_1.php') ? $tempFile : str_replace(['.php'], '_1.php', $tempFile);
+            }
             file_put_contents($tempFile, $fileClass);
         }
         return 0;
@@ -108,8 +118,12 @@ class MigrationCreatorCommand extends Command
         $fieldsSimpleArray = str_contains($fieldsFromMigrationName, 'add_') ? explode('_and_', $fieldsFromMigrationName) : [];
         $fields = explode(',', $fields);
         $columns = [];
-
-        $pathToPackage = dirname(__DIR__) . '/CoreMigration/fieldTemplates.json';
+        if (file_exists(storage_path('app') . DIRECTORY_SEPARATOR . "fieldTemplates.json")) {
+            $pathToPackage = storage_path('app') . DIRECTORY_SEPARATOR . "fieldTemplates.json";
+        } else {
+            $pathToPackage = dirname(__DIR__) . '/CoreMigration/fieldTemplates.json';
+        }
+        ConsoleHelper::info("File with templates: $pathToPackage");
         $fieldTemplates = json_decode(file_get_contents($pathToPackage), true);
         $templateFieldNames = array_column($fieldTemplates, 'name');
         foreach ($fieldsSimpleArray as $item) {
@@ -188,11 +202,11 @@ class MigrationCreatorCommand extends Command
      */
     public function makeMigrationByLaravel(array|string|null $migrationName): void
     {
-        $this->info('Start create migration');
         $lastMigrationFilename = $this->getLastMigrationFilename();
         if (str_contains($lastMigrationFilename, $migrationName)) {
             $this->info('Migration has been created');
         } else {
+            $this->info('Start create migration');
             $start_time = microtime(true);
             $result = $this->callSilently("make:migration", ['name' => $migrationName]);
             $end_time = microtime(true);
@@ -205,12 +219,12 @@ class MigrationCreatorCommand extends Command
     /**
      * @return string|null
      */
-    public function getLastMigrationFilename(): ?string
+    public function getLastMigrationFilename($offset = 1): ?string
     {
         $path = $this->getMigrationsPath();
         $files = scandir($path);
         if (count($files)) {
-            return $files[count($files) - 1];
+            return $files[count($files) - $offset];
         }
         return null;
     }
