@@ -73,7 +73,6 @@ class MigrationCreatorCommand extends Command
                 }
             } else {
                 $path = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'CoreMigration' . DIRECTORY_SEPARATOR . 'Templates';
-                //dd(storage_path('app') . DIRECTORY_SEPARATOR . "$scenario.json");
                 if (file_exists(storage_path('app') . DIRECTORY_SEPARATOR . "$scenario.json")) {
                     $template = storage_path('app') . DIRECTORY_SEPARATOR . "$scenario.json";
                 } elseif (file_exists($path . DIRECTORY_SEPARATOR . "$scenario.json")) {
