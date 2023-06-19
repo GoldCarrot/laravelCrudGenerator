@@ -113,7 +113,7 @@ class MigrationCreatorCommand extends Command
     {
         $tableName = $this->getTableName($migrationName);
         $fieldsFromMigrationName = preg_replace("/^\d+_|add_|_to_{$tableName}_table/", '', $migrationName);
-        $fieldsSimpleArray = str_contains($fieldsFromMigrationName, 'add_') ? explode('_and_', $fieldsFromMigrationName) : [];
+        $fieldsSimpleArray = str_contains($fieldsFromMigrationName, 'add_') ? explode('_and_', $fieldsFromMigrationName) : [$fieldsFromMigrationName];
         $fields = $fields ? explode(',', $fields) : [];
         $columns = [];
         if (file_exists(storage_path('app') . DIRECTORY_SEPARATOR . "fieldTemplates.json")) {
