@@ -89,7 +89,7 @@ class ResourceGenerator extends BaseEloquentGenerator implements GeneratorInterf
     {
         if ($property->classTable == 'images' || $property->classTable == 'files') {
             $parameter = Str::singular($property->classTable);
-            return "[\n                'other' => \$this->resource->{$parameter}?->widen(1000)->url,\n                'webp' => \$this->resource->{$parameter}?->encode('webp')->widen(1000)->url,\n            ]";
+            return "[\n                'other' => \$this->resource->{$parameter}?->widen(1000)->url,\n                'webp' => \$this->resource->{$parameter}?->widen(1000)->encode('webp')->url,\n            ]";
         }
         if (str_contains($property->name, '_id') && $property->foreignKeyExists) {
             $tableName = $property->classTable ?? str_replace('_id', '', $property->name);
