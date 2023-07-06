@@ -120,7 +120,7 @@ Route::group(['middleware' => ['admin.auth']], function () {
                 'template' => "<?php
 
 Route::group(['prefix' => '{{resourceTable}}', 'namespace' => '{{folderNs}}'], function () {
-    Route::get('{{resourceNameNotPlural}}:slug', '{{resourceName}}Controller@show');
+    Route::get('{{{resourceNameNotPlural}}:slug}', '{{resourceName}}Controller@show');
     Route::get('', '{{resourceName}}Controller@index');
 });",
                 'path'     => 'api',
