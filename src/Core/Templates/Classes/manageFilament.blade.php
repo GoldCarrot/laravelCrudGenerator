@@ -28,7 +28,7 @@ class {{ class_basename($generator->scenarioValue('manageFilamentName')) }}{{ $g
     return app({{ class_basename($generator->scenarioValue('serviceName')) }}::class)->create({{ class_basename($generator->scenarioValue('dtoName')) }}::from([
 @foreach($generator->generatorForm->properties as $property)
 @if(in_array($property->name, ['created_at', 'updated_at', 'deleted_at', 'id'])) @continue @endif
-        '{{ Str::camel($property->name) }}' => data_get($state, '{{ Str::camel($property->name) }}', Optional::create()),
+        '{{ Str::camel($property->name) }}' => data_get($state, '{{ $property->name }}', Optional::create()),
 @endforeach()
     ]));
     }
