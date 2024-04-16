@@ -12,6 +12,7 @@ echo "<?php\n";
 namespace {{ class_namespace($generator->scenarioValue('serviceName')) }};
 
 use {{ $generator->scenarioValue('modelName') }};
+use {{ $generator->scenarioValue('dtoName') }};
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -22,13 +23,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class {{ class_basename($generator->scenarioValue('serviceName')) }}
 {
-    public function create(\{{ $generator->scenarioValue('dtoName') }} $dto): {{ $generator->generatorForm->resourceName }}
+    public function create({{ class_basename($generator->scenarioValue('dtoName')) }} $dto): {{ $generator->generatorForm->resourceName }}
     {
         $model = new {{ $generator->generatorForm->resourceName }}();
         return $this->update($model, $dto);
     }
 
-    public function update({{ $generator->generatorForm->resourceName }}|Model $model, \{{ $generator->scenarioValue('dtoName') }} $dto): {{ $generator->generatorForm->resourceName }}
+    public function update({{ $generator->generatorForm->resourceName }}|Model $model, {{ class_basename($generator->scenarioValue('dtoName')) }} $dto): {{ $generator->generatorForm->resourceName }}
     {
 @foreach($generator->generatorForm->properties as $property)
 @php

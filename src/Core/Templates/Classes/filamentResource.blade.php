@@ -18,6 +18,7 @@ use {{ $generator->scenarioValue('manageFilamentName') }};
 use {{ $generator->scenarioValue('modelName') }};
 use {{ $generator->scenarioValue('dtoName') }};
 use {{ $generator->scenarioValue('serviceName') }};
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
@@ -28,6 +29,7 @@ use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Carbon;
 use Filament\Forms\Form;
 use Spatie\LaravelData\Optional;
+use Filament\Tables;
 
 class {{ class_basename($generator->scenarioValue('filamentResourceName')) }}{{ $generator->baseClass ? (' extends ' . class_basename($generator->baseClass)) : '' }}
 {
@@ -84,14 +86,13 @@ class {{ class_basename($generator->scenarioValue('filamentResourceName')) }}{{ 
         ];
     }
 
-    public function update(Model $record, array $state): {{ $generator->generatorForm->resourceName }}
+    public static function update(Model $record, array $state): void
     {
-        return app({{ class_basename($generator->scenarioValue('serviceName')) }}::class)->create({{ class_basename($generator->scenarioValue('dtoName')) }}::from([
-        @foreach($generator->generatorForm->properties as $property)
-            @if(in_array($property->name, ['created_at', 'updated_at', 'deleted_at', 'id'])) @continue @endif
+        app({{ class_basename($generator->scenarioValue('serviceName')) }}::class)->update($record, {{ class_basename($generator->scenarioValue('dtoName')) }}::from([
+@foreach($generator->generatorForm->properties as $property)
+@if(in_array($property->name, ['created_at', 'updated_at', 'deleted_at', 'id']))@continue @endif()
             '{{ Str::camel($property->name) }}' => data_get($state, '{{ Str::camel($property->name) }}', Optional::create()),
-        @endforeach()
-
+@endforeach()
         ]));
     }
 }

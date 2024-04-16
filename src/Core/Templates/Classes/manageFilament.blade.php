@@ -23,14 +23,13 @@ use Spatie\LaravelData\Optional;
 class {{ class_basename($generator->scenarioValue('manageFilamentName')) }}{{ $generator->baseClass ? (' extends ' . class_basename($generator->baseClass)) : '' }}
 {
     protected static string $resource = {{ class_basename($generator->scenarioValue('filamentResourceName')) }}::class;
-    public function create(array $state): {{ $generator->generatorForm->resourceName }}
+    public static function create(array $state): {{ $generator->generatorForm->resourceName }}
     {
     return app({{ class_basename($generator->scenarioValue('serviceName')) }}::class)->create({{ class_basename($generator->scenarioValue('dtoName')) }}::from([
 @foreach($generator->generatorForm->properties as $property)
 @if(in_array($property->name, ['created_at', 'updated_at', 'deleted_at', 'id'])) @continue @endif
         '{{ Str::camel($property->name) }}' => data_get($state, '{{ Str::camel($property->name) }}', Optional::create()),
 @endforeach()
-
     ]));
     }
 }
