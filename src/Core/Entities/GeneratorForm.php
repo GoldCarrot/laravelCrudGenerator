@@ -28,13 +28,17 @@ class GeneratorForm
     public static string $REPOSITORY_FOLDER_NAME = 'Repositories';
     public static string $ENUM_FOLDER_NAME       = 'Enums';
     public static string $VIEW_FILE_SUFFIX       = '.blade.php';
+    public static string $DTO_FOLDER_NAME    = 'DTO';
     public static string $SERVICE_FOLDER_NAME    = 'Services';
     public static string $RESOURCE_FOLDER_NAME   = 'Resources';
 
     public static string $RESOURCE_SUFFIX   = 'Resource';
     public static string $SERVICE_SUFFIX    = 'Service';
+    public static string $DTO_SUFFIX    = 'DTO';
     public static string $REPOSITORY_SUFFIX = 'Repository';
     public static string $CONTROLLER_SUFFIX = 'Controller';
+    public static string $MANAGE_FILAMENT_PREFIX    = 'Manage';
+    public static string $RESOURCE_FILAMENT_SUFFIX    = 'Resource';
 
     public string $resourceTable;
     public string $resourceName;
@@ -299,8 +303,11 @@ class GeneratorForm
      *
      * @return string
      */
-    public function getFormattedProperty($type, $name): string
+    public function getFormattedProperty($type, $name, $nullable = false): string
     {
+        if ($nullable) {
+            $type .= '|null ';
+        }
         $spaces = $this->spaceForProperties - strlen($type);
         return $type . str_repeat(' ', max($spaces, 0)) . ' $' . $name;
     }

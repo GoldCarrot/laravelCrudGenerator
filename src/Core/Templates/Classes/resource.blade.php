@@ -3,7 +3,7 @@
  * This is the template for generating the controller class of a specified table.
  */
 
-/* @var $generator \Chatway\LaravelCrudGenerator\Core\Generators\ResourceGenerator */
+/* @var \Chatway\LaravelCrudGenerator\Core\Generators\ResourceGenerator $generator  */
 /* @var $generator->generatorForm->properties array list of properties (property => [type, name. comment]) */
 
 echo "<?php\n";

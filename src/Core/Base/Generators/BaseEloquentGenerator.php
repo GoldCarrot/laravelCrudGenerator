@@ -85,4 +85,9 @@ abstract class BaseEloquentGenerator
         }
         throw new LogicException('Value is not found in Scenario: ' . $name);
     }
+
+    public function versionPhpCompare($checkVersion = '8.1.0', $condition = '>='): bool|int
+    {
+        return version_compare(PHP_VERSION, $checkVersion, $condition);
+    }
 }
